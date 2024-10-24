@@ -1,44 +1,55 @@
 ﻿@model AssetManager.Models.Asset
 
-<form asp-action="AddAsset" method="post">
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="assetDescription">Asset Description</label>
-            <input type="text" class="form-control" id="assetDescription" name="Description" placeholder="Enter asset description" required>
-        </div>
-        <div class="form-group col-md-6">
-            <label for="manufacturer">Manufacturer</label>
-            <input type="text" class="form-control" id="manufacturer" name="Manufacturer" placeholder="Enter manufacturer" required>
-        </div>
-    </div>
+<br><br />
+<h2 class="text-center">Add New Asset</h2>
 
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="assetNumber">Asset Number</label>
-            <input type="text" class="form-control" id="assetNumber" name="AssetNumber" placeholder="Enter asset number" required>
-        </div>
-        <div class="form-group col-md-6">
-            <label for="serialNumber">Serial Number</label>
-            <input type="text" class="form-control" id="serialNumber" name="SerialNumber" placeholder="Enter serial number" required>
-        </div>
-    </div>
-
-    <div class="form-row">
-        <div class="form-group col-md-6">
+<div class="form-container">
+    <form asp-action="AddAsset" method="post" class="mt-4">
+        <!-- Equipment Type -->
+        <div class="form-group">
             <label for="equipmentType">Equipment Type</label>
             <select id="equipmentTypeDropdown" class="form-control" name="EquipmentType" required>
                 <option selected disabled value="">Select Equipment Type...</option>
-                @foreach (var type in ViewBag.EquipmentTypes)
+                @if (ViewBag.EquipmentTypes != null)
                 {
-                    <option value="@type">@type</option>
+                    @foreach (var type in ViewBag.EquipmentTypes)
+                    {
+                        <option value="@type">@type</option>
+                    }
                 }
-                <option value="newType">Add New Type</option>
+                <option value="newType">Add New Type</option> <!-- Option to add new type -->
             </select>
 
-            <input type="text" class="form-control mt-2" id="newEquipmentType" name="EquipmentType" placeholder="Enter new equipment type" style="display: none;">
+            <!-- New Equipment Type Field -->
+            <input type="text" class="form-control mt-2" id="newEquipmentType" name="NewEquipmentType" placeholder="Enter new equipment type" style="display: none;">
         </div>
 
-        <div class="form-group col-md-6">
+        <!-- Description -->
+        <div class="form-group">
+            <label for="assetDescription">Asset Description</label>
+            <input type="text" class="form-control" id="assetDescription" name="Description" placeholder="Enter asset description" required>
+        </div>
+
+        <!-- Serial Number and Asset Number on the same line -->
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="assetNumber">Asset Number</label>
+                <input type="text" class="form-control" id="assetNumber" name="AssetNumber" placeholder="Enter asset number" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="serialNumber">Serial Number</label>
+                <input type="text" class="form-control" id="serialNumber" name="SerialNumber" placeholder="Enter serial number" required>
+            </div>
+        </div>
+
+        <!-- Manufacturer -->
+        <div class="form-group">
+            <label for="manufacturer">Manufacturer</label>
+            <input type="text" class="form-control" id="manufacturer" name="Manufacturer" placeholder="Enter manufacturer" required>
+        </div>
+
+        <!-- Office Selection -->
+        <div class="form-group">
             <label for="office">Office</label>
             <select id="office" name="OfficeID" class="form-control" required>
                 <option selected disabled value="">Select Office...</option>
@@ -47,21 +58,89 @@
                     <option value="@office.OfficeID">@office.OfficeName - @office.Location</option>
                 }
             </select>
-            <span asp-validation-for="OfficeID" class="text-danger"></span>
         </div>
-    </div>
 
-    <button type="submit" class="btn btn-primary">Add Asset</button>
-</form>
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block">Add Asset</button>
+    </form>
+</div>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<!-- Custom CSS for Styling -->
+<style>
+    .form-container {
+        margin: 0 auto;
+        padding: 30px;
+        max-width: 600px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+            .form-row .form-group:last-child {
+                margin-right: 0;
+            }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .btn-block {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .form-group label {
+        font-weight: bold;
+    }
+</style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function(){
         $('#equipmentTypeDropdown').on('change', function() {
             if ($(this).val() === 'newType') {
+                // Show the new equipment type input field
                 $('#newEquipmentType').show().attr('required', true);
             } else {
-                $('#newEquipmentType').hide().attr('required', false); 
+                // Hide the new equipment type input field
+                $('#newEquipmentType').hide().attr('required', false);
+            }
+        });
+
+        // Override form submission to ensure the new equipment type value is sent
+        $('form').on('submit', function() {
+            var newType = $('#newEquipmentType').val();
+            if (newType) {
+                // Replace the dropdown value with the new input value
+                $('#equipmentTypeDropdown').val(newType);
             }
         });
     });

@@ -23,7 +23,7 @@
                         <th>
                             Description
                             <select id="descriptionFilter" class="form-control" onchange="filterTable()">
-                                <option value="">All</option>
+                                <option value=""><i>Filter</i></option>
                                 @foreach (var description in Model.Select(a => a.Description).Distinct())
                                 {
                                     <option value="@description">@description</option>

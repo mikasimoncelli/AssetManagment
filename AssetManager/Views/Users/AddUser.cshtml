@@ -1,33 +1,70 @@
 ﻿@model AssetManager.Models.User
+<br>
+<br />
+<h2 class="text-center">Add New User</h2>
 
-<h2>Add New User</h2>
-
-<form asp-action="AddUser" method="post" class="mt-4">
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="firstName">First Name</label>
-            <input type="text" class="form-control" id="firstName" name="FirstName" placeholder="Enter first name" required>
-            <span asp-validation-for="FirstName" class="text-danger"></span>
+<div class="form-container">
+    <form asp-action="AddUser" method="post" class="mt-4">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" id="firstName" name="FirstName" placeholder="Enter first name" required>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="lastName">Last Name</label>
+                <input type="text" class="form-control" id="lastName" name="LastName" placeholder="Enter last name" required>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
         </div>
-        <div class="form-group col-md-6">
-            <label for="lastName">Last Name</label>
-            <input type="text" class="form-control" id="lastName" name="LastName" placeholder="Enter last name" required>
-            <span asp-validation-for="LastName" class="text-danger"></span>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="Email" placeholder="Enter email address" required>
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" class="form-control" id="email" name="Email" placeholder="Enter email address" required>
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="mobile">Mobile</label>
-        <input type="text" class="form-control" id="mobile" name="Mobile" placeholder="Enter mobile number" required>
-        <span asp-validation-for="Mobile" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Add User</button>
-</form>
+        <div class="form-group">
+            <label for="mobile">Mobile</label>
+            <input type="text" class="form-control" id="mobile" name="Mobile" placeholder="Enter mobile number" required>
+            <span asp-validation-for="Mobile" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Add User</button>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<style>
+    .form-container {
+        margin: 0 auto;
+        padding: 30px; /* Increased padding for more space around fields */
+        max-width: 600px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+            .form-row .form-group:last-child {
+                margin-right: 0;
+            }
+
+    .form-group {
+        margin-bottom: 20px; /* Increased margin-bottom for more spacing between form elements */
+    }
+</style>

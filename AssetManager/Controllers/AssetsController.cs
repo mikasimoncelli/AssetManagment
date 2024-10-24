@@ -50,25 +50,31 @@ public class AssetsController : Controller
     [HttpPost]
     public IActionResult AddAsset(Asset asset)
     {
+        // Try to parse the OfficeID from the form
         if (int.TryParse(Request.Form["OfficeID"], out int officeId))
         {
             asset.OfficeID = officeId;
         }
-        if (!ModelState.IsValid)
+
+  
+
+        // Handle New Equipment Type if it exists
+        string newType = Request.Form["NewEquipmentType"];
+        if (!string.IsNullOrWhiteSpace(newType))
         {
-            foreach (var state in ModelState)
-            {
-                foreach (var error in state.Value.Errors)
-                {
-                    Console.WriteLine($"Error in {state.Key}: {error.ErrorMessage}");
-                }
-            }
+            asset.EquipmentType = newType; // Assign the new type to EquipmentType
         }
+
+        // Save the asset to the database
         _context.Assets.Add(asset);
         _context.SaveChanges();
 
+        // Redirect to the index page after successful save
         return RedirectToAction("Index");
     }
+
+
+
 
 
 }

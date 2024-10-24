@@ -11,12 +11,14 @@ namespace AssetManager.Models
         public string Manufacturer { get; set; }
         public string Description { get; set; }
 
-      
+
         public int OfficeID { get; set; }
 
-       
-      
+
+
         public Office Office { get; set; }
+
+      
     }
 
 }
