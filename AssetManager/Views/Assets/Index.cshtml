@@ -1,9 +1,8 @@
 ﻿@model List<AssetManager.Models.Asset>
 
 <div class="container" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-bottom: 40px;">
-    <h3 style="margin-top:25px"class="text-center mb-4">View All Assets</h3>
+    <h3 style="margin-top:25px" class="text-center mb-4">View All Assets</h3>
 
-    <!-- Search bar and Reset button -->
     <div class="row justify-content-center mb-4">
         <div class="col-md-10">
             <div class="input-group">
@@ -15,7 +14,6 @@
         </div>
     </div>
 
-    <!-- Asset table -->
     <div class="row justify-content-center">
         <div class="col-md-10">
             <table id="assetsTable" class="table table-bordered text-center">
@@ -147,7 +145,7 @@
             const officeName = row.cells[6].textContent.toLowerCase();
             const officeLocation = row.cells[7].textContent.toLowerCase();
 
-            // Apply filter logic: Hide rows that don't match the filters or search input
+            //Hide rows that don't match the filters or search input
             if (searchInput && !(
                 description.includes(searchInput) ||
                 manufacturer.includes(searchInput) ||

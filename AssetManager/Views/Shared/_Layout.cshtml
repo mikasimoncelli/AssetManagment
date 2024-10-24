@@ -7,72 +7,63 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
-        /* Ensure submenu items have the same style as the main menu */
         .list-unstyled .link-dark {
-            font-size: 16px; /* Same size as main menu */
-            font-weight: normal; /* Remove bold */
-            color: black; /* Set text color */
-            text-decoration: none; /* Remove underline */
+            font-size: 16px; 
+            font-weight: normal; 
+            color: black; 
+            text-decoration: none; 
         }
 
-            /* On hover */
             .list-unstyled .link-dark:hover {
-                background-color: #007bff; /* Bootstrap primary color for hover */
-                color: white; /* Change text to white */
+                background-color: #007bff; 
+                color: white; 
             }
 
-        /* Button for collapsible menus */
         .btn-toggle {
             background-color: transparent;
             border: none;
-            font-size: 16px; /* Match main font size */
+            font-size: 16px; 
             font-weight: bold;
             color: black;
             display: flex;
             align-items: center;
             width: 100%;
             text-align: left;
-            padding: 0; /* Remove any default padding */
-            outline: none; /* Remove the blue outline on focus */
+            padding: 0; 
+            outline: none;
         }
 
-            /* Remove blue box when clicked */
             .btn-toggle:focus {
-                outline: none; /* No focus outline */
+                outline: none; 
             }
 
-            /* Arrow for other menu items (except Home) */
             .btn-toggle::before {
-                content: "\27A4"; /* Right-pointing large arrow */
-                font-size: 20px; /* Increase arrow size */
-                margin-right: 10px; /* Space between arrow and text */
+                content: "\27A4"; 
+                font-size: 20px; 
+                margin-right: 10px; 
                 transition: transform 0.3s;
-                color: black; /* Arrow color */
+                color: black; 
             }
 
-            /* Rotate the arrow when expanded */
+            
             .btn-toggle[aria-expanded="true"]::before {
-                content: "\25BC"; /* Down-pointing large arrow */
+                content: "\25BC"; 
                 transform: rotate(0);
             }
 
-            /* Hover effect on both text and arrow */
             .btn-toggle:hover {
-                background-color: #007bff; /* Bootstrap primary color for hover */
-                color: white; /* Text color when hovered */
+                background-color: #007bff;
+                color: white; 
             }
 
-                /* Hover effect on the arrow */
                 .btn-toggle:hover::before {
-                    color: white; /* Arrow color when hovered */
+                    color: white; 
                 }
 
-        /* Remove arrow for Home button */
         #home-toggle.btn-toggle::before {
-            content: ""; /* Remove arrow */
+            content: ""; 
         }
 
-        /* Keep the sidebar filling the full height */
         .sidebar {
             position: relative;
             height: 100vh;
@@ -82,7 +73,6 @@
 
 <body>
     <div class="d-flex" style="min-height: 100vh;">
-        <!-- Sidebar -->
         <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px;">
             <a href="@Url.Action("Index", "Home")"
                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
@@ -91,9 +81,7 @@
             </a>
             <hr>
 
-            <!-- Navigation Menu -->
             <ul class="list-unstyled">
-                <!-- Home Section -->
                 <li class="mb-1">
                     <a id="home-toggle" asp-controller="Home" asp-action="Index" class="btn btn-toggle align-items-center rounded">
                         Home
@@ -101,7 +89,6 @@
                 </li>
 
 
-                <!-- Manage Assets -->
                 <li class="mb-1">
                     <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false">
                         Manage Assets
@@ -115,7 +102,6 @@
                     </div>
                 </li>
 
-                <!-- Manage Users -->
                 <li class="mb-1">
                     <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#users-collapse" aria-expanded="false">
                         Manage Users
@@ -130,7 +116,6 @@
             </ul>
         </div>
 
-        <!-- Main content -->
         <div class="container-fluid">
             <main role="main" class="pb-3">
                 @RenderBody()
@@ -138,7 +123,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <div class="social-icons">
             <a href="https://facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
@@ -152,26 +136,22 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Get all collapsible items
             var collapsibles = document.querySelectorAll('.btn-toggle');
 
             collapsibles.forEach(function (button) {
                 var target = button.getAttribute('data-bs-target');
 
-                // Retrieve saved state from localStorage
                 var isExpanded = localStorage.getItem(target);
                 if (isExpanded === 'true') {
                     var collapseElement = document.querySelector(target);
                     var bsCollapse = new bootstrap.Collapse(collapseElement, {
                         toggle: false
                     });
-                    bsCollapse.show(); // Show the collapsible if previously expanded
+                    bsCollapse.show(); 
                 }
 
-                // Add event listener to track when it's clicked
                 button.addEventListener('click', function () {
                     var isCurrentlyExpanded = button.getAttribute('aria-expanded') === 'true';
-                    // Save the collapse state in localStorage
                     localStorage.setItem(target, isCurrentlyExpanded ? 'true' : 'false');
                 });
             });

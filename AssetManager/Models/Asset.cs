@@ -11,10 +11,10 @@ namespace AssetManager.Models
         public string Manufacturer { get; set; }
         public string Description { get; set; }
 
-        // Foreign key for Office
+      
         public int OfficeID { get; set; }
 
-        // Navigation property for Office
+       
       
         public Office Office { get; set; }
     }

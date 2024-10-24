@@ -16,10 +16,10 @@ namespace AssetManager.Controllers
 
         public IActionResult Index()
         {
-            // Retrieve the list of users from the database
+            
             var users = _context.Users.ToList();
 
-            // Pass the users list to the view
+           
             return View(users);
         }
 

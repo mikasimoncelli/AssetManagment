@@ -11,6 +11,7 @@
             <input type="text" class="form-control" id="manufacturer" name="Manufacturer" placeholder="Enter manufacturer" required>
         </div>
     </div>
+
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="assetNumber">Asset Number</label>
@@ -21,11 +22,22 @@
             <input type="text" class="form-control" id="serialNumber" name="SerialNumber" placeholder="Enter serial number" required>
         </div>
     </div>
+
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="equipmentType">Equipment Type</label>
-            <input type="text" class="form-control" id="equipmentType" name="EquipmentType" placeholder="Enter equipment type" required>
+            <select id="equipmentTypeDropdown" class="form-control" name="EquipmentType" required>
+                <option selected disabled value="">Select Equipment Type...</option>
+                @foreach (var type in ViewBag.EquipmentTypes)
+                {
+                    <option value="@type">@type</option>
+                }
+                <option value="newType">Add New Type</option>
+            </select>
+
+            <input type="text" class="form-control mt-2" id="newEquipmentType" name="EquipmentType" placeholder="Enter new equipment type" style="display: none;">
         </div>
+
         <div class="form-group col-md-6">
             <label for="office">Office</label>
             <select id="office" name="OfficeID" class="form-control" required>
@@ -38,5 +50,19 @@
             <span asp-validation-for="OfficeID" class="text-danger"></span>
         </div>
     </div>
+
     <button type="submit" class="btn btn-primary">Add Asset</button>
 </form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#equipmentTypeDropdown').on('change', function() {
+            if ($(this).val() === 'newType') {
+                $('#newEquipmentType').show().attr('required', true);
+            } else {
+                $('#newEquipmentType').hide().attr('required', false); 
+            }
+        });
+    });
+</script>
