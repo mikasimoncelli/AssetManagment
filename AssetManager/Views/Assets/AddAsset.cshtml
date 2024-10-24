@@ -1,0 +1,42 @@
+﻿@model AssetManager.Models.Asset
+
+<form asp-action="AddAsset" method="post">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="assetDescription">Asset Description</label>
+            <input type="text" class="form-control" id="assetDescription" name="Description" placeholder="Enter asset description" required>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="manufacturer">Manufacturer</label>
+            <input type="text" class="form-control" id="manufacturer" name="Manufacturer" placeholder="Enter manufacturer" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="assetNumber">Asset Number</label>
+            <input type="text" class="form-control" id="assetNumber" name="AssetNumber" placeholder="Enter asset number" required>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="serialNumber">Serial Number</label>
+            <input type="text" class="form-control" id="serialNumber" name="SerialNumber" placeholder="Enter serial number" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="equipmentType">Equipment Type</label>
+            <input type="text" class="form-control" id="equipmentType" name="EquipmentType" placeholder="Enter equipment type" required>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="office">Office</label>
+            <select id="office" name="OfficeID" class="form-control" required>
+                <option selected disabled value="">Select Office...</option>
+                @foreach (var office in ViewBag.Offices)
+                {
+                    <option value="@office.OfficeID">@office.OfficeName - @office.Location</option>
+                }
+            </select>
+            <span asp-validation-for="OfficeID" class="text-danger"></span>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Asset</button>
+</form>

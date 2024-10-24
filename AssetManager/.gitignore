@@ -1,0 +1,16 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.csproj.user
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+
+# Backup & IDE settings
+*.bak
+*.log
+*.userosscache
+*.sln.ide

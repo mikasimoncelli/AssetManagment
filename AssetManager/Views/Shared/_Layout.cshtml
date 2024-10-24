@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Asset</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        /* Ensure submenu items have the same style as the main menu */
+        .list-unstyled .link-dark {
+            font-size: 16px; /* Same size as main menu */
+            font-weight: normal; /* Remove bold */
+            color: black; /* Set text color */
+            text-decoration: none; /* Remove underline */
+        }
+
+            /* On hover */
+            .list-unstyled .link-dark:hover {
+                background-color: #007bff; /* Bootstrap primary color for hover */
+                color: white; /* Change text to white */
+            }
+
+        /* Button for collapsible menus */
+        .btn-toggle {
+            background-color: transparent;
+            border: none;
+            font-size: 16px; /* Match main font size */
+            font-weight: bold;
+            color: black;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+            padding: 0; /* Remove any default padding */
+            outline: none; /* Remove the blue outline on focus */
+        }
+
+            /* Remove blue box when clicked */
+            .btn-toggle:focus {
+                outline: none; /* No focus outline */
+            }
+
+            /* Arrow for other menu items (except Home) */
+            .btn-toggle::before {
+                content: "\27A4"; /* Right-pointing large arrow */
+                font-size: 20px; /* Increase arrow size */
+                margin-right: 10px; /* Space between arrow and text */
+                transition: transform 0.3s;
+                color: black; /* Arrow color */
+            }
+
+            /* Rotate the arrow when expanded */
+            .btn-toggle[aria-expanded="true"]::before {
+                content: "\25BC"; /* Down-pointing large arrow */
+                transform: rotate(0);
+            }
+
+            /* Hover effect on both text and arrow */
+            .btn-toggle:hover {
+                background-color: #007bff; /* Bootstrap primary color for hover */
+                color: white; /* Text color when hovered */
+            }
+
+                /* Hover effect on the arrow */
+                .btn-toggle:hover::before {
+                    color: white; /* Arrow color when hovered */
+                }
+
+        /* Remove arrow for Home button */
+        #home-toggle.btn-toggle::before {
+            content: ""; /* Remove arrow */
+        }
+
+        /* Keep the sidebar filling the full height */
+        .sidebar {
+            position: relative;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="d-flex" style="min-height: 100vh;">
+        <!-- Sidebar -->
+        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px;">
+            <a href="@Url.Action("Index", "Home")"
+               class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+                <span class="fs-4">Asset Management</span>
+            </a>
+            <hr>
+
+            <!-- Navigation Menu -->
+            <ul class="list-unstyled">
+                <!-- Home Section -->
+                <li class="mb-1">
+                    <a id="home-toggle" asp-controller="Home" asp-action="Index" class="btn btn-toggle align-items-center rounded">
+                        Home
+                    </a>
+                </li>
+
+
+                <!-- Manage Assets -->
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false">
+                        Manage Assets
+                    </button>
+                    <div class="collapse" id="assets-collapse">
+                        <ul class="list-unstyled fw-normal pb-1 small">
+                            <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
+                            <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
+                            <li><a asp-controller="Assets" asp-action="CheckoutAsset" class="link-dark rounded">Checkout Asset</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Manage Users -->
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#users-collapse" aria-expanded="false">
+                        Manage Users
+                    </button>
+                    <div class="collapse" id="users-collapse">
+                        <ul class="list-unstyled fw-normal pb-1 small">
+                            <li><a asp-controller="Users" asp-action="Index" class="link-dark rounded">View All Users</a></li>
+                            <li><a asp-controller="Users" asp-action="AddUser" class="link-dark rounded">Add New User</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="container-fluid">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="social-icons">
+            <a href="https://facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
+            <a href="https://twitter.com" target="_blank"><i class="bi bi-twitter"></i></a>
+            <a href="https://linkedin.com" target="_blank"><i class="bi bi-linkedin"></i></a>
+        </div>
+        <p>&copy; 2024 Your Company. All Rights Reserved.</p>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all collapsible items
+            var collapsibles = document.querySelectorAll('.btn-toggle');
+
+            collapsibles.forEach(function (button) {
+                var target = button.getAttribute('data-bs-target');
+
+                // Retrieve saved state from localStorage
+                var isExpanded = localStorage.getItem(target);
+                if (isExpanded === 'true') {
+                    var collapseElement = document.querySelector(target);
+                    var bsCollapse = new bootstrap.Collapse(collapseElement, {
+                        toggle: false
+                    });
+                    bsCollapse.show(); // Show the collapsible if previously expanded
+                }
+
+                // Add event listener to track when it's clicked
+                button.addEventListener('click', function () {
+                    var isCurrentlyExpanded = button.getAttribute('aria-expanded') === 'true';
+                    // Save the collapse state in localStorage
+                    localStorage.setItem(target, isCurrentlyExpanded ? 'true' : 'false');
+                });
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
