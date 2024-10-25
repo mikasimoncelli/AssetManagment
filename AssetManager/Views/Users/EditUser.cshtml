@@ -1,0 +1,69 @@
+﻿@model AssetManager.Models.User
+<br /><br />
+<div class="form-container">
+    <div class="form-container">
+    <h5 class="text-center">@Model.FirstName @Model.LastName</h5>
+    <p class="text-center">@Model.Email</p>
+
+    <form method="post" action="@Url.Action("UpdateUser", "Users")" class="mt-4">
+        <input type="hidden" name="UserID" value="@Model.UserID" />
+        <p style="color:red;">Edit User details below by updating information and clicking Save Changes.</p>
+
+        <div class="form-group">
+            <label for="FirstName">First Name</label>
+            <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" placeholder="Enter first name" />
+        </div>
+
+        <div class="form-group">
+            <label for="LastName">Last Name</label>
+            <input type="text" class="form-control" id="LastName" name="LastName" value="@Model.LastName" placeholder="Enter last name" />
+        </div>
+
+        <div class="form-group">
+            <label for="Email">Email</label>
+            <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" placeholder="Enter email" />
+        </div>
+
+        <button type="submit" class="btn btn-warning btn-block">Save Changes</button>
+    </form>
+
+    <br />
+
+    <form method="post" action="@Url.Action("DeleteUser", "Users")" class="mt-3">
+        <input type="hidden" name="UserID" value="@Model.UserID" />
+        <button type="submit" class="btn btn-danger">Delete User</button>
+    </form>
+</div>
+
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .form-container {
+        padding-top: 20px;
+        margin: 0 auto;
+        padding: 30px;
+        max-width: 600px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+    }
+
+    h5 {
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .btn-block {
+        width: 100%;
+        padding: 10px;
+    }
+</style>

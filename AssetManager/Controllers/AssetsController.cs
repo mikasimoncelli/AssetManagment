@@ -36,6 +36,8 @@ public class AssetsController : Controller
     }
 
 
+
+
     [HttpGet]
     public IActionResult AddAsset()
     {
@@ -46,6 +48,8 @@ public class AssetsController : Controller
     .ToList();
         return View();
     }
+
+
 
     [HttpPost]
     public IActionResult AddAsset(Asset asset)
