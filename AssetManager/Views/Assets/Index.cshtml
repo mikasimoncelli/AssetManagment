@@ -95,7 +95,7 @@
                 <tbody>
                     @foreach (var asset in Model)
                     {
-                        <tr>
+                        <tr onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = asset.AssetID })'">
                             <td>@asset.AssetID</td>
                             <td>@asset.Description</td>
                             <td>@asset.Manufacturer</td>
@@ -105,8 +105,10 @@
                             <td>@asset.Office.OfficeName</td>
                             <td>@asset.Office.Location</td>
                         </tr>
+
                     }
                 </tbody>
+
             </table>
         </div>
     </div>
@@ -184,7 +186,17 @@
         document.getElementById('officeNameFilter').value = '';
         document.getElementById('officeLocationFilter').value = '';
 
-        // Reset table filters by showing all rows
         filterTable();
     }
 </script>
+
+<style>
+    tr {
+        cursor: pointer;
+    }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+</style>
+

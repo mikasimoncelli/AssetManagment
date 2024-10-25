@@ -50,7 +50,6 @@ public class AssetsController : Controller
     [HttpPost]
     public IActionResult AddAsset(Asset asset)
     {
-        // Try to parse the OfficeID from the form
         if (int.TryParse(Request.Form["OfficeID"], out int officeId))
         {
             asset.OfficeID = officeId;
@@ -58,23 +57,72 @@ public class AssetsController : Controller
 
   
 
-        // Handle New Equipment Type if it exists
+        
         string newType = Request.Form["NewEquipmentType"];
         if (!string.IsNullOrWhiteSpace(newType))
         {
-            asset.EquipmentType = newType; // Assign the new type to EquipmentType
+            asset.EquipmentType = newType; 
         }
 
-        // Save the asset to the database
         _context.Assets.Add(asset);
         _context.SaveChanges();
 
-        // Redirect to the index page after successful save
         return RedirectToAction("Index");
     }
 
 
 
+    [HttpGet]
+    public IActionResult EditAsset(int id)
+    {
+        var asset = _context.Assets.Include(a => a.Office).FirstOrDefault(a => a.AssetID == id);
+        if (asset == null)
+        {
+            return NotFound();
+        }
+
+        ViewBag.Offices = _context.Offices.ToList(); 
+        ViewBag.EquipmentTypes = _context.Assets.Select(a => a.EquipmentType).Distinct().ToList(); 
+
+        return View(asset);
+    }
+
+
+    [HttpPost]
+    public IActionResult UpdateAsset(Asset asset)
+    {
+        var existingAsset = _context.Assets.Find(asset.AssetID);
+        if (existingAsset == null)
+        {
+            return NotFound();
+        }
+
+        existingAsset.Description = asset.Description;
+        existingAsset.Manufacturer = asset.Manufacturer;
+        existingAsset.EquipmentType = asset.EquipmentType;
+        existingAsset.AssetNumber = asset.AssetNumber;
+        existingAsset.SerialNumber = asset.SerialNumber;
+        existingAsset.OfficeID = asset.OfficeID;
+
+        _context.SaveChanges();
+
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public IActionResult DeleteAsset(int assetID)
+    {
+        var asset = _context.Assets.Find(assetID);
+        if (asset != null)
+        {
+            _context.Assets.Remove(asset);
+            _context.SaveChanges();
+        }
+
+        return RedirectToAction("Index");
+
+
+    }
 
 
 }

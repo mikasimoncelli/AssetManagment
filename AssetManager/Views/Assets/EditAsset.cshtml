@@ -1,0 +1,110 @@
+﻿@model AssetManager.Models.Asset
+<br />
+
+
+<div class="form-container">
+    <h5 class="text-center">@Model.Manufacturer - @Model.Description</h5>
+    <p class="text-center">
+        @{
+            var office = ((List<Office>)ViewBag.Offices).FirstOrDefault(o => o.OfficeID == Model.OfficeID);
+            string officeDetails = office != null ? $"{office.OfficeName} - {office.Location}" : "Office not found";
+        }
+        @officeDetails
+    </p>
+    <form method="post" action="@Url.Action("UpdateAsset", "Assets")" class="mt-4">
+        <input type="hidden" name="AssetID" value="@Model.AssetID" />
+        <p style="color:red;"> Edit Asset details below by updating information and clicking Save Changes.</p>
+        <div class="form-group">
+            <label for="Description">Description</label>
+            <input type="text" class="form-control" id="Description" name="Description" value="@Model.Description" placeholder="Enter asset description" />
+        </div>
+
+        <div class="form-group">
+            <label for="Manufacturer">Manufacturer</label>
+            <input type="text" class="form-control" id="Manufacturer" name="Manufacturer" value="@Model.Manufacturer" placeholder="Enter manufacturer" />
+        </div>
+
+        <div class="form-group">
+            <label for="EquipmentType">Equipment Type</label>
+            <select class="form-control" id="EquipmentType" name="EquipmentType">
+                <option value="">Select Type</option>
+                @foreach (var type in ViewBag.EquipmentTypes)
+                {
+                    <option value="@type" selected="@(Model.EquipmentType == type ? "selected" : null)">@type</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="AssetNumber">Asset Number</label>
+                <input type="text" class="form-control" id="AssetNumber" name="AssetNumber" value="@Model.AssetNumber" placeholder="Enter asset number" />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="SerialNumber">Serial Number</label>
+                <input type="text" class="form-control" id="SerialNumber" name="SerialNumber" value="@Model.SerialNumber" placeholder="Enter serial number" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="OfficeID">Office</label>
+            <select class="form-control" id="OfficeID" name="OfficeID">
+                <option value="">Select Office</option>
+                @foreach (var office in ViewBag.Offices)
+                {
+                    <option value="@office.OfficeID" selected="@(Model.OfficeID == office.OfficeID ? "selected" : null)">@office.OfficeName</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-warning btn-block">Save Changes</button>
+    </form>
+    <br />
+    <form method="post" action="@Url.Action("DeleteAsset", "Assets")" class="mt-3">
+        <input type="hidden" name="AssetID" value="@Model.AssetID" />
+        <button type="submit" class="btn btn-danger">Delete Asset</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .form-container {
+        margin: 0 auto;
+        padding: 30px; 
+        max-width: 600px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+        margin-right: 15px;
+    }
+
+    .form-row .form-group:last-child {
+        margin-right: 0;
+    }
+
+    .form-group {
+        margin-bottom: 20px; 
+    }
+
+    .btn-block {
+        width: 100%;
+        padding: 10px;
+    }
+</style>
