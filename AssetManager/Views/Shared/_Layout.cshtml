@@ -97,7 +97,21 @@
                         <ul class="list-unstyled fw-normal pb-1 small">
                             <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
                             <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
-                            <li><a asp-controller="Assets" asp-action="CheckoutAsset" class="link-dark rounded">Checkout Asset</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#checkedout-collapse" aria-expanded="false">
+                        Checked-Out Assets
+                    </button>
+                    <div class="collapse" id="checkedout-collapse">
+                        <ul class="list-unstyled fw-normal pb-1 small">
+                            <li><a asp-controller="CheckedOutAssets" asp-action="AddNewCheckedOutAsset" class="link-dark rounded">Check-out Asset</a></li>
+                            <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">Assets On Loan</a></li>
+                            <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">Returned Assets</a></li>
+
+
                         </ul>
                     </div>
                 </li>

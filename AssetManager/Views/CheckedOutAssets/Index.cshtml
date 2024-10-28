@@ -1,0 +1,120 @@
+﻿@model IEnumerable<AssetManager.Models.CheckedOutAsset>
+
+<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
+    <h3 class="text-center mt-4 mb-4">Checked Out Assets</h3>
+
+    <div class="row justify-content-center mb-3">
+        <div class="col-md-10">
+            <div class="input-group">
+                <input style="margin-right: 20px" type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="filterTables()" />
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-warning" onclick="resetFilters()">Reset Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
+        <h3 class="text-center mt-4 mb-4">Not Returned</h3>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="table-responsive">
+                    <!-- Single header row for all grouped tables -->
+                    <table style="background-color:;" class="table table-bordered text-center table-sm asset-table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="equal-width">Date Checked Out</th>
+                                <th class="equal-width">CheckedOut ID</th>
+                                <th class="equal-width">Asset Type</th>
+                                <th class="equal-width">Description</th>
+                                <th class="equal-width">First Name</th>
+                                <th class="equal-width">Last Name</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    @foreach (var equipmentGroup in ((IEnumerable<CheckedOutAsset>)ViewBag.checkedOutAssets).GroupBy(a => a.Asset.EquipmentType))
+                    {
+                        <!-- EquipmentType Header -->
+                        <h5 style="margin-top: 20px; text-decoration: none">@equipmentGroup.Key</h5>
+
+                        <!-- Table body with data for each group -->
+                        <table style="background-color: lightcoral;" class="table table-bordered text-center table-sm asset-table">
+                            <tbody>
+                                @foreach (var asset in equipmentGroup)
+                                {
+                                    <tr>
+                                        <td>@asset.DateLentOut.ToString("yyyy-MM-dd")</td>
+                                        <td>@asset.CheckedOutID</td>
+                                        <td>@asset.Asset.EquipmentType</td>
+                                        <td>@(asset.Asset != null ? asset.Asset.Description : "Unknown Asset")</td>
+                                        <td>@(asset.User != null ? asset.User.LastName : "Unknown User")</td>
+                                        <td>@(asset.User != null ? asset.User.FirstName : "Unknown User")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Global search function for all tables
+    function filterTables() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const tables = document.querySelectorAll('.asset-table tbody'); // Select all table bodies within asset tables
+
+        tables.forEach(tableBody => {
+            const rows = tableBody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let showRow = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell.textContent.toLowerCase().includes(searchInput)) {
+                        showRow = true;
+                        break;
+                    }
+                }
+
+                row.style.display = showRow ? '' : 'none';
+            }
+        });
+    }
+
+    // Reset search function
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        filterTables(); // Show all rows in all tables
+    }
+</script>
+
+<style>
+    /* Equal width for all columns */
+    .equal-width {
+        width: 16.66%; /* Divide equally (100% / 6 columns) */
+    }
+
+    tr {
+        cursor: pointer;
+    }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+    th {
+        cursor: pointer;
+    }
+
+        th:hover {
+            background-color: #dcdcdc;
+        }
+</style>

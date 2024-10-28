@@ -1,0 +1,111 @@
+﻿@model IEnumerable<AssetManager.Models.CheckedOutAsset>
+
+<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
+    <h3 class="text-center mt-4 mb-4"></h3>
+
+    <div class="row justify-content-center mb-3">
+        <div class="col-md-10">
+            <div class="input-group">
+                <input style="margin-right: 20px" type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="filterTables()" />
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-warning" onclick="resetFilters()">Reset Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
+        <h3 class="text-center mt-4 mb-4">Available Assets</h3>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="table-responsive">
+                    @foreach (var equipmentGroup in ((IEnumerable<Asset>)ViewBag.availableAssets).GroupBy(a => a.EquipmentType))
+                    {
+                        <h5 style="margin-top: 20px; text-decoration:none">@equipmentGroup.Key</h5> <!-- EquipmentType Header -->
+                        <table class="table table-bordered text-center table-sm asset-table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="equal-width">Description</th>
+                                    <th class="equal-width">Serial Number</th>
+                                    <th class="equal-width">Asset Number</th>
+                                    <th class="equal-width">Office</th>
+                                    <th class="equal-width">Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var asset in equipmentGroup)
+                                {
+                                    <tr>
+                                        <td>@asset.Description</td>
+                                        <td>@asset.SerialNumber</td>
+                                        <td>@asset.AssetNumber</td>
+                                        <td>@asset.Office.OfficeName</td>
+                                        <td>@asset.Office.Location</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Global search function for all tables
+    function filterTables() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const tables = document.querySelectorAll('.asset-table tbody');
+
+        tables.forEach(tableBody => {
+            const rows = tableBody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let showRow = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell.textContent.toLowerCase().includes(searchInput)) {
+                        showRow = true;
+                        break;
+                    }
+                }
+
+                row.style.display = showRow ? '' : 'none';
+            }
+        });
+    }
+
+    // Reset search function
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        filterTables(); // Show all rows in all tables
+    }
+</script>
+
+<style>
+    /* Equal width for all columns */
+    .equal-width {
+        width: 20%; /* Divide equally (100% / number of columns) */
+    }
+
+    tr {
+        cursor: pointer;
+    }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+    th {
+        cursor: pointer;
+    }
+
+        th:hover {
+            background-color: #dcdcdc;
+        }
+</style>

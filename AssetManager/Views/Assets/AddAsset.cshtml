@@ -1,12 +1,14 @@
 ﻿@model AssetManager.Models.Asset
 
 <br><br />
-<h2 class="text-center">Add New Asset</h2>
+
 
 <div class="form-container">
+    <h2 class="text-center">Add New Asset</h2>
     <form asp-action="AddAsset" method="post" class="mt-4">
         <!-- Equipment Type -->
         <div class="form-group">
+            
             <label for="equipmentType">Equipment Type</label>
             <select id="equipmentTypeDropdown" class="form-control" name="EquipmentType" required>
                 <option selected disabled value="">Select Equipment Type...</option>
@@ -118,9 +120,7 @@
             background-color: #0056b3;
         }
 
-    .form-group label {
-        font-weight: bold;
-    }
+
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

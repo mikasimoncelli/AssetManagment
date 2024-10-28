@@ -58,11 +58,9 @@ public class AssetsController : Controller
         {
             asset.OfficeID = officeId;
         }
-
-  
-
         
         string newType = Request.Form["NewEquipmentType"];
+
         if (!string.IsNullOrWhiteSpace(newType))
         {
             asset.EquipmentType = newType; 

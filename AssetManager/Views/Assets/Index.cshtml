@@ -1,14 +1,14 @@
 ﻿@model List<AssetManager.Models.Asset>
 
-<div class="container-fluid" style="min-height: 100vh; padding: 0 0px;">
-    <h3 style="margin-top:25px" class="text-center mb-4">View All Assets</h3>
+<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
+    <h3 class="text-center mt-4 mb-4">View All Assets</h3>
 
-    <div class="row justify-content-center mb-4">
+    <div class="row justify-content-center mb-3">
         <div class="col-md-10">
             <div class="input-group">
-                <input style="margin-right:20px; margin-left: 20px" type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="filterTable()" />
+                <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyFilterAndSort()" style="margin-right: 20px;" />
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-warning" onclick="resetFilters()">Reset Filters</button>
+                    <button type="button" class="btn btn-warning" onclick="resetFilters()">Reset</button>
                 </div>
             </div>
         </div>
@@ -16,111 +16,108 @@
 
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <table id="assetsTable" class="table table-bordered text-center">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>AssetID</th>
-                        <th>
-                            Description
-                            <select id="descriptionFilter" class="form-control" onchange="filterTable()">
-                                <option value=""><i>Filter</i></option>
-                                @foreach (var description in Model.Select(a => a.Description).Distinct())
-                                {
-                                    <option value="@description">@description</option>
-                                }
-                            </select>
-                        </th>
-                        <th>
-                            Manufacturer
-                            <select id="manufacturerFilter" class="form-control" onchange="filterTable()">
-                                <option value="">All</option>
-                                @foreach (var manufacturer in Model.Select(a => a.Manufacturer).Distinct())
-                                {
-                                    <option value="@manufacturer">@manufacturer</option>
-                                }
-                            </select>
-                        </th>
-                        <th>
-                            Type
-                            <select id="typeFilter" class="form-control" onchange="filterTable()">
-                                <option value="">All</option>
-                                @foreach (var type in Model.Select(a => a.EquipmentType).Distinct())
-                                {
-                                    <option value="@type">@type</option>
-                                }
-                            </select>
-                        </th>
-                        <th>
-                            Asset Number
-                            <select id="assetNumberFilter" class="form-control" onchange="filterTable()">
-                                <option value="">All</option>
-                                @foreach (var assetNumber in Model.Select(a => a.AssetNumber).Distinct())
-                                {
-                                    <option value="@assetNumber">@assetNumber</option>
-                                }
-                            </select>
-                        </th>
-                        <th>
-                            Serial Number
-                            <select id="serialNumberFilter" class="form-control" onchange="filterTable()">
-                                <option value="">All</option>
-                                @foreach (var serialNumber in Model.Select(a => a.SerialNumber).Distinct())
-                                {
-                                    <option value="@serialNumber">@serialNumber</option>
-                                }
-                            </select>
-                        </th>
-                        <th>
-                            Office Name
-                            <select id="officeNameFilter" class="form-control" onchange="filterTable()">
-                                <option value="">All</option>
-                                @foreach (var officeName in Model.Select(a => a.Office.OfficeName).Distinct())
-                                {
-                                    <option value="@officeName">@officeName</option>
-                                }
-                            </select>
-                        </th>
-                        <th>
-                            Office Location
-                            <select id="officeLocationFilter" class="form-control" onchange="filterTable()">
-                                <option value="">All</option>
-                                @foreach (var location in Model.Select(a => a.Office.Location).Distinct())
-                                {
-                                    <option value="@location">@location</option>
-                                }
-                            </select>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var asset in Model)
-                    {
-                        <tr onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = asset.AssetID })'">
-                            <td>@asset.AssetID</td>
-                            <td>@asset.Description</td>
-                            <td>@asset.Manufacturer</td>
-                            <td>@asset.EquipmentType</td>
-                            <td>@asset.AssetNumber</td>
-                            <td>@asset.SerialNumber</td>
-                            <td>@asset.Office.OfficeName</td>
-                            <td>@asset.Office.Location</td>
+            <div class="table-responsive">
+                <table id="assetsTable" class="table table-bordered text-center table-sm">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th><span>AssetID</span></th>
+                            <th><span onclick="applySort(1)">Description</span>
+                                <select id="descriptionFilter" class="form-control form-control-sm" onchange="applyFilterAndSort()">
+                                    <option value="">Filter</option>
+                                    @foreach (var description in Model.Select(a => a.Description).Distinct())
+                                    {
+                                        <option value="@description">@description</option>
+                                    }
+                                </select>
+                            </th>
+                            <th><span onclick="applySort(2)">Manufacturer</span>
+                                <select id="manufacturerFilter" class="form-control form-control-sm" onchange="applyFilterAndSort()">
+                                    <option value="">All</option>
+                                    @foreach (var manufacturer in Model.Select(a => a.Manufacturer).Distinct())
+                                    {
+                                        <option value="@manufacturer">@manufacturer</option>
+                                    }
+                                </select>
+                            </th>
+                            <th><span onclick="applySort(3)">Type</span>
+                                <select id="typeFilter" class="form-control form-control-sm" onchange="applyFilterAndSort()">
+                                    <option value="">All</option>
+                                    @foreach (var type in Model.Select(a => a.EquipmentType).Distinct())
+                                    {
+                                        <option value="@type">@type</option>
+                                    }
+                                </select>
+                            </th>
+                            <th><span onclick="applySort(4)">Asset Number</span>
+                                <select id="assetNumberFilter" class="form-control form-control-sm" onchange="applyFilterAndSort()">
+                                    <option value="">All</option>
+                                    @foreach (var assetNumber in Model.Select(a => a.AssetNumber).Distinct())
+                                    {
+                                        <option value="@assetNumber">@assetNumber</option>
+                                    }
+                                </select>
+                            </th>
+                            <th><span onclick="applySort(5)">Serial Number</span>
+                                <select id="serialNumberFilter" class="form-control form-control-sm" onchange="applyFilterAndSort()">
+                                    <option value="">All</option>
+                                    @foreach (var serialNumber in Model.Select(a => a.SerialNumber).Distinct())
+                                    {
+                                        <option value="@serialNumber">@serialNumber</option>
+                                    }
+                                </select>
+                            </th>
+                            <th><span onclick="applySort(6)">Office Name</span>
+                                <select id="officeNameFilter" class="form-control form-control-sm" onchange="applyFilterAndSort()">
+                                    <option value="">All</option>
+                                    @foreach (var officeName in Model.Select(a => a.Office.OfficeName).Distinct())
+                                    {
+                                        <option value="@officeName">@officeName</option>
+                                    }
+                                </select>
+                            </th>
+                            <th><span onclick="applySort(7)">Office Location</span>
+                                <select id="officeLocationFilter" class="form-control form-control-sm" onchange="applyFilterAndSort()">
+                                    <option value="">All</option>
+                                    @foreach (var location in Model.Select(a => a.Office.Location).Distinct())
+                                    {
+                                        <option value="@location">@location</option>
+                                    }
+                                </select>
+                            </th>
                         </tr>
-
-                    }
-                </tbody>
-
-            </table>
+                    </thead>
+                    <tbody id="assetTableBody">
+                        @foreach (var asset in Model)
+                        {
+                            <tr onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = asset.AssetID })'">
+                                <td>@asset.AssetID</td>
+                                <td>@asset.Description</td>
+                                <td>@asset.Manufacturer</td>
+                                <td>@asset.EquipmentType</td>
+                                <td>@asset.AssetNumber</td>
+                                <td>@asset.SerialNumber</td>
+                                <td>@asset.Office.OfficeName</td>
+                                <td>@asset.Office.Location</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-
 </div>
 
 <script>
+    let currentSortColumn = -1;
+    let currentSortDirection = "asc";
+
+    function applyFilterAndSort() {
+        filterTable();
+        sortTable(currentSortColumn);
+    }
+
     function filterTable() {
         const searchInput = document.getElementById('searchInput').value.toLowerCase();
-
-        // Get filter values
         const descriptionFilter = document.getElementById('descriptionFilter').value.toLowerCase();
         const manufacturerFilter = document.getElementById('manufacturerFilter').value.toLowerCase();
         const typeFilter = document.getElementById('typeFilter').value.toLowerCase();
@@ -129,55 +126,54 @@
         const officeNameFilter = document.getElementById('officeNameFilter').value.toLowerCase();
         const officeLocationFilter = document.getElementById('officeLocationFilter').value.toLowerCase();
 
-        // Get table rows
-        const table = document.getElementById('assetsTable');
-        const rows = table.getElementsByTagName('tr');
+        const rows = Array.from(document.getElementById('assetTableBody').getElementsByTagName('tr'));
 
-        // Loop through all rows (skip header row)
-        for (let i = 1; i < rows.length; i++) {
-            let row = rows[i];
-            let showRow = true;
+        rows.forEach(row => {
+            const cells = row.getElementsByTagName('td');
+            const matchesSearch = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(searchInput));
+            const matchesFilters =
+                (!descriptionFilter || cells[1].textContent.toLowerCase().includes(descriptionFilter)) &&
+                (!manufacturerFilter || cells[2].textContent.toLowerCase().includes(manufacturerFilter)) &&
+                (!typeFilter || cells[3].textContent.toLowerCase().includes(typeFilter)) &&
+                (!assetNumberFilter || cells[4].textContent.toLowerCase().includes(assetNumberFilter)) &&
+                (!serialNumberFilter || cells[5].textContent.toLowerCase().includes(serialNumberFilter)) &&
+                (!officeNameFilter || cells[6].textContent.toLowerCase().includes(officeNameFilter)) &&
+                (!officeLocationFilter || cells[7].textContent.toLowerCase().includes(officeLocationFilter));
 
-            // Get values from the cells
-            const description = row.cells[1].textContent.toLowerCase();
-            const manufacturer = row.cells[2].textContent.toLowerCase();
-            const type = row.cells[3].textContent.toLowerCase();
-            const assetNumber = row.cells[4].textContent.toLowerCase();
-            const serialNumber = row.cells[5].textContent.toLowerCase();
-            const officeName = row.cells[6].textContent.toLowerCase();
-            const officeLocation = row.cells[7].textContent.toLowerCase();
+            row.style.display = matchesSearch && matchesFilters ? '' : 'none';
+        });
+    }
 
-            //Hide rows that don't match the filters or search input
-            if (searchInput && !(
-                description.includes(searchInput) ||
-                manufacturer.includes(searchInput) ||
-                type.includes(searchInput) ||
-                assetNumber.includes(searchInput) ||
-                serialNumber.includes(searchInput) ||
-                officeName.includes(searchInput) ||
-                officeLocation.includes(searchInput)
-            )) {
-                showRow = false;
+    function applySort(columnIndex) {
+        currentSortColumn = columnIndex;
+        currentSortDirection = currentSortDirection === "asc" ? "desc" : "asc";
+        sortTable(columnIndex);
+        filterTable();
+    }
+
+    function sortTable(columnIndex) {
+        if (columnIndex === -1) return;
+
+        const rows = Array.from(document.getElementById('assetTableBody').getElementsByTagName('tr'));
+
+        rows.sort((a, b) => {
+            const cellA = a.cells[columnIndex].textContent.trim().toLowerCase();
+            const cellB = b.cells[columnIndex].textContent.trim().toLowerCase();
+
+            if (currentSortDirection === "asc") {
+                return cellA > cellB ? 1 : cellA < cellB ? -1 : 0;
+            } else {
+                return cellA < cellB ? 1 : cellA > cellB ? -1 : 0;
             }
+        });
 
-            if (descriptionFilter && description.indexOf(descriptionFilter) === -1) showRow = false;
-            if (manufacturerFilter && manufacturer.indexOf(manufacturerFilter) === -1) showRow = false;
-            if (typeFilter && type.indexOf(typeFilter) === -1) showRow = false;
-            if (assetNumberFilter && assetNumber.indexOf(assetNumberFilter) === -1) showRow = false;
-            if (serialNumberFilter && serialNumber.indexOf(serialNumberFilter) === -1) showRow = false;
-            if (officeNameFilter && officeName.indexOf(officeNameFilter) === -1) showRow = false;
-            if (officeLocationFilter && officeLocation.indexOf(officeLocationFilter) === -1) showRow = false;
-
-            // Show or hide row
-            row.style.display = showRow ? "" : "none";
-        }
+        const tableBody = document.getElementById("assetTableBody");
+        tableBody.innerHTML = "";
+        rows.forEach(row => tableBody.appendChild(row));
     }
 
     function resetFilters() {
-        // Reset search bar
         document.getElementById('searchInput').value = '';
-
-        // Reset dropdowns
         document.getElementById('descriptionFilter').value = '';
         document.getElementById('manufacturerFilter').value = '';
         document.getElementById('typeFilter').value = '';
@@ -185,8 +181,7 @@
         document.getElementById('serialNumberFilter').value = '';
         document.getElementById('officeNameFilter').value = '';
         document.getElementById('officeLocationFilter').value = '';
-
-        filterTable();
+        applyFilterAndSort();
     }
 </script>
 
@@ -194,9 +189,13 @@
     tr {
         cursor: pointer;
     }
-
-        tr:hover {
-            background-color: #f5f5f5;
-        }
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+    th {
+        cursor: pointer;
+    }
+    th:hover {
+        background-color: #dcdcdc;
+    }
 </style>
-

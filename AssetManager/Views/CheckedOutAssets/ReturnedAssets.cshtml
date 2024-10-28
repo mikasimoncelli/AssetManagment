@@ -1,10 +1,12 @@
-﻿<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
-    <h3 class="text-center mt-4 mb-4">User List</h3>
+﻿@model IEnumerable<AssetManager.Models.CheckedOutAsset>
+
+<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
+    <h3 class="text-center mt-4 mb-4">Checked Out Assets</h3>
 
     <div class="row justify-content-center mb-3">
         <div class="col-md-10">
             <div class="input-group">
-                <input style="margin-right: 20px" type="text" id="searchInput" class="form-control" placeholder="Search users..." onkeyup="filterTable()" />
+                <input style="margin-right: 20px" type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="filterTable()" />
                 <div class="input-group-append">
                     <button type="button" class="btn btn-warning" onclick="resetFilters()">Reset Search</button>
                 </div>
@@ -12,26 +14,42 @@
         </div>
     </div>
 
+
+
+<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
+    <h3 class="text-center mt-4 mb-4">Returned</h3>
+
+
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="table-responsive">
-                <table id="userTable" class="table table-bordered text-center table-sm">
+                <h4><u>Returned</u></h4>
+                <table style="background-color: lightgreen;" id="assetTable" class="table table-bordered text-center table-sm">
                     <thead class="thead-dark">
                         <tr>
-                            <th style="width: 10%;">User ID</th>
-                            <th style="width: 20%;" onclick="sortTable(1)">First Name</th>
-                            <th style="width: 20%;" onclick="sortTable(2)">Last Name</th>
-                            <th style="width: 30%;" onclick="sortTable(3)">Email</th>
+                            <th>Date Checked Out</th>
+                            <th>Date Returned</th>
+                            <th>Asset Type</th>
+                            <th>Description</th>
+
+                            <th>First Name</th>
+                            <th>Last Name</th>
+
                         </tr>
                     </thead>
-                    <tbody id="userTableBody">
-                        @foreach (var user in Model)
+                    <tbody id="assetTableBody">
+                        @foreach (var asset in ViewBag.returnedCheckedOutAssets)
                         {
-                            <tr onclick="window.location.href='@Url.Action("EditUser", "Users", new { id = user.UserID })'">
-                                <td>@user.UserID</td>
-                                <td>@user.FirstName</td>
-                                <td>@user.LastName</td>
-                                <td>@user.Email</td>
+                            <tr>
+                                <td>@asset.DateLentOut.ToString("yyyy-MM-dd")</td>
+
+                                <td>@asset.CheckedOutID</td>
+                                <td>@asset.Asset.EquipmentType</td>
+                                <td>@(asset.Asset != null ? asset.Asset.Description : "Unknown Asset")</td>
+                                <td>@(asset.User != null ? asset.User.LastName : "Unknown User")</td>
+
+                                <td>@(asset.User != null ? asset.User.FirstName : "Unknown User")</td>
+                                <td>@asset.DateReturned.ToString("yyyy-MM-dd")</td>
                             </tr>
                         }
                     </tbody>
@@ -40,12 +58,13 @@
         </div>
     </div>
 </div>
+         
 
 <script>
     // Search function for filtering
     function filterTable() {
         const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        const tableBody = document.getElementById('userTableBody');
+        const tableBody = document.getElementById('assetTableBody');
         const rows = tableBody.getElementsByTagName('tr');
 
         for (let i = 0; i < rows.length; i++) {
@@ -73,7 +92,7 @@
 
     // Sort function
     function sortTable(columnIndex) {
-        const table = document.getElementById('userTable');
+        const table = document.getElementById('assetTable');
         const rows = Array.from(table.rows).slice(1); // Exclude header row
         const direction = table.getAttribute("data-sort-direction") === "asc" ? "desc" : "asc";
         table.setAttribute("data-sort-direction", direction);
@@ -90,7 +109,7 @@
         });
 
         // Reorder rows
-        const tableBody = document.getElementById("userTableBody");
+        const tableBody = document.getElementById("assetTableBody");
         tableBody.innerHTML = ""; // Clear current rows
         rows.forEach(row => tableBody.appendChild(row)); // Append sorted rows
     }
@@ -101,15 +120,15 @@
         cursor: pointer;
     }
 
-        tr:hover {
-            background-color: #f5f5f5;
-        }
+    tr:hover {
+        background-color: #f5f5f5;
+    }
 
     th {
         cursor: pointer;
     }
 
-        th:hover {
-            background-color: #dcdcdc;
-        }
+    th:hover {
+        background-color: #dcdcdc;
+    }
 </style>

@@ -1,0 +1,71 @@
+﻿using AssetManager.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+
+namespace AssetManager.Controllers
+{
+    public class CheckedOutAssetsController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public CheckedOutAssetsController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public IActionResult Index()
+        {
+            var checkedOutAssets = _context.CheckedOutAssets
+                .Where(c => c.DateReturned == null)
+                .Include(c => c.Asset)
+                .Include(c => c.User)
+                .OrderBy(c => c.DateLentOut)
+                .ToList();
+
+
+
+            ViewBag.checkedOutAssets = checkedOutAssets;
+
+            return View();
+        }
+
+
+        public IActionResult ReturnedAssets()
+        {
+            var returnedCheckedOutAssets = _context.CheckedOutAssets
+                .Where(c => c.DateReturned != null)
+                .Include(c => c.Asset)
+                .Include(c => c.User)
+                .OrderBy(c => c.DateLentOut)
+                .ToList();
+
+            ViewBag.returnedCheckedOutAssets = returnedCheckedOutAssets;
+
+            return View();
+        }
+
+
+        [HttpGet]
+        public IActionResult AddNewCheckedOutAsset()
+        {
+            var currentlyCheckedOutAssetIds = _context.CheckedOutAssets
+                .GroupBy(c => c.AssetID)
+                .Where(g => g.OrderByDescending(c => c.DateLentOut).FirstOrDefault().DateReturned == null) 
+                .Select(g => g.Key)
+                .ToList();
+
+            var availableAssets = _context.Assets
+                .Include(c => c.Office)
+                .Where(a => !currentlyCheckedOutAssetIds.Contains(a.AssetID)) 
+                .ToList();
+
+            ViewBag.availableAssets = availableAssets;
+
+            return View();
+        }
+
+
+
+    }
+}
