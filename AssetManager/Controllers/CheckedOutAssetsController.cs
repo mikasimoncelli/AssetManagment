@@ -1,6 +1,7 @@
 ﻿using AssetManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq;
 
 namespace AssetManager.Controllers
@@ -103,6 +104,38 @@ namespace AssetManager.Controllers
 
             return RedirectToAction("Index");
         }
+
+
+
+        [HttpGet]
+        public IActionResult EditCheckedOutAsset(int checkedoutid)
+        {
+            var asset = _context.CheckedOutAssets
+                .Include(c => c.Asset)
+                .Include(c => c.User)
+                .Include(c=>c.Asset.Office)
+           .FirstOrDefault(c => c.CheckedOutID == checkedoutid);
+
+            Console.WriteLine($"Found CheckedOutAsset: {asset.CheckedOutID}");
+            return View(asset);
+
+        }
+
+
+
+        [HttpPost]
+        public IActionResult EditCheckedOutAsset(int CheckedOutID, DateTime DateReturned)
+        {
+            var asset = _context.CheckedOutAssets.FirstOrDefault(c => c.CheckedOutID == CheckedOutID);
+
+            asset.DateReturned = DateReturned;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+
 
 
 

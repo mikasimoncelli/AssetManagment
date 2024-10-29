@@ -44,7 +44,7 @@
                             <tbody>
                                 @foreach (var asset in equipmentGroup)
                                 {
-                                    <tr>
+                                        <tr onclick="window.location.href='@Url.Action("EditCheckedOutAsset", "CheckedOutAssets", new { checkedoutid = asset.CheckedOutID })'">
                                         <td>@asset.DateLentOut.ToString("yyyy-MM-dd")</td>
                                         <td>@asset.CheckedOutID</td>
                                         <td>@asset.Asset.EquipmentType</td>
