@@ -31,6 +31,8 @@ namespace AssetManager.Controllers
         }
 
 
+
+
         public IActionResult ReturnedAssets()
         {
             var returnedCheckedOutAssets = _context.CheckedOutAssets
@@ -46,8 +48,10 @@ namespace AssetManager.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult AddNewCheckedOutAsset()
+
+
+        
+        public IActionResult ViewAvailableAssets()
         {
             var currentlyCheckedOutAssetIds = _context.CheckedOutAssets
                 .GroupBy(c => c.AssetID)
@@ -63,6 +67,41 @@ namespace AssetManager.Controllers
             ViewBag.availableAssets = availableAssets;
 
             return View();
+        }
+
+
+        [HttpGet]
+        public IActionResult AddNewCheckedOutAsset(int id)
+        {
+            var asset = _context.Assets
+                .Include(a => a.Office)
+                .FirstOrDefault(a => a.AssetID == id);
+
+            ViewBag.users = _context.Users.ToList();
+
+            return View(asset);
+        }
+
+
+        [HttpPost]
+        public IActionResult AddNewCheckedOutAsset(int assetID, int userID)
+        {
+            var asset = _context.Assets.Find(assetID);
+            var user = _context.Users.Find(userID);
+
+            var checkedOutAsset = new CheckedOutAsset
+            {
+                AssetID = asset.AssetID,
+                UserID = user.UserID,
+                DateLentOut = System.DateTime.Now,
+                DateReturned = null
+
+            };
+
+            _context.CheckedOutAssets.Add(checkedOutAsset);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
 

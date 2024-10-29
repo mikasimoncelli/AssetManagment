@@ -1,111 +1,165 @@
-﻿@model IEnumerable<AssetManager.Models.CheckedOutAsset>
+﻿@model AssetManager.Models.Asset
+@{
+    var users = ViewBag.Users as List<User>;
+}
 
-<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
-    <h3 class="text-center mt-4 mb-4"></h3>
+<div class="center-wrapper">
+    <form method="post" action="@Url.Action("AddNewCheckedOutAsset", "CheckedOutAssets")">
+        <div class="form-container full-width">
+            <h4 class="text-center">Assign Equipment to Staff Member Below</h4>
+            <h5 class="text-center">@Model.Manufacturer - @Model.Description</h5>
+            <p class="text-center">Please double check all details are correct.</p>
 
-    <div class="row justify-content-center mb-3">
-        <div class="col-md-10">
-            <div class="input-group">
-                <input style="margin-right: 20px" type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="filterTables()" />
-                <div class="input-group-append">
-                    <button type="button" class="btn btn-warning" onclick="resetFilters()">Reset Search</button>
+            <h5 class="mt-4">Equipment Details</h5>
+            <div class="form-group row">
+                <div class="col-md-6">
+    <input type="hidden" name="assetID" value="@Model.AssetID" />
+    <input type="hidden" id="userID" name="UserID" />
+                    <label>Description:</label>
+                    <p class="form-control-plaintext">@Model.Description</p>
+                </div>
+                <div class="col-md-6">
+                    <label>Manufacturer:</label>
+                    <p class="form-control-plaintext">@Model.Manufacturer</p>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
-        <h3 class="text-center mt-4 mb-4">Available Assets</h3>
-
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="table-responsive">
-                    @foreach (var equipmentGroup in ((IEnumerable<Asset>)ViewBag.availableAssets).GroupBy(a => a.EquipmentType))
-                    {
-                        <h5 style="margin-top: 20px; text-decoration:none">@equipmentGroup.Key</h5> <!-- EquipmentType Header -->
-                        <table class="table table-bordered text-center table-sm asset-table">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th class="equal-width">Description</th>
-                                    <th class="equal-width">Serial Number</th>
-                                    <th class="equal-width">Asset Number</th>
-                                    <th class="equal-width">Office</th>
-                                    <th class="equal-width">Location</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var asset in equipmentGroup)
-                                {
-                                    <tr>
-                                        <td>@asset.Description</td>
-                                        <td>@asset.SerialNumber</td>
-                                        <td>@asset.AssetNumber</td>
-                                        <td>@asset.Office.OfficeName</td>
-                                        <td>@asset.Office.Location</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label>Asset Number:</label>
+                    <p class="form-control-plaintext">@Model.AssetNumber</p>
+                </div>
+                <div class="col-md-6">
+                    <label>Serial Number:</label>
+                    <p class="form-control-plaintext">@Model.SerialNumber</p>
                 </div>
             </div>
+
+            <h5 class="mt-4">Office Details</h5>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label>Office Name:</label>
+                    <p class="form-control-plaintext">@Model.Office?.OfficeName</p>
+                </div>
+                <div class="col-md-6">
+                    <label>Location:</label>
+                    <p class="form-control-plaintext">@Model.Office?.Location</p>
+                </div>
+            </div>
+
+            <h5 class="mt-4">Select User</h5>
+            <input type="text" id="userSearchInput" class="form-control" placeholder="Search for a user..." onkeyup="searchUsers()" />
+            <ul id="userList" class="list-group mt-2" style="display: none;">
+                @foreach (var user in users)
+                {
+                    <li class="list-group-item list-group-item-action"
+                        data-user-id="@user.UserID"
+                        data-first-name="@user.FirstName"
+                        data-last-name="@user.LastName"
+                        data-email="@user.Email"
+                        onclick="selectUser(this)">
+                        @user.FirstName @user.LastName
+                    </li>
+                }
+            </ul>
+
+            <div id="userDetails" class="mt-4" style="display: none;">
+                <h6>Selected User Details</h6>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label>First Name:</label>
+                        <p id="userFirstName" class="form-control-plaintext"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Last Name:</label>
+                        <p id="userLastName" class="form-control-plaintext"></p>
+                    </div>
+                    <div class="col-md-12">
+                        <label>Email:</label>
+                        <p id="userEmail" class="form-control-plaintext"></p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary mt-3" onclick="deselectUser()">Deselect User</button>
+            </div>
+
+            <button type="button" class="btn btn-warning btn-block mt-4" onclick="confirmSave()">Save Changes</button>
         </div>
-    </div>
+    </form>
 </div>
 
-<script>
-    // Global search function for all tables
-    function filterTables() {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        const tables = document.querySelectorAll('.asset-table tbody');
+@section Scripts {
+    <script>
+        function searchUsers() {
+            const searchInput = document.getElementById("userSearchInput").value.toLowerCase();
+            const userList = document.getElementById("userList");
+            const userListItems = userList.querySelectorAll("li");
 
-        tables.forEach(tableBody => {
-            const rows = tableBody.getElementsByTagName('tr');
+            userList.style.display = searchInput ? "block" : "none";
 
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                const cells = row.getElementsByTagName('td');
-                let showRow = false;
+            userListItems.forEach(item => {
+                const firstName = item.dataset.firstName.toLowerCase();
+                const lastName = item.dataset.lastName.toLowerCase();
+                const fullName = `${firstName} ${lastName}`;
+                item.style.display = fullName.includes(searchInput) ? "" : "none";
+            });
+        }
 
-                for (let j = 0; j < cells.length; j++) {
-                    const cell = cells[j];
-                    if (cell.textContent.toLowerCase().includes(searchInput)) {
-                        showRow = true;
-                        break;
-                    }
-                }
+        function selectUser(userElement) {
+            document.getElementById("userFirstName").textContent = userElement.dataset.firstName;
+            document.getElementById("userLastName").textContent = userElement.dataset.lastName;
+            document.getElementById("userEmail").textContent = userElement.dataset.email;
+            document.getElementById("userDetails").style.display = "block";
+            document.getElementById("userSearchInput").value = "";
+            document.getElementById("userList").style.display = "none";
 
-                row.style.display = showRow ? '' : 'none';
+            document.getElementById("userID").value = userElement.dataset.userId;
+
+        }
+
+        function deselectUser() {
+            document.getElementById("userFirstName").textContent = "";
+            document.getElementById("userLastName").textContent = "";
+            document.getElementById("userEmail").textContent = "";
+            document.getElementById("userDetails").style.display = "none";
+            document.getElementById("userSearchInput").value = "";
+            document.getElementById("userList").style.display = "none";
+        }
+
+        function confirmSave(){
+            const userConfirmed = confirm("Are you sure you want to save this asset as checked-out?");
+            if(userConfirmed){
+                alert("Checked-out asset saved successfully");
+                document.querySelector("form").submit();
             }
-        });
-    }
-
-    // Reset search function
-    function resetFilters() {
-        document.getElementById('searchInput').value = '';
-        filterTables(); // Show all rows in all tables
-    }
-</script>
+        }
+    </script>
+}
 
 <style>
-    /* Equal width for all columns */
-    .equal-width {
-        width: 20%; /* Divide equally (100% / number of columns) */
+    .center-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 25px;
+        padding-top: 25px;
     }
 
-    tr {
+    .form-container.full-width {
+        padding: 30px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+    }
+
+    .list-group-item {
         cursor: pointer;
     }
 
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-
-    th {
-        cursor: pointer;
+    .list-group-item:hover {
+        background-color: #e9ecef;
     }
 
-        th:hover {
-            background-color: #dcdcdc;
-        }
+    label {
+        font-weight: bold;
+    }
 </style>

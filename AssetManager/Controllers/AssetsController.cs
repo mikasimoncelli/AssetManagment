@@ -77,7 +77,10 @@ public class AssetsController : Controller
     [HttpGet]
     public IActionResult EditAsset(int id)
     {
-        var asset = _context.Assets.Include(a => a.Office).FirstOrDefault(a => a.AssetID == id);
+        var asset = _context.Assets
+            .Include(a => a.Office)
+            .FirstOrDefault(a => a.AssetID == id);
+
         if (asset == null)
         {
             return NotFound();
