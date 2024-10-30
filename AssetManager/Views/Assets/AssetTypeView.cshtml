@@ -1,5 +1,238 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model List<AssetManager.Models.Asset>
+
+<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
+    <h3 class="text-center mt-4 mb-4">Assets - @Model.FirstOrDefault()?.EquipmentType</h3>
+
+    <!-- Global Search and Reset Filters -->
+    <div class="row justify-content-center mb-3">
+        <div class="col-md-10">
+            <div class="input-group mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" style="margin-right: 20px;" />
+                <button type="button" class="btn btn-primary" onclick="resetAllFilters()">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="table-responsive">
+                <table class="table table-bordered text-center table-sm assetTable">
+                    <thead>
+                        <tr>
+                            <th>AssetID</th>
+                            <th onclick="applySort(this, 1)">Description</th>
+                            <th onclick="applySort(this, 2)">Manufacturer</th>
+                            <th onclick="applySort(this, 3)">Asset Number</th>
+                            <th onclick="applySort(this, 4)">Serial Number</th>
+                            <th onclick="applySort(this, 5)">Office Name</th>
+                            <th onclick="applySort(this, 6)">Office Location</th>
+                        </tr>
+                        <!-- Filter Row -->
+                        <tr>
+                            <th></th> <!-- No filter for AssetID -->
+                            <th>
+                                <select onchange="applyColumnFilter(this, 1)">
+                                    <option value="">All</option>
+                                    @foreach (var description in Model.Select(a => a.Description).Distinct())
+                                    {
+                                        <option value="@description">@description</option>
+                                    }
+                                </select>
+                            </th>
+                            <th>
+                                <select onchange="applyColumnFilter(this, 2)">
+                                    <option value="">All</option>
+                                    @foreach (var manufacturer in Model.Select(a => a.Manufacturer).Distinct())
+                                    {
+                                        <option value="@manufacturer">@manufacturer</option>
+                                    }
+                                </select>
+                            </th>
+                            <th>
+                                <select onchange="applyColumnFilter(this, 3)">
+                                    <option value="">All</option>
+                                    @foreach (var assetNumber in Model.Select(a => a.AssetNumber).Distinct())
+                                    {
+                                        <option value="@assetNumber">@assetNumber</option>
+                                    }
+                                </select>
+                            </th>
+                            <th>
+                                <select onchange="applyColumnFilter(this, 4)">
+                                    <option value="">All</option>
+                                    @foreach (var serialNumber in Model.Select(a => a.SerialNumber).Distinct())
+                                    {
+                                        <option value="@serialNumber">@serialNumber</option>
+                                    }
+                                </select>
+                            </th>
+                            <th>
+                                <select onchange="applyColumnFilter(this, 5)">
+                                    <option value="">All</option>
+                                    @foreach (var officeName in Model.Select(a => a.Office.OfficeName).Distinct())
+                                    {
+                                        <option value="@officeName">@officeName</option>
+                                    }
+                                </select>
+                            </th>
+                            <th>
+                                <select onchange="applyColumnFilter(this, 6)">
+                                    <option value="">All</option>
+                                    @foreach (var location in Model.Select(a => a.Office.Location).Distinct())
+                                    {
+                                        <option value="@location">@location</option>
+                                    }
+                                </select>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var asset in Model)
+                        {
+                            <tr onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = asset.AssetID })'">
+                                <td>@asset.AssetID</td>
+                                <td>@asset.Description</td>
+                                <td>@asset.Manufacturer</td>
+                                <td>@asset.AssetNumber</td>
+                                <td>@asset.SerialNumber</td>
+                                <td>@asset.Office.OfficeName</td>
+                                <td>@asset.Office.Location</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const filterValues = {};
+
+    function applyGlobalSearch() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll(".assetTable tbody tr").forEach(row => {
+            const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(" ");
+            row.style.display = rowText.includes(searchValue) ? "" : "none";
+        });
+
+        document.querySelectorAll(".assetTable").forEach(table => updateFilterOptions(table));
+    }
+
+    function applyColumnFilter(select, columnIndex) {
+        const table = select.closest("table");
+        const filterValue = select.value.toLowerCase();
+
+        if (filterValue === "") {
+            delete filterValues[columnIndex];
+        } else {
+            filterValues[columnIndex] = filterValue;
+        }
+
+        applyAllFilters(table);
+    }
+
+    function applyAllFilters(table) {
+        const tableBody = table.querySelector("tbody");
+
+        Array.from(tableBody.getElementsByTagName("tr")).forEach(row => {
+            let isVisible = true;
+
+            for (const [columnIndex, value] of Object.entries(filterValues)) {
+                const cellText = row.cells[columnIndex].textContent.toLowerCase();
+                if (!cellText.includes(value)) {
+                    isVisible = false;
+                    break;
+                }
+            }
+
+            row.style.display = isVisible ? "" : "none";
+        });
+
+        updateFilterOptions(table);
+    }
+
+    function updateFilterOptions(table) {
+        const tableBody = table.querySelector("tbody");
+        const visibleRows = Array.from(tableBody.getElementsByTagName("tr")).filter(row => row.style.display !== "none");
+
+        Array.from(table.querySelectorAll("thead select")).forEach((select, index) => {
+            const columnIndex = index + 1;
+            const uniqueValues = new Set(visibleRows.map(row => row.cells[columnIndex].textContent.trim()));
+            const currentSelection = select.value;
+
+            select.innerHTML = '<option value="">All</option>';
+
+            uniqueValues.forEach(value => {
+                const option = document.createElement("option");
+                option.value = value;
+                option.textContent = value;
+                select.appendChild(option);
+            });
+
+            if (uniqueValues.has(currentSelection)) {
+                select.value = currentSelection;
+            } else {
+                select.value = "";
+            }
+        });
+    }
+
+    function applySort(header, columnIndex) {
+        const tableBody = header.closest("table").querySelector("tbody");
+        let rows = Array.from(tableBody.getElementsByTagName("tr"));
+        const direction = header.getAttribute("data-sort") === "asc" ? "desc" : "asc";
+
+        header.setAttribute("data-sort", direction);
+
+        rows.sort((a, b) => {
+            const cellA = a.cells[columnIndex].textContent.trim().toLowerCase();
+            const cellB = b.cells[columnIndex].textContent.trim().toLowerCase();
+
+            if (direction === "asc") {
+                return cellA > cellB ? 1 : cellA < cellB ? -1 : 0;
+            } else {
+                return cellA < cellB ? 1 : cellA > cellB ? -1 : 0;
+            }
+        });
+
+        rows.forEach(row => tableBody.appendChild(row));
+        updateFilterOptions(header.closest("table"));
+    }
+
+    function resetAllFilters() {
+        document.getElementById('searchInput').value = '';
+        document.querySelectorAll(".assetTable tbody tr").forEach(row => row.style.display = "");
+        document.querySelectorAll(".assetTable select").forEach(select => select.value = "");
+
+        Object.keys(filterValues).forEach(key => delete filterValues[key]);
+        document.querySelectorAll(".assetTable").forEach(table => updateFilterOptions(table));
+    }
+</script>
+
+<style>
+    h3 {
+        color: #343a40;
+        font-weight: bold;
+    }
+
+    th, td {
+        width: 14.3%;
+    }
+
+    tr {
+        cursor: pointer;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    th {
+        cursor: pointer;
+    }
+
+    th:hover {
+        background-color: #dcdcdc;
+    }
+</style>

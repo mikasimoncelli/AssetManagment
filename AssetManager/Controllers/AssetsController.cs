@@ -140,4 +140,13 @@ public class AssetsController : Controller
     }
 
 
+
+
+    public IActionResult AssetTypeView(string equipmentType)
+    {
+        var assetsByType = _context.Assets.Where(a => a.EquipmentType == equipmentType);
+        return View(assetsByType); // Ensure you have a "FilteredAssets" view to display these
+    }
+
+
 }

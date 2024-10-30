@@ -13,18 +13,27 @@
         </div>
     </div>
 
-                @foreach (var group in Model.GroupBy(a => a.EquipmentType))
-    {
-        <label>@group.Key</label>
-    }
-
+    <!-- Dropdown to Select Equipment Type and View Button -->
+    <div class="row justify-content-center mb-3">
+        <div class="col-md-4">
+            <div class="input-group mb-3">
+                <select id="equipmentTypeDropdown" class="form-control">
+                    <option value="">Select Equipment Type</option>
+                    @foreach (var type in Model.Select(a => a.EquipmentType).Distinct())
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </select>
+                <button type="button" class="btn btn-primary" onclick="showSelectedType()">View</button>
+            </div>
+        </div>
+    </div>
 
     <div class="row justify-content-center">
         <div class="col-md-10">
             @foreach (var group in Model.GroupBy(a => a.EquipmentType))
             {
-
-                <div class="equipment-type-section">
+                <div class="equipment-type-section" data-type="@group.Key">
                     <!-- Equipment Type Header -->
                     <h4 class="text-center mt-4 mb-3">@group.Key</h4>
                     <div class="table-responsive">
@@ -120,9 +129,16 @@
     </div>
 
 <script>
-    // Store the selected filter values for each column
     const filterValues = {};
-</div>
+
+    function showSelectedType() {
+        const selectedType = document.getElementById("equipmentTypeDropdown").value;
+
+        // Show all sections if no type is selected
+        document.querySelectorAll(".equipment-type-section").forEach(section => {
+            section.style.display = selectedType && section.getAttribute("data-type") !== selectedType ? "none" : "block";
+        });
+    }
 
     function applyGlobalSearch() {
         const searchValue = document.getElementById('searchInput').value.toLowerCase();
@@ -131,13 +147,11 @@
             row.style.display = rowText.includes(searchValue) ? "" : "none";
         });
 
-        // Hide empty tables after search
         document.querySelectorAll(".equipment-type-section").forEach(section => {
             const visibleRows = section.querySelector("tbody tr:not([style*='display: none'])");
-            section.style.display = visibleRows ? "" : "none";
+            section.style.display = visibleRows ? "block" : "none";
         });
 
-        // Update all filter dropdowns based on the visible rows after search
         document.querySelectorAll(".assetTable").forEach(table => updateFilterOptions(table));
     }
 
@@ -145,14 +159,12 @@
         const table = select.closest("table");
         const filterValue = select.value.toLowerCase();
 
-        // Store or reset the filter value for this column
         if (filterValue === "") {
-            delete filterValues[columnIndex]; // Clear the filter if "All" is selected
+            delete filterValues[columnIndex];
         } else {
-            filterValues[columnIndex] = filterValue; // Store the selected filter value
+            filterValues[columnIndex] = filterValue;
         }
 
-        // Apply all active filters, including this one
         applyAllFilters(table);
     }
 
@@ -160,26 +172,23 @@
         const tableBody = table.querySelector("tbody");
 
         Array.from(tableBody.getElementsByTagName("tr")).forEach(row => {
-            // Check if the row matches all active filters
             let isVisible = true;
 
             for (const [columnIndex, value] of Object.entries(filterValues)) {
                 const cellText = row.cells[columnIndex].textContent.toLowerCase();
-                if (!cellText.includes(value)) {
+                if (value && !cellText.includes(value)) {
                     isVisible = false;
                     break;
                 }
             }
 
-            row.style.display = isVisible ? "" : "none"; // Show or hide the row based on filter match
+            row.style.display = isVisible ? "" : "none";
         });
 
-        // Hide the equipment type section if no rows are visible
         const section = table.closest(".equipment-type-section");
         const visibleRows = tableBody.querySelector("tr:not([style*='display: none'])");
-        section.style.display = visibleRows ? "" : "none";
+        section.style.display = visibleRows ? "block" : "none";
 
-        // Update filter options based on visible rows
         updateFilterOptions(table);
     }
 
@@ -187,13 +196,12 @@
         const tableBody = table.querySelector("tbody");
         const visibleRows = Array.from(tableBody.getElementsByTagName("tr")).filter(row => row.style.display !== "none");
 
-        // Update each filter dropdown based on visible row values, considering the offset caused by AssetID
         Array.from(table.querySelectorAll("thead select")).forEach((select, index) => {
-            const columnIndex = index + 1; // Offset to skip AssetID
+            const columnIndex = index + 1;
             const uniqueValues = new Set(visibleRows.map(row => row.cells[columnIndex].textContent.trim()));
             const currentSelection = select.value;
 
-            select.innerHTML = '<option value="">All</option>'; // Reset options
+            select.innerHTML = '<option value="">All</option>';
 
             uniqueValues.forEach(value => {
                 const option = document.createElement("option");
@@ -202,11 +210,10 @@
                 select.appendChild(option);
             });
 
-            // Re-select the previously selected option if it's still available
             if (uniqueValues.has(currentSelection)) {
                 select.value = currentSelection;
             } else {
-                select.value = ""; // Reset if previous selection isn't available
+                select.value = "";
             }
         });
     }
@@ -222,29 +229,20 @@
             const cellA = a.cells[columnIndex].textContent.trim().toLowerCase();
             const cellB = b.cells[columnIndex].textContent.trim().toLowerCase();
 
-            if (direction === "asc") {
-                return cellA > cellB ? 1 : cellA < cellB ? -1 : 0;
-            } else {
-                return cellA < cellB ? 1 : cellA > cellB ? -1 : 0;
-            }
+            return direction === "asc" ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
         });
 
         rows.forEach(row => tableBody.appendChild(row));
-
-        // Update filter options after sorting
         updateFilterOptions(header.closest("table"));
     }
 
     function resetAllFilters() {
         document.getElementById('searchInput').value = '';
         document.querySelectorAll(".assetTable tbody tr").forEach(row => row.style.display = "");
-        document.querySelectorAll(".equipment-type-section").forEach(section => section.style.display = "");
+        document.querySelectorAll(".equipment-type-section").forEach(section => section.style.display = "block");
         document.querySelectorAll(".assetTable select").forEach(select => select.value = "");
 
-        // Clear all stored filter values
         Object.keys(filterValues).forEach(key => delete filterValues[key]);
-
-        // Update all filter dropdowns based on all data
         document.querySelectorAll(".assetTable").forEach(table => updateFilterOptions(table));
     }
 </script>
@@ -263,22 +261,22 @@
     }
 
     th, td {
-        width: 14.3%; /* Equal width for all columns */
+        width: 14.3%;
     }
 
     tr {
         cursor: pointer;
     }
 
-        tr:hover {
-            background-color: #f5f5f5;
-        }
+    tr:hover {
+        background-color: #f5f5f5;
+    }
 
     th {
         cursor: pointer;
     }
 
-        th:hover {
-            background-color: #dcdcdc;
-        }
+    th:hover {
+        background-color: #dcdcdc;
+    }
 </style>
