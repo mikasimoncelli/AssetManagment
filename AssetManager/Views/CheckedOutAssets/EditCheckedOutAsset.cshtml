@@ -63,7 +63,7 @@
             <div class="form-group row">
                 <div class="col-md-6">
                     <label for="DueDate">Due Date:</label>
-                    <input type="date" class="form-control" id="DueDate" name="DueDate"/>
+                    <input type="date" class="form-control" id="DueDate" name="DueDate" value="@Model.DueDate?.ToString("yyyy-MM-dd")" />
                 </div>
                 <div class="col-md-6">
                     <label for="DateReturned">Date Returned:</label>

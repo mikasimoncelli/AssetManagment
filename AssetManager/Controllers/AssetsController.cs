@@ -127,6 +127,16 @@ public class AssetsController : Controller
         return RedirectToAction("Index");
 
 
+
+
+
+
+    }
+
+
+    public IActionResult AssetDamages()
+    {
+        return View();
     }
 
 

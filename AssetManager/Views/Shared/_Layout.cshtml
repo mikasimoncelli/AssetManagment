@@ -6,69 +6,6 @@
     <title>@ViewData["Title"] - Asset</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <style>
-        .list-unstyled .link-dark {
-            font-size: 16px; 
-            font-weight: normal; 
-            color: black; 
-            text-decoration: none; 
-        }
-
-            .list-unstyled .link-dark:hover {
-                background-color: #007bff; 
-                color: white; 
-            }
-
-        .btn-toggle {
-            background-color: transparent;
-            border: none;
-            font-size: 16px; 
-            font-weight: bold;
-            color: black;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            text-align: left;
-            padding: 0; 
-            outline: none;
-        }
-
-            .btn-toggle:focus {
-                outline: none; 
-            }
-
-            .btn-toggle::before {
-                content: "\27A4"; 
-                font-size: 20px; 
-                margin-right: 10px; 
-                transition: transform 0.3s;
-                color: black; 
-            }
-
-            
-            .btn-toggle[aria-expanded="true"]::before {
-                content: "\25BC"; 
-                transform: rotate(0);
-            }
-
-            .btn-toggle:hover {
-                background-color: #007bff;
-                color: white; 
-            }
-
-                .btn-toggle:hover::before {
-                    color: white; 
-                }
-
-        #home-toggle.btn-toggle::before {
-            content: ""; 
-        }
-
-        .sidebar {
-            position: relative;
-            height: 100vh;
-        }
-    </style>
 </head>
 
 <body>
@@ -88,15 +25,17 @@
                     </a>
                 </li>
 
-
                 <li class="mb-1">
                     <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false">
                         Manage Assets
                     </button>
                     <div class="collapse" id="assets-collapse">
-                        <ul class="list-unstyled fw-normal pb-1 small">
+                        <ul class="list-unstyled fw-normal pt-2">
                             <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
                             <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
+                            <li><a asp-controller="Assets" asp-action="AssetDamages" class="link-dark rounded">Asset Damages</a></li>
+
+
                         </ul>
                     </div>
                 </li>
@@ -106,12 +45,10 @@
                         Checked-Out Assets
                     </button>
                     <div class="collapse" id="checkedout-collapse">
-                        <ul class="list-unstyled fw-normal pb-1 small">
+                        <ul class="list-unstyled fw-normal pt-2">
                             <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">Check-out Asset</a></li>
                             <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">Assets On Loan</a></li>
                             <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">Returned Assets</a></li>
-
-
                         </ul>
                     </div>
                 </li>
@@ -121,7 +58,7 @@
                         Manage Users
                     </button>
                     <div class="collapse" id="users-collapse">
-                        <ul class="list-unstyled fw-normal pb-1 small">
+                        <ul class="list-unstyled fw-normal pt-2">
                             <li><a asp-controller="Users" asp-action="Index" class="link-dark rounded">View All Users</a></li>
                             <li><a asp-controller="Users" asp-action="AddUser" class="link-dark rounded">Add New User</a></li>
                         </ul>
@@ -161,7 +98,7 @@
                     var bsCollapse = new bootstrap.Collapse(collapseElement, {
                         toggle: false
                     });
-                    bsCollapse.show(); 
+                    bsCollapse.show();
                 }
 
                 button.addEventListener('click', function () {
@@ -174,4 +111,104 @@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
+<style>
+    /* Sidebar Link Styles */
+    .list-unstyled .link-dark {
+        font-size: 18px; /* Larger font for submenu */
+        font-weight: normal;
+        color: black;
+        text-decoration: none;
+    }
+
+        .list-unstyled .link-dark:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+    /* Sidebar Button Styles */
+    .btn-toggle {
+        background-color: transparent;
+        border: none;
+        font-size: 18px; /* Increased font size */
+        font-weight: bold;
+        color: black;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        text-align: left;
+        padding: 8px 0;
+        outline: none;
+    }
+
+        .btn-toggle:focus {
+            outline: none; /* Removes blue border on click */
+            box-shadow: none; /* Removes any focus outline */
+        }
+
+        .btn-toggle::before {
+            content: "\27A4";
+            font-size: 20px;
+            margin-right: 10px;
+            transition: transform 0.3s;
+            color: black;
+        }
+
+        .btn-toggle[aria-expanded="true"]::before {
+            content: "\25BC";
+        }
+
+        .btn-toggle:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+            .btn-toggle:hover::before {
+                color: white;
+            }
+
+    #home-toggle.btn-toggle::before {
+        content: "";
+    }
+
+    /* Sidebar */
+    .sidebar {
+        position: relative;
+        height: 100vh;
+    }
+
+    /* Spacing and style adjustments for submenu items */
+    .list-unstyled.fw-normal.pt-2 li a {
+        padding: 5px 15px;
+        font-size: 16px; /* Slightly larger submenu items */
+        display: block;
+        text-decoration: none;
+    }
+
+    /* Footer Styles */
+    footer {
+        background-color: #f8f9fa;
+        padding: 10px;
+        text-align: center;
+        width: 100%;
+        margin-top: auto;
+    }
+
+    .social-icons a {
+        margin: 0 5px;
+        color: #333;
+        text-decoration: none;
+    }
+
+        .social-icons a:hover {
+            color: #007bff;
+        }
+
+    .list-unstyled > li {
+        border-bottom: 1px solid #ddd; /* Light gray line */
+        padding-bottom: 10px; /* Space between item content and border */
+        margin-bottom: 10px; /* Space below each item */
+    }
+
+</style>
 </html>
