@@ -1,33 +1,39 @@
-﻿@model List<AssetManager.Models.Asset>
+﻿
+@model List<AssetManager.Models.Asset>
 
 <div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
-    <h3 class="text-center mt-4 mb-4">View All Assets</h3>
+    <h2 class="text-center mt-4 mb-4"><u>All Assets</u></h2>
+    <p class="text-center">View all assets in inventory below. Use filter and search to refine your results.</p>
 
-    <!-- Global Search and Reset Filters -->
-    <div class="row justify-content-center mb-3">
+
+    <!-- Unified Container for Filter and Search, perfectly aligned with table -->
+
+    <div class="row justify-content-center">
+
         <div class="col-md-10">
+            <!-- Filter Dropdown aligned with left edge of table -->
+            <h6 for="equipmentTypeDropdown" class="form-label">Filter Types:</h6>
+            <select id="equipmentTypeDropdown" class="form-control mb-3" onchange="showSelectedType()">
+                <option value="">Select Equipment Type</option>
+                @foreach (var type in Model.Select(a => a.EquipmentType).Distinct())
+                {
+                    <option value="@type">@type</option>
+                }
+            </select>
+
+            <!-- Search Bar and Reset Button, also aligned with table edge -->
+            <h6 for="searchInput" class="form-label">Search for Asset:</h6>
             <div class="input-group mb-3">
-                <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" style="margin-right: 20px;" />
-                <button type="button" class="btn btn-primary" onclick="resetAllFilters()">Reset</button>
+                <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" />
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-primary" onclick="resetAllFilters()">Reset</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Dropdown to Select Equipment Type and View Button -->
-    <div class="row justify-content-center mb-3">
-        <div class="col-md-4">
-            <div class="input-group mb-3">
-                <select id="equipmentTypeDropdown" class="form-control">
-                    <option value="">Select Equipment Type</option>
-                    @foreach (var type in Model.Select(a => a.EquipmentType).Distinct())
-                    {
-                        <option value="@type">@type</option>
-                    }
-                </select>
-                <button type="button" class="btn btn-primary" onclick="showSelectedType()">View</button>
-            </div>
-        </div>
-    </div>
+
+
 
     <div class="row justify-content-center">
         <div class="col-md-10">
@@ -37,9 +43,9 @@
                     <!-- Equipment Type Header -->
                     <h4 class="text-center mt-4 mb-3">@group.Key</h4>
                     <div class="table-responsive">
-                        <table class="table table-bordered text-center table-sm assetTable">
+                        <table class="table text-center table-sm assetTable">
                             <thead class="thead-dark">
-                                <tr>
+                                <tr style="background-color: purple; color: #fff;">
                                     <th>AssetID</th>
                                     <th onclick="applySort(this, 1)">Description</th>
                                     <th onclick="applySort(this, 2)">Manufacturer</th>
@@ -128,155 +134,171 @@
         </div>
     </div>
 
-<script>
-    const filterValues = {};
 
-    function showSelectedType() {
-        const selectedType = document.getElementById("equipmentTypeDropdown").value;
 
-        // Show all sections if no type is selected
-        document.querySelectorAll(".equipment-type-section").forEach(section => {
-            section.style.display = selectedType && section.getAttribute("data-type") !== selectedType ? "none" : "block";
-        });
-    }
+    <script>
+        const filterValues = {};
 
-    function applyGlobalSearch() {
-        const searchValue = document.getElementById('searchInput').value.toLowerCase();
-        document.querySelectorAll(".assetTable tbody tr").forEach(row => {
-            const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(" ");
-            row.style.display = rowText.includes(searchValue) ? "" : "none";
-        });
+        function showSelectedType() {
+            const selectedType = document.getElementById("equipmentTypeDropdown").value;
 
-        document.querySelectorAll(".equipment-type-section").forEach(section => {
-            const visibleRows = section.querySelector("tbody tr:not([style*='display: none'])");
-            section.style.display = visibleRows ? "block" : "none";
-        });
-
-        document.querySelectorAll(".assetTable").forEach(table => updateFilterOptions(table));
-    }
-
-    function applyColumnFilter(select, columnIndex) {
-        const table = select.closest("table");
-        const filterValue = select.value.toLowerCase();
-
-        if (filterValue === "") {
-            delete filterValues[columnIndex];
-        } else {
-            filterValues[columnIndex] = filterValue;
+            // Show all sections if no type is selected
+            document.querySelectorAll(".equipment-type-section").forEach(section => {
+                section.style.display = selectedType && section.getAttribute("data-type") !== selectedType ? "none" : "block";
+            });
         }
 
-        applyAllFilters(table);
-    }
-
-    function applyAllFilters(table) {
-        const tableBody = table.querySelector("tbody");
-
-        Array.from(tableBody.getElementsByTagName("tr")).forEach(row => {
-            let isVisible = true;
-
-            for (const [columnIndex, value] of Object.entries(filterValues)) {
-                const cellText = row.cells[columnIndex].textContent.toLowerCase();
-                if (value && !cellText.includes(value)) {
-                    isVisible = false;
-                    break;
-                }
-            }
-
-            row.style.display = isVisible ? "" : "none";
-        });
-
-        const section = table.closest(".equipment-type-section");
-        const visibleRows = tableBody.querySelector("tr:not([style*='display: none'])");
-        section.style.display = visibleRows ? "block" : "none";
-
-        updateFilterOptions(table);
-    }
-
-    function updateFilterOptions(table) {
-        const tableBody = table.querySelector("tbody");
-        const visibleRows = Array.from(tableBody.getElementsByTagName("tr")).filter(row => row.style.display !== "none");
-
-        Array.from(table.querySelectorAll("thead select")).forEach((select, index) => {
-            const columnIndex = index + 1;
-            const uniqueValues = new Set(visibleRows.map(row => row.cells[columnIndex].textContent.trim()));
-            const currentSelection = select.value;
-
-            select.innerHTML = '<option value="">All</option>';
-
-            uniqueValues.forEach(value => {
-                const option = document.createElement("option");
-                option.value = value;
-                option.textContent = value;
-                select.appendChild(option);
+        function applyGlobalSearch() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll(".assetTable tbody tr").forEach(row => {
+                const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(" ");
+                row.style.display = rowText.includes(searchValue) ? "" : "none";
             });
 
-            if (uniqueValues.has(currentSelection)) {
-                select.value = currentSelection;
+            document.querySelectorAll(".equipment-type-section").forEach(section => {
+                const visibleRows = section.querySelector("tbody tr:not([style*='display: none'])");
+                section.style.display = visibleRows ? "block" : "none";
+            });
+
+            document.querySelectorAll(".assetTable").forEach(table => updateFilterOptions(table));
+        }
+
+        function applyColumnFilter(select, columnIndex) {
+            const table = select.closest("table");
+            const filterValue = select.value.toLowerCase();
+
+            if (filterValue === "") {
+                delete filterValues[columnIndex];
             } else {
-                select.value = "";
+                filterValues[columnIndex] = filterValue;
             }
-        });
-    }
 
-    function applySort(header, columnIndex) {
-        const tableBody = header.closest("table").querySelector("tbody");
-        let rows = Array.from(tableBody.getElementsByTagName("tr"));
-        const direction = header.getAttribute("data-sort") === "asc" ? "desc" : "asc";
+            applyAllFilters(table);
+        }
 
-        header.setAttribute("data-sort", direction);
+        function applyAllFilters(table) {
+            const tableBody = table.querySelector("tbody");
 
-        rows.sort((a, b) => {
-            const cellA = a.cells[columnIndex].textContent.trim().toLowerCase();
-            const cellB = b.cells[columnIndex].textContent.trim().toLowerCase();
+            Array.from(tableBody.getElementsByTagName("tr")).forEach(row => {
+                let isVisible = true;
 
-            return direction === "asc" ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
-        });
+                for (const [columnIndex, value] of Object.entries(filterValues)) {
+                    const cellText = row.cells[columnIndex].textContent.toLowerCase();
+                    if (value && !cellText.includes(value)) {
+                        isVisible = false;
+                        break;
+                    }
+                }
 
-        rows.forEach(row => tableBody.appendChild(row));
-        updateFilterOptions(header.closest("table"));
-    }
+                row.style.display = isVisible ? "" : "none";
+            });
 
-    function resetAllFilters() {
-        document.getElementById('searchInput').value = '';
-        document.querySelectorAll(".assetTable tbody tr").forEach(row => row.style.display = "");
-        document.querySelectorAll(".equipment-type-section").forEach(section => section.style.display = "block");
-        document.querySelectorAll(".assetTable select").forEach(select => select.value = "");
+            const section = table.closest(".equipment-type-section");
+            const visibleRows = tableBody.querySelector("tr:not([style*='display: none'])");
+            section.style.display = visibleRows ? "block" : "none";
 
-        Object.keys(filterValues).forEach(key => delete filterValues[key]);
-        document.querySelectorAll(".assetTable").forEach(table => updateFilterOptions(table));
-    }
-</script>
+            updateFilterOptions(table);
+        }
 
-<style>
-    .equipment-type-section {
-        margin-bottom: 30px;
-    }
+        function updateFilterOptions(table) {
+            const tableBody = table.querySelector("tbody");
+            const visibleRows = Array.from(tableBody.getElementsByTagName("tr")).filter(row => row.style.display !== "none");
 
-    h4 {
-        color: #333;
-        font-weight: bold;
-        border-bottom: 2px solid #007bff;
-        padding-bottom: 5px;
-        margin-bottom: 20px;
-    }
+            Array.from(table.querySelectorAll("thead select")).forEach((select, index) => {
+                const columnIndex = index + 1;
+                const uniqueValues = new Set(visibleRows.map(row => row.cells[columnIndex].textContent.trim()));
+                const currentSelection = select.value;
 
-    th, td {
-        width: 14.3%;
-    }
+                select.innerHTML = '<option value="">All</option>';
 
-    tr {
-        cursor: pointer;
-    }
+                uniqueValues.forEach(value => {
+                    const option = document.createElement("option");
+                    option.value = value;
+                    option.textContent = value;
+                    select.appendChild(option);
+                });
 
-    tr:hover {
-        background-color: #f5f5f5;
-    }
+                if (uniqueValues.has(currentSelection)) {
+                    select.value = currentSelection;
+                } else {
+                    select.value = "";
+                }
+            });
+        }
 
-    th {
-        cursor: pointer;
-    }
+        function applySort(header, columnIndex) {
+            const tableBody = header.closest("table").querySelector("tbody");
+            let rows = Array.from(tableBody.getElementsByTagName("tr"));
+            const direction = header.getAttribute("data-sort") === "asc" ? "desc" : "asc";
 
-    th:hover {
-        background-color: #dcdcdc;
-    }
-</style>
+            header.setAttribute("data-sort", direction);
+
+            rows.sort((a, b) => {
+                const cellA = a.cells[columnIndex].textContent.trim().toLowerCase();
+                const cellB = b.cells[columnIndex].textContent.trim().toLowerCase();
+
+                return direction === "asc" ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+            });
+
+            rows.forEach(row => tableBody.appendChild(row));
+            updateFilterOptions(header.closest("table"));
+        }
+
+        function resetAllFilters() {
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll(".assetTable tbody tr").forEach(row => row.style.display = "");
+            document.querySelectorAll(".equipment-type-section").forEach(section => section.style.display = "block");
+            document.querySelectorAll(".assetTable select").forEach(select => select.value = "");
+
+            Object.keys(filterValues).forEach(key => delete filterValues[key]);
+            document.querySelectorAll(".assetTable").forEach(table => updateFilterOptions(table));
+        }
+    </script>
+
+    <style>
+        .equipment-type-section {
+            margin-bottom: 30px;
+            border: solid;
+        }
+
+        h4 {
+            color: #333;
+            font-weight: bold;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            width: 14.3%;
+        }
+
+        tr {
+            cursor: pointer;
+        }
+
+            tr:hover {
+                background-color: #f5f5f5;
+            }
+
+        th {
+            cursor: pointer;
+        }
+
+        .assetTable th {
+            border: none;
+        }
+
+        thead {
+        }
+
+        th:hover {
+            background-color: #dcdcdc;
+        }
+
+        .equipment-type-section {
+            margin-bottom: 30px;
+            padding: 15px; /* Optional: adds some spacing */
+            border-radius: 5px; /* Optional: rounds the corners slightly */
+        }
+
+    </style>

@@ -11,8 +11,6 @@ public class AssetsController : Controller
     }
 
 
-
-
     public IActionResult Index()
     {
         var assetsWithOffices = _context.Assets
@@ -23,19 +21,10 @@ public class AssetsController : Controller
     }
 
 
-
-
-
-
-
-
-
     public IActionResult CheckoutAsset()
     {
         return View();
     }
-
-
 
 
     [HttpGet]
@@ -48,7 +37,6 @@ public class AssetsController : Controller
     .ToList();
         return View();
     }
-
 
 
     [HttpPost]
@@ -71,7 +59,6 @@ public class AssetsController : Controller
 
         return RedirectToAction("Index");
     }
-
 
 
     [HttpGet]
@@ -125,19 +112,9 @@ public class AssetsController : Controller
         }
 
         return RedirectToAction("Index");
-
-
-
-
-
-
     }
 
 
-    public IActionResult AssetDamages()
-    {
-        return View();
-    }
 
 
 
@@ -147,6 +124,42 @@ public class AssetsController : Controller
         var assetsByType = _context.Assets.Where(a => a.EquipmentType == equipmentType);
         return View(assetsByType); // Ensure you have a "FilteredAssets" view to display these
     }
+
+
+    [HttpGet]
+    public IActionResult AssetDamages(int assetID)
+    {
+        var asset = _context.Assets
+            .Include(a => a.Office)
+            .FirstOrDefault(a => a.AssetID == assetID);
+
+
+        return View(asset);
+    }
+
+
+ 
+
+    [HttpPost]
+    public IActionResult AssetDamages(AssetDamage model)
+    {
+        var assetDamage = new AssetDamage
+        {
+            AssetID = model.AssetID,
+            DamageDescription = model.DamageDescription,
+            Notes = model.Notes,
+            RepairStatus = model.RepairStatus,
+        };
+
+        _context.AssetDamages.Add(assetDamage);
+        _context.SaveChanges();
+
+        return RedirectToAction("AssetDamages");
+    }
+
+
+
+
 
 
 }

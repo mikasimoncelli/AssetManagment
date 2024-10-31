@@ -210,5 +210,22 @@
         margin-bottom: 10px; /* Space below each item */
     }
 
+    /* Removes the border on the last submenu item in each list */
+    .list-unstyled.fw-normal.pt-2 li {
+        border-bottom: 1px solid #ddd; /* Adds the line to all items */
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+
+        .list-unstyled.fw-normal.pt-2 li:last-child {
+            border-bottom: none; /* Removes the line only for the last item */
+            margin-bottom: 0; /* Removes extra spacing below the last item */
+        }
+
+        .list-unstyled.fw-normal.pt-2 li:first-child {
+            border-top: 1px solid #ddd;
+        }
+
+
 </style>
 </html>

@@ -16,6 +16,8 @@ namespace AssetManager.Models
         public DbSet<User> Users { get; set; }
         public DbSet<CheckedOutAsset> CheckedOutAssets { get; set; }
 
+        public DbSet<AssetDamage> AssetDamages { get; set; }
+
 
 
     }

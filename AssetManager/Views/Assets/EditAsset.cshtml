@@ -63,6 +63,11 @@
         <input type="hidden" name="AssetID" value="@Model.AssetID" />
         <button type="submit" class="btn btn-danger">Delete Asset</button>
     </form>
+
+    <form method="get" action="@Url.Action("AssetDamages", "Assets")" class="mt-3">
+        <input type="hidden" name="AssetID" value="@Model.AssetID" />
+        <button type="submit" class="btn btn-primary">Asset Damage</button>
+    </form>
 </div>
 
 @section Scripts {

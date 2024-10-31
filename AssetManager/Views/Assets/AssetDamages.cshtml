@@ -1,5 +1,177 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model AssetManager.Models.Asset
 @{
+    var users = ViewBag.Users as List<User>;
 }
+
+<div class="center-wrapper">
+    <form asp-action="AssetDamages" method="post">
+        <div class="form-container full-width">
+            <h3 class="text-center">Damage Form</h3>
+            @* <h5 class="text-center">@Model.Manufacturer - @Model.Description</h5> *@
+            <p class="text-center">Please double check all details are correct.</p>
+
+            <h5 class="mt-4">Equipment Details</h5>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <input type="hidden" name="assetID" value="@Model.AssetID" />
+                    <input type="hidden" id="userID" name="UserID" />
+                    <label>Description:</label>
+                    <p class="form-control-plaintext">@Model.Description</p>
+                </div>
+                <div class="col-md-6">
+                    <label>Manufacturer:</label>
+                    <p class="form-control-plaintext">@Model.Manufacturer</p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label>Asset Number:</label>
+                    <p class="form-control-plaintext">@Model.AssetNumber</p>
+                </div>
+                <div class="col-md-6">
+                    <label>Serial Number:</label>
+                    <p class="form-control-plaintext">@Model.SerialNumber</p>
+                </div>
+            </div>
+
+       
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label>Office Name:</label>
+                    <p class="form-control-plaintext">@Model.Office?.OfficeName</p>
+                </div>
+                <div class="col-md-6">
+                    <label>Location:</label>
+                    <p class="form-control-plaintext">@Model.Office?.Location</p>
+                </div>
+            </div>
+            <br />
+            <div class="form-group-row">
+              <label>Damage Status:</label>
+
+
+
+              <br />
+                          <select name="RepairStatus" id="DamageStatus" required>
+                  <option name="pending">Pending</option>
+                  <option name="in-progress">In-Progress</option>
+                  <option name="resolved">Resolved</option>
+              </select>
+
+          </div>
+            
+              <br />
+
+<div class="form-group row">
+    <label class="col-12">Please add a description of damage:</label>
+    <div class="col-12">
+        <textarea name="DamageDescription" rows="4" class="form-control" placeholder="Description..."></textarea>
+    </div>
+</div>
+<div class="form-group row mt-3">
+    <label class="col-12">Please add any notes:</label>
+    <div class="col-12">
+        <textarea name="Notes" rows="4" class="form-control" placeholder="Add any additional notes here..."></textarea>
+    </div>
+</div>
+
+
+<br />
+        
+<br />
+
+
+  
+
+
+
+            <button type="submit" class="btn btn-warning btn-block mt-4">Save Changes</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function searchUsers() {
+            const searchInput = document.getElementById("userSearchInput").value.toLowerCase();
+            const userList = document.getElementById("userList");
+            const userListItems = userList.querySelectorAll("li");
+
+            userList.style.display = searchInput ? "block" : "none";
+
+            userListItems.forEach(item => {
+                const firstName = item.dataset.firstName.toLowerCase();
+                const lastName = item.dataset.lastName.toLowerCase();
+                const fullName = `${firstName} ${lastName}`;
+                item.style.display = fullName.includes(searchInput) ? "" : "none";
+            });
+        }
+
+        function selectUser(userElement) {
+            document.getElementById("userFirstName").textContent = userElement.dataset.firstName;
+            document.getElementById("userLastName").textContent = userElement.dataset.lastName;
+            document.getElementById("userEmail").textContent = userElement.dataset.email;
+            document.getElementById("userDetails").style.display = "block";
+            document.getElementById("userSearchInput").value = "";
+            document.getElementById("userList").style.display = "none";
+
+            document.getElementById("userID").value = userElement.dataset.userId;
+
+        }
+
+        function deselectUser() {
+            document.getElementById("userFirstName").textContent = "";
+            document.getElementById("userLastName").textContent = "";
+            document.getElementById("userEmail").textContent = "";
+            document.getElementById("userDetails").style.display = "none";
+            document.getElementById("userSearchInput").value = "";
+            document.getElementById("userList").style.display = "none";
+        }
+
+        function confirmSave(){
+            const userConfirmed = confirm("Are you sure you want to save this asset as checked-out?");
+            if(userConfirmed){
+                alert("Checked-out asset saved successfully");
+                document.querySelector("form").submit();
+            }
+        }
+    </script>
+}
+
+<style>
+    .center-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 25px;
+        padding-top: 25px;
+    }
+
+    .form-container.full-width {
+        padding: 30px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+    }
+
+    .list-group-item {
+        cursor: pointer;
+    }
+
+    .list-group-item:hover {
+        background-color: #e9ecef;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    textarea {
+        width: 100%;
+        resize: vertical;
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+</style>
