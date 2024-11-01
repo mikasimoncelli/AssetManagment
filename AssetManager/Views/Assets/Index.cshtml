@@ -2,16 +2,15 @@
 @model List<AssetManager.Models.Asset>
 
 <div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
-    <h2 class="text-center mt-4 mb-4"><u>All Assets</u></h2>
+    <br />
+    <h2 class="text-center mt-4 mb-4 display-4">View All Assets</h2>
     <p class="text-center">View all assets in inventory below. Use filter and search to refine your results.</p>
 
 
-    <!-- Unified Container for Filter and Search, perfectly aligned with table -->
 
     <div class="row justify-content-center">
 
         <div class="col-md-10">
-            <!-- Filter Dropdown aligned with left edge of table -->
             <h6 for="equipmentTypeDropdown" class="form-label">Filter Types:</h6>
             <select id="equipmentTypeDropdown" class="form-control mb-3" onchange="showSelectedType()">
                 <option value="">Select Equipment Type</option>
@@ -21,12 +20,13 @@
                 }
             </select>
 
-            <!-- Search Bar and Reset Button, also aligned with table edge -->
             <h6 for="searchInput" class="form-label">Search for Asset:</h6>
             <div class="input-group mb-3">
                 <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" />
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" onclick="resetAllFilters()">Reset</button>
+                    <button type="button" class="btn btn-primary" onclick="resetAllFilters()">
+                        Reset
+                    </button>
                 </div>
             </div>
         </div>
@@ -40,7 +40,6 @@
             @foreach (var group in Model.GroupBy(a => a.EquipmentType))
             {
                 <div class="equipment-type-section" data-type="@group.Key">
-                    <!-- Equipment Type Header -->
                     <h4 class="text-center mt-4 mb-3">@group.Key</h4>
                     <div class="table-responsive">
                         <table class="table text-center table-sm assetTable">
@@ -54,9 +53,8 @@
                                     <th onclick="applySort(this, 5)">Office Name</th>
                                     <th onclick="applySort(this, 6)">Office Location</th>
                                 </tr>
-                                <!-- Filter Row -->
                                 <tr>
-                                    <th></th> <!-- No filter for AssetID -->
+                                    <th></th> 
                                     <th>
                                         <select onchange="applyColumnFilter(this, 1)">
                                             <option value="">All</option>
@@ -258,7 +256,7 @@
     <style>
         .equipment-type-section {
             margin-bottom: 30px;
-            border: solid;
+            border: 1px solid #ddd;
         }
 
         h4 {
@@ -297,8 +295,18 @@
 
         .equipment-type-section {
             margin-bottom: 30px;
-            padding: 15px; /* Optional: adds some spacing */
-            border-radius: 5px; /* Optional: rounds the corners slightly */
+            padding: 15px; 
+            border-radius: 5px; 
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #ccc;
+            margin-top: 30px;
+            margin-bottom: 20px; 
+            padding-bottom: 10px;
         }
 
     </style>

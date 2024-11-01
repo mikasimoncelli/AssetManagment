@@ -1,43 +1,39 @@
-﻿@model AssetManager.Models.Asset
+﻿@model AssetManager.Models.AssetDamage
 
 <div class="container-wrapper">
-    <form asp-action="AssetDamages" method="post">
+    <form asp-action="EditAssetDamage" method="post">
+        <input type="hidden" asp-for="AssetDamageID" />
         <div class="form-container">
-            <h2 class="text-center">Damage Form</h2>
-            <p class="text-center">Please double check all details are correct.</p>
+            <h2 class="text-center">Edit Damage Report</h2>
 
             <h4 class="section-title">Equipment Details</h4>
             <div class="form-group row">
-                <div class="col-md-6">
-                    <input type="hidden" name="assetID" value="@Model.AssetID" />
-                    <input type="hidden" id="userID" name="UserID" />
+                <div class="col-md-4">
                     <label>Description:</label>
-                    <p class="form-control-plaintext">@Model.Description</p>
+                    <p class="form-control-plaintext">@Model.Asset?.Description</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label>Manufacturer:</label>
-                    <p class="form-control-plaintext">@Model.Manufacturer</p>
+                    <p class="form-control-plaintext">@Model.Asset?.Manufacturer</p>
                 </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label>Asset Number:</label>
-                    <p class="form-control-plaintext">@Model.AssetNumber</p>
-                </div>
-                <div class="col-md-6">
-                    <label>Serial Number:</label>
-                    <p class="form-control-plaintext">@Model.SerialNumber</p>
+                    <p class="form-control-plaintext">@Model.Asset?.AssetNumber</p>
                 </div>
             </div>
 
             <div class="form-group row">
-                <div class="col-md-6">
-                    <label>Office Name:</label>
-                    <p class="form-control-plaintext">@Model.Office.OfficeName</p>
+                <div class="col-md-4">
+                    <label>Serial Number:</label>
+                    <p class="form-control-plaintext">@Model.Asset?.SerialNumber</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <label>Office Name:</label>
+                    <p class="form-control-plaintext">@Model.Asset?.Office?.OfficeName</p>
+                </div>
+                <div class="col-md-4">
                     <label>Location:</label>
-                    <p class="form-control-plaintext">@Model.Office.Location</p>
+                    <p class="form-control-plaintext">@Model.Asset?.Office?.Location</p>
                 </div>
             </div>
 
@@ -46,7 +42,7 @@
             <div class="form-group row">
                 <div class="col-md-6">
                     <label>Damage Status:</label>
-                    <select name="RepairStatus" class="form-control" required>
+                    <select asp-for="RepairStatus" class="form-control">
                         <option value="Pending">Pending</option>
                         <option value="In-Progress">In-Progress</option>
                         <option value="Resolved">Resolved</option>
@@ -54,23 +50,23 @@
                 </div>
                 <div class="col-md-6">
                     <label>Repair Date:</label>
-                    <input name="RepairDate" type="date" class="form-control" />
+                    <input asp-for="RepairDate" type="date" class="form-control" />
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Description of Damage:</label>
-                <textarea name="DamageDescription" rows="5" class="form-control" placeholder="Describe the damage..."></textarea>
+                <textarea asp-for="DamageDescription" rows="5" class="form-control" placeholder="Describe the damage..."></textarea>
             </div>
 
             <div class="form-group">
                 <label>Additional Notes:</label>
-                <textarea name="Notes" rows="5" class="form-control" placeholder="Add any additional notes here..."></textarea>
+                <textarea asp-for="Notes" rows="5" class="form-control" placeholder="Add any additional notes here..."></textarea>
             </div>
 
             <div class="button-group">
                 <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                <a asp-action="AllDamagedAssets" class="btn btn-secondary">Back to List</a>
             </div>
         </div>
     </form>
@@ -158,4 +154,6 @@
     .btn-primary:hover, .btn-secondary:hover {
         opacity: 0.9;
     }
+
+
 </style>

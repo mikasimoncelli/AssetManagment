@@ -33,7 +33,7 @@
                         <ul class="list-unstyled fw-normal pt-2">
                             <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
                             <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
-                            <li><a asp-controller="Assets" asp-action="AssetDamages" class="link-dark rounded">Asset Damages</a></li>
+                            <li><a asp-controller="Assets" asp-action="AllDamagedAssets" class="link-dark rounded">View Damaged Assets</a></li>
 
 
                         </ul>
@@ -42,12 +42,12 @@
 
                 <li class="mb-1">
                     <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#checkedout-collapse" aria-expanded="false">
-                        Checked-Out Assets
+                        Loans
                     </button>
                     <div class="collapse" id="checkedout-collapse">
                         <ul class="list-unstyled fw-normal pt-2">
-                            <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">Check-out Asset</a></li>
-                            <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">Assets On Loan</a></li>
+                            <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">New Loan</a></li>
+                            <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">On Loan</a></li>
                             <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">Returned Assets</a></li>
                         </ul>
                     </div>

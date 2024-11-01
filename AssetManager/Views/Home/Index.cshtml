@@ -1,7 +1,201 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Admin Dashboard";
+    var assetCount = ViewBag.assetCount as IEnumerable<dynamic>;
+    var phoneAvailability = ViewBag.phoneAvailability ?? 0;
+    var laptopAvailability = ViewBag.laptopAvailability ?? 0;
 }
 
-<div class="text-center">
-    <h1 class="display-4"></h1>
+<div class="container-fluid" style="padding: 40px;">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Asset Management Console</h1>
+        <p>Overview of asset distribution and availability</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Asset Distribution Across Offices</h4>
+                    <div style="width: 100%; height: 400px;">
+                        <canvas id="assetChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Phone Availability</h5>
+                            <div style="width: 100%; height: 300px; margin: 0 auto;">
+                                <canvas id="phoneChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Laptop Availability</h5>
+                            <div style="width: 100%; height: 300px; margin: 0 auto;">
+                                <canvas id="laptopChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Notifications</h5>
+                    <ul id="notifications" class="list-group">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<script>
+    // Data for Bar Chart
+    var officeLabels = [];
+    var assetsCount = [];
+    @foreach (var item in assetCount)
+    {
+        <text>
+                officeLabels.push("@item.OfficeName");
+                assetsCount.push(@item.AssetsCount);
+        </text>
+    }
+
+        // Bar Chart: Asset Distribution by Office
+        const ctxBar = document.getElementById('assetChart').getContext('2d');
+    const assetChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: officeLabels,
+            datasets: [{
+                label: 'Assets Count',
+                data: assetsCount,
+                backgroundColor: ['#0b3d91', '#1259a3', '#1768ad', '#2085bf', '#2993c8', '#42a2d9', '#85c1e9'],
+                borderColor: ['#0b3d91', '#1259a3', '#1768ad', '#2085bf', '#2993c8', '#42a2d9', '#85c1e9'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    formatter: Math.round,
+                    color: '#333',
+                    font: { size: 14 }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+    // Pie Chart: Phone Availability
+    const ctxPhone = document.getElementById('phoneChart').getContext('2d');
+    const phoneChart = new Chart(ctxPhone, {
+        type: 'pie',
+        data: {
+            labels: ['Available', 'Checked Out'],
+            datasets: [{
+                data: [@phoneAvailability, 100 - @phoneAvailability],
+                backgroundColor: ['#a3c1da', '#ffffff'],
+                borderColor: ['#a3c1da', '#ffffff']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true },
+                datalabels: {
+                    color: '#333',
+                    font: { size: 14 },
+                    formatter: (value) => value + '%'
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+    // Pie Chart: Laptop Availability
+    const ctxLaptop = document.getElementById('laptopChart').getContext('2d');
+    const laptopChart = new Chart(ctxLaptop, {
+        type: 'pie',
+        data: {
+            labels: ['Available', 'Checked Out'],
+            datasets: [{
+                data: [@laptopAvailability, 100 - @laptopAvailability],
+                backgroundColor: ['#a3c1da', '#ffffff'],
+                borderColor: ['#a3c1da', '#ffffff']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true },
+                datalabels: {
+                    color: '#333',
+                    font: { size: 14 },
+                    formatter: (value) => value + '%'
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+    // Add sample notifications to the notifications box
+    const notifications = document.getElementById('notifications');
+    const sampleNotifications = [
+        "You have no new notifcations!"
+    ];
+    sampleNotifications.forEach(notification => {
+        const li = document.createElement('li');
+        li.classList.add('list-group-item');
+        li.textContent = notification;
+        notifications.appendChild(li);
+    });
+</script>
+
+<style>
+    .container-fluid {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        border: none;
+    }
+
+    .card-title {
+        font-weight: bold;
+        color: #333;
+    }
+
+    #assetChart {
+        height: 400px;
+    }
+
+    #phoneChart, #laptopChart {
+        height: 200px;
+    }
+
+    #notifications {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+</style>

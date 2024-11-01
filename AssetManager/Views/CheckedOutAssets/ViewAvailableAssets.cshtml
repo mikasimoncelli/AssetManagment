@@ -3,10 +3,8 @@
 <div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
     <h3 class="text-center mt-4 mb-4">Available Assets</h3>
 
-    <!-- Filter and Search aligned with the table -->
     <div class="row justify-content-center mb-3">
         <div class="col-md-10">
-            <!-- Type Filter Dropdown -->
             <h6 for="assetTypeDropdown" class="form-label">Filter by Asset Type:</h6>
             <select id="assetTypeDropdown" class="form-control mb-3" onchange="filterAssetType()">
                 <option value="">All Asset Types</option>
@@ -16,7 +14,6 @@
                 }
             </select>
 
-            <!-- Search Bar and Reset Button -->
             <div class="input-group mb-3">
                 <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" style="margin-right: 20px;" />
                 <button type="button" class="btn btn-primary" onclick="resetAllFilters()">Reset Search</button>
@@ -24,13 +21,11 @@
         </div>
     </div>
 
-    <!-- Table Containers for each Equipment Type -->
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="table-responsive">
                 @foreach (var equipmentGroup in ((IEnumerable<Asset>)ViewBag.availableAssets).GroupBy(a => a.EquipmentType))
                 {
-                    <!-- Individual Table for Each Equipment Type -->
                     <div class="equipment-type-section" data-type="@equipmentGroup.Key">
                         <h4 class="text-center mt-4 mb-3" style="color: #343a40; padding-bottom: 5px;">@equipmentGroup.Key</h4>
 

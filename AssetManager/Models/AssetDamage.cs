@@ -1,4 +1,5 @@
-﻿namespace AssetManager.Models
+﻿
+namespace AssetManager.Models
 {
     public class AssetDamage
     {
@@ -7,9 +8,9 @@
         public string DamageDescription { get; set; }
         public string Notes { get; set; }
         public string RepairStatus { get; set; }
-        public DateTime DateReported { get; set; }
+        public DateTime DateReported { get; set; } = DateTime.Now;
 
-        public DateTime RepairDate { get; set; }
+        public DateTime? RepairDate { get; set; }
 
         public Asset Asset { get; set; }
     }

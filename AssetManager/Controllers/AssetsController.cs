@@ -101,6 +101,9 @@ public class AssetsController : Controller
         return RedirectToAction("Index");
     }
 
+
+
+
     [HttpPost]
     public IActionResult DeleteAsset(int assetID)
     {
@@ -122,7 +125,7 @@ public class AssetsController : Controller
     public IActionResult AssetTypeView(string equipmentType)
     {
         var assetsByType = _context.Assets.Where(a => a.EquipmentType == equipmentType);
-        return View(assetsByType); // Ensure you have a "FilteredAssets" view to display these
+        return View(assetsByType); 
     }
 
 
@@ -154,12 +157,43 @@ public class AssetsController : Controller
         _context.AssetDamages.Add(assetDamage);
         _context.SaveChanges();
 
-        return RedirectToAction("AssetDamages");
+        return RedirectToAction("AllDamagedAssets");
     }
 
 
+    public IActionResult AllDamagedAssets()
+    {
+        var damagedAssets = _context.AssetDamages.Include(ad => ad.Asset).ToList();
+        return View(damagedAssets);
+    }
 
 
+    public IActionResult EditAssetDamage(int id)
+    {
+        var assetDamage = _context.AssetDamages.Include(a=>a.Asset).Include(a=>a.Asset.Office).FirstOrDefault(a=>a.AssetDamageID==id);
+        if (assetDamage == null)
+        {
+            return NotFound();
+        }
+        return View(assetDamage);
+    }
+
+    [HttpPost]
+    public IActionResult EditAssetDamage(AssetDamage model)
+    {
+        var assetDamage = _context.AssetDamages.Find(model.AssetDamageID);
+        if (assetDamage == null)
+        {
+            return NotFound();
+        }
+
+        assetDamage.DamageDescription = model.DamageDescription;
+        assetDamage.RepairStatus = model.RepairStatus;
+        assetDamage.RepairDate = model.RepairDate;
+
+        _context.SaveChanges();
+        return RedirectToAction("AllDamagedAssets");
+    }
 
 
 }
