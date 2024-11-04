@@ -2,6 +2,9 @@ using AssetManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using DinkToPdf.Contracts;
+using DinkToPdf;
+using System.Text;
 
 
 namespace AssetManager.Controllers
@@ -9,10 +12,14 @@ namespace AssetManager.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IConverter _converter;
+
 
         private readonly ApplicationDbContext _context;
-        public HomeController(ApplicationDbContext context)
+
+        public HomeController(ApplicationDbContext context, IConverter converter)
         {
+            _converter = converter;
             _context = context;
         }
 
@@ -34,9 +41,12 @@ namespace AssetManager.Controllers
                 .Select(g => new
                 {
                     OfficeName = $"{g.FirstOrDefault().Office.OfficeName} - {g.FirstOrDefault().Office.Location}",
+                    OfficeID = g.FirstOrDefault().Office.OfficeID,
                     AssetsCount = g.Count()
                 })
                 .ToList();
+
+            ViewBag.totalAssets = assetCount.Sum(a => a.AssetsCount);
 
             ViewBag.assetCount = assetCount;
 
@@ -58,21 +68,13 @@ namespace AssetManager.Controllers
 
 
 
-
-
-
-        public IActionResult Privacy()
+        public IActionResult Reports()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
 
-       
+
 
     }
 }

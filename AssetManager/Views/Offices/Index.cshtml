@@ -1,0 +1,48 @@
+﻿<html>
+<head>
+    <title>Offices</title>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center display-4">Offices</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Office Name</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var office in ViewBag.Offices)
+                {
+                    <tr onclick="window.location.href='@Url.Action("ViewOfficeAssets", "Offices", new { officeID = office.OfficeID })'">
+                        <td>@office.OfficeName</td>
+                        <td>@office.Location</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+
+<style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        /* Hover effect */
+        .table tr:hover {
+            background-color: #f1f1f1; /* Light grey for hover */
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+</style>
+</html>

@@ -1,29 +1,24 @@
-﻿@model IEnumerable<AssetManager.Models.CheckedOutAsset>
-
+﻿@model IEnumerable<AssetManager.Models.Asset>
+<body>
 <div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
-    <h1 class="text-center mt-4 mb-4 display-4">All Returned Assets</h1>
+    <h3 class="text-center mt-4 mb-4 display-4">@ViewBag.Office.OfficeName Assets</h3>
+    <h5 class="text-center display-6">@ViewBag.Office.Location</h5>
 
-    <!-- Filter and Search aligned with table -->
+    <!-- Filter and Search -->
     <div class="row justify-content-center mb-3">
         <div class="col-md-10">
-            <!-- Filter Dropdown aligned with left edge of table -->
-            <h6 for="assetTypeDropdown" class="form-label">Filter by Asset Type:</h6>
+            <h6 class="form-label">Filter by Asset Type:</h6>
             <select id="assetTypeDropdown" class="form-control mb-3" onchange="filterAssetType()">
                 <option value="">All Asset Types</option>
-                @foreach (var type in ((IEnumerable<AssetManager.Models.CheckedOutAsset>)ViewBag.returnedCheckedOutAssets)
-                .Select(a => a.Asset.EquipmentType).Distinct())
+                @foreach (var type in ViewBag.AssetTypes as List<string>)
                 {
                     <option value="@type">@type</option>
                 }
             </select>
 
-            <!-- Search Bar and Reset Button, also aligned with table edge -->
-            <h6 for="searchInput" class="form-label">Search for Asset:</h6>
             <div class="input-group mb-3">
-                <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" />
-                <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" onclick="resetAllFilters()">Reset</button>
-                </div>
+                <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" style="margin-right: 20px;" />
+                <button type="button" class="btn btn-primary" onclick="resetAllFilters()">Reset Search</button>
             </div>
         </div>
     </div>
@@ -31,40 +26,32 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="table-responsive">
-                <!-- Table for Returned Assets grouped by Asset Type -->
-                @if (ViewBag.returnedCheckedOutAssets != null)
+                @if (Model != null && Model.Any())
                 {
-                    @foreach (var equipmentGroup in ((IEnumerable<AssetManager.Models.CheckedOutAsset>)ViewBag.returnedCheckedOutAssets)
-                   .GroupBy(a => a.Asset.EquipmentType))
+                    @foreach (var equipmentGroup in Model.GroupBy(c => c.EquipmentType))
                     {
                         <div class="equipment-type-section" data-type="@equipmentGroup.Key">
-                            <h4 class="text-center mt-4 mb-3" style="color: #343a40; padding-bottom: 5px;">@equipmentGroup.Key</h4>
+                            <h4 class="text-center mt-4 mb-3" style="color: #343a40;">@equipmentGroup.Key</h4>
 
-                            <table class="table table-bordered text-center table-sm assetTable">
+                            <table class="table table-bordered text-center table-sm asset-table">
                                 <thead>
                                     <tr style="background-color: #0d6efd; color: #fff;">
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
+                                        <th>Asset ID</th>
                                         <th>Asset Type</th>
                                         <th>Description</th>
-                                        <th>Serial Number</th>
-                                        <th>Asset Number</th>
-                                        <th>Date Checked Out</th>
-                                        <th>Date Returned</th>
+                                        <th>AssetNumber</th>
+                                        <th>SerialNumber</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var asset in equipmentGroup)
                                     {
-                                        <tr>
-                                            <td>@(asset.User != null ? asset.User.FirstName : "Unknown")</td>
-                                            <td>@(asset.User != null ? asset.User.LastName : "Unknown")</td>
-                                            <td>@(asset.Asset != null ? asset.Asset.EquipmentType : "Unknown")</td>
-                                            <td>@(asset.Asset != null ? asset.Asset.Description : "Unknown")</td>
-                                            <td>@(asset.Asset != null ? asset.Asset.SerialNumber : "Unknown")</td>
-                                            <td>@(asset.Asset != null ? asset.Asset.AssetNumber : "Unknown")</td>
-                                            <td>@asset.DateLentOut.ToString("yyyy-MM-dd")</td>
-                                            <td>@(asset.DateReturned?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                                        <tr onclick="window.location.href='@Url.Action("Edit", "Assets", new { id = asset.AssetID })'">
+                                            <td>@asset.AssetID</td>
+                                            <td>@asset.EquipmentType</td>
+                                            <td>@asset.Description</td>
+                                            <td>@asset.AssetNumber</td>
+                                            <td>@asset.SerialNumber</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -74,15 +61,14 @@
                 }
                 else
                 {
-                    <p>No returned assets available.</p>
+                    <p class="text-center">No assets available in this office.</p>
                 }
             </div>
         </div>
     </div>
 </div>
-
+</body>
 <script>
-    // Filter by asset type
     function filterAssetType() {
         const selectedType = document.getElementById("assetTypeDropdown").value.toLowerCase();
         document.querySelectorAll(".equipment-type-section").forEach(section => {
@@ -91,7 +77,6 @@
         });
     }
 
-    // Global search function with type table hiding
     function applyGlobalSearch() {
         const searchValue = document.getElementById('searchInput').value.toLowerCase();
         document.querySelectorAll(".equipment-type-section").forEach(section => {
@@ -105,12 +90,10 @@
                 if (isVisible) rowMatchCount++;
             });
 
-            // Hide the section if no rows match
             section.style.display = rowMatchCount > 0 ? "block" : "none";
         });
     }
 
-    // Reset all filters
     function resetAllFilters() {
         document.getElementById('searchInput').value = '';
         document.getElementById('assetTypeDropdown').value = '';
@@ -122,7 +105,7 @@
 </script>
 
 <style>
-    .assetTable {
+    .asset-table {
         width: 100%;
         border: solid 1px #ddd;
     }

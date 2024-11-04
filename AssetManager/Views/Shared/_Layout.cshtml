@@ -34,6 +34,8 @@
                             <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
                             <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
                             <li><a asp-controller="Assets" asp-action="AllDamagedAssets" class="link-dark rounded">View Damaged Assets</a></li>
+                            <li><a asp-controller="Offices" asp-action="Index" class="link-dark rounded">Office Assets</a></li>
+
 
 
                         </ul>
@@ -63,6 +65,11 @@
                             <li><a asp-controller="Users" asp-action="AddUser" class="link-dark rounded">Add New User</a></li>
                         </ul>
                     </div>
+                </li>
+                <li class="mb-1">
+                    <a id="home-toggle" asp-controller="Home" asp-action="Reports" class="btn btn-toggle align-items-center rounded">
+                        Reports
+                    </a>
                 </li>
             </ul>
         </div>
@@ -113,9 +120,8 @@
 </body>
 
 <style>
-    /* Sidebar Link Styles */
     .list-unstyled .link-dark {
-        font-size: 18px; /* Larger font for submenu */
+        font-size: 18px; 
         font-weight: normal;
         color: black;
         text-decoration: none;
@@ -126,11 +132,10 @@
             color: white;
         }
 
-    /* Sidebar Button Styles */
     .btn-toggle {
         background-color: transparent;
         border: none;
-        font-size: 18px; /* Increased font size */
+        font-size: 18px; 
         font-weight: bold;
         color: black;
         display: flex;
@@ -142,12 +147,12 @@
     }
 
         .btn-toggle:focus {
-            outline: none; /* Removes blue border on click */
-            box-shadow: none; /* Removes any focus outline */
+            outline: none; 
+            box-shadow: none; 
         }
 
         .btn-toggle::before {
-            content: "\27A4";
+            content: "\1F896";
             font-size: 20px;
             margin-right: 10px;
             transition: transform 0.3s;
@@ -155,7 +160,7 @@
         }
 
         .btn-toggle[aria-expanded="true"]::before {
-            content: "\25BC";
+            content: "\1F897";
         }
 
         .btn-toggle:hover {
@@ -171,21 +176,18 @@
         content: "";
     }
 
-    /* Sidebar */
     .sidebar {
         position: relative;
         height: 100vh;
     }
 
-    /* Spacing and style adjustments for submenu items */
     .list-unstyled.fw-normal.pt-2 li a {
         padding: 5px 15px;
-        font-size: 16px; /* Slightly larger submenu items */
+        font-size: 16px; 
         display: block;
         text-decoration: none;
     }
 
-    /* Footer Styles */
     footer {
         background-color: #f8f9fa;
         padding: 10px;
@@ -205,21 +207,20 @@
         }
 
     .list-unstyled > li {
-        border-bottom: 1px solid #ddd; /* Light gray line */
-        padding-bottom: 10px; /* Space between item content and border */
-        margin-bottom: 10px; /* Space below each item */
+        border-bottom: 1px solid #ddd; 
+        padding-bottom: 10px; 
+        margin-bottom: 10px; 
     }
 
-    /* Removes the border on the last submenu item in each list */
     .list-unstyled.fw-normal.pt-2 li {
-        border-bottom: 1px solid #ddd; /* Adds the line to all items */
+        border-bottom: 1px solid #ddd; 
         padding-bottom: 10px;
         margin-bottom: 10px;
     }
 
         .list-unstyled.fw-normal.pt-2 li:last-child {
-            border-bottom: none; /* Removes the line only for the last item */
-            margin-bottom: 0; /* Removes extra spacing below the last item */
+            border-bottom: none; 
+            margin-bottom: 0; 
         }
 
         .list-unstyled.fw-normal.pt-2 li:first-child {

@@ -11,35 +11,41 @@
         <p>Overview of asset distribution and availability</p>
     </div>
 
-    <div class="row">
+    <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-body">
-                    <h4 class="card-title text-center">Asset Distribution Across Offices</h4>
-                    <div style="width: 100%; height: 400px;">
-                        <canvas id="assetChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title text-center">Phone Availability</h5>
-                            <div style="width: 100%; height: 300px; margin: 0 auto;">
-                                <canvas id="phoneChart"></canvas>
+                    <h4 class="card-title text-center">Asset Distribution and Total Assets</h4>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div style="width: 100%; height: 400px;">
+                                <canvas id="assetChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            <div class="text-center">
+                                <h5>Total Assets</h5>
+                                <h1 class="display-1" style="font-weight: bold; color: #0b3d91;">
+                                    @ViewBag.totalAssets
+                                </h1>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title text-center">Laptop Availability</h5>
-                            <div style="width: 100%; height: 300px; margin: 0 auto;">
-                                <canvas id="laptopChart"></canvas>
-                            </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Availability Overview</h4>
+                    <div class="row">
+                        <div class="col-md-6 text-center">
+                            <h5>Phone Availability</h5>
+                            <canvas id="phoneChart" style="width: 250px; height: 150px;"></canvas>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <h5>Laptop Availability</h5>
+                            <canvas id="laptopChart" style="width: 250px; height: 150px;"></canvas>
                         </div>
                     </div>
                 </div>
@@ -47,10 +53,11 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card mb-4">
+            <div id="notificationsContainer" class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title text-center">Notifications</h5>
                     <ul id="notifications" class="list-group">
+                        <li class="list-group-item">You have no new notifications!</li>
                     </ul>
                 </div>
             </div>
@@ -64,17 +71,20 @@
 <script>
     // Data for Bar Chart
     var officeLabels = [];
+    var officeIDs = [];
     var assetsCount = [];
     @foreach (var item in assetCount)
     {
         <text>
-                officeLabels.push("@item.OfficeName");
-                assetsCount.push(@item.AssetsCount);
+            officeLabels.push("@item.OfficeName");
+            officeIDs.push("@item.OfficeID");
+            assetsCount.push(@item.AssetsCount);
         </text>
     }
 
-        // Bar Chart: Asset Distribution by Office
-        const ctxBar = document.getElementById('assetChart').getContext('2d');
+    const ctxBar = document.getElementById('assetChart').getContext('2d');
+    const maxAssetsCount = Math.max(...assetsCount);
+
     const assetChart = new Chart(ctxBar, {
         type: 'bar',
         data: {
@@ -100,7 +110,19 @@
                 }
             },
             scales: {
-                y: { beginAtZero: true }
+                y: {
+                    beginAtZero: true,
+                    max: maxAssetsCount * 1.1 
+                }
+            },
+            onClick: (event, elements) => {
+                if (elements.length > 0) { 
+                    const index = elements[0].index;
+                    const officeID = officeIDs[index]; 
+                    
+                    // Redirect to the asset view page for the selected office
+                    window.location.href = `/Assets/Office/${officeID}`;
+                }
             }
         },
         plugins: [ChartDataLabels]
@@ -157,18 +179,6 @@
         },
         plugins: [ChartDataLabels]
     });
-
-    // Add sample notifications to the notifications box
-    const notifications = document.getElementById('notifications');
-    const sampleNotifications = [
-        "You have no new notifcations!"
-    ];
-    sampleNotifications.forEach(notification => {
-        const li = document.createElement('li');
-        li.classList.add('list-group-item');
-        li.textContent = notification;
-        notifications.appendChild(li);
-    });
 </script>
 
 <style>
@@ -191,11 +201,16 @@
     }
 
     #phoneChart, #laptopChart {
-        height: 200px;
+        width: 350px !important; 
+        height: 350px !important; 
     }
 
-    #notifications {
-        max-height: 200px;
+    #notificationsContainer {
+        width: 500px;
+        height: 600px;
+        max-height: 600px;
         overflow-y: auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
     }
 </style>
