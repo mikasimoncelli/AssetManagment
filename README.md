@@ -1,14 +1,18 @@
 # Asset Manager
 
-Asset Manager is a web-based application that helps organizations track and manage their assets efficiently. It provides an easy-to-use interface for adding, editing, and viewing assets, along with powerful filtering and search features.
+Asset Manager is an ASP.NET MVC application designed to efficiently track and manage company assets. It provides a user-friendly interface for adding, editing, and viewing assets, along with powerful filtering and search capabilities. The application includes features for reporting damaged assets, maintaining up-to-date damage records, and recording disposed assets.
 
 ## Features
 
 - Add and manage office assets such as IT equipment and devices.
 - Search and filter assets by description, manufacturer, type, asset number, serial number, office location, and more.
 - Support for multiple offices and asset categories.
+- Asset damage report feature
+- Asset disposal records
 - Real-time filtering.
 - Uses Bootstrap for responsive design and jQuery for client-side functionality.
+
+<img width="1900" alt="image" src="https://github.com/user-attachments/assets/45fa4151-1ab2-4bde-8b9d-cc4137a94d40">
 
 ## Technologies Used
 
