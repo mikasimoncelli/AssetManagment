@@ -19,12 +19,12 @@ Asset Manager is an ASP.NET MVC application designed to efficiently track and ma
 
 The database includes the following tables:
 
-Users: Stores user information.
-Offices: Contains office location details.
-Assets: Main asset records including details like type, manufacturer, and serial numbers.
-CheckedOutAssets: Tracks assets lent to users, with due dates and return records.
-AssetDisposals: Logs asset disposal information, including reasons and dates.
-AssetDamages: Documents any asset damages, including descriptions and repair statuses
+- Users: Stores user information.
+- Offices: Contains office location details.
+- Assets: Main asset records including details like type, manufacturer, and serial numbers.
+- CheckedOutAssets: Tracks assets lent to users, with due dates and return records.
+- AssetDisposals: Logs asset disposal information, including reasons and dates.
+- AssetDamages: Documents any asset damages, including descriptions and repair statuses
 
 <img width="842" alt="image" src="https://github.com/user-attachments/assets/3b01368f-dea8-4f61-8989-9b382e1abd7d">
 
