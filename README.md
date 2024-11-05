@@ -24,6 +24,8 @@ Asset Manager is an ASP.NET MVC application designed to efficiently track and ma
 - **Bootstrap**: CSS framework for building responsive layouts.
 - **jQuery**: For client-side functionality such as search and filter.
 
+<br>
+
 ## Database Structure
 
 The database includes the following tables:
@@ -36,7 +38,6 @@ The database includes the following tables:
 - AssetDamages: Documents any asset damages, including descriptions and repair statuses
 
 <img width="842" alt="image" src="https://github.com/user-attachments/assets/3b01368f-dea8-4f61-8989-9b382e1abd7d">
-
 
 ## Getting Started
 
