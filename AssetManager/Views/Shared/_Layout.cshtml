@@ -10,11 +10,11 @@
 
 <body>
     <div class="d-flex" style="min-height: 100vh;">
-        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px;">
+        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 320px;">
             <a href="@Url.Action("Index", "Home")"
                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
                 <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-                <span class="fs-4">Asset Management</span>
+                <span class="display-6">Asset Management</span>
             </a>
             <hr>
 
@@ -34,7 +34,7 @@
                             <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
                             <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
                             <li><a asp-controller="Assets" asp-action="AllDamagedAssets" class="link-dark rounded">View Damaged Assets</a></li>
-                            <li><a asp-controller="Offices" asp-action="Index" class="link-dark rounded">Office Assets</a></li>
+                            <li><a asp-controller="Offices" asp-action="Index" class="link-dark rounded">View Office Assets</a></li>
 
 
 
@@ -48,9 +48,10 @@
                     </button>
                     <div class="collapse" id="checkedout-collapse">
                         <ul class="list-unstyled fw-normal pt-2">
-                            <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">New Loan</a></li>
-                            <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">On Loan</a></li>
-                            <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">Returned Assets</a></li>
+                            <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">View All Loans</a></li>
+
+                            <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">Create New Loan</a></li>
+                            <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">View Returned Loans</a></li>
                         </ul>
                     </div>
                 </li>
@@ -135,8 +136,9 @@
     .btn-toggle {
         background-color: transparent;
         border: none;
-        font-size: 18px; 
-        font-weight: bold;
+        font-size: 18px;
+        font-weight: 500; 
+
         color: black;
         display: flex;
         align-items: center;
@@ -179,6 +181,7 @@
     .sidebar {
         position: relative;
         height: 100vh;
+        width: 100px
     }
 
     .list-unstyled.fw-normal.pt-2 li a {

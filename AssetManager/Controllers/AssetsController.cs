@@ -190,6 +190,7 @@ public class AssetsController : Controller
         assetDamage.DamageDescription = model.DamageDescription;
         assetDamage.RepairStatus = model.RepairStatus;
         assetDamage.RepairDate = model.RepairDate;
+        assetDamage.Notes = model.Notes;
 
         _context.SaveChanges();
         return RedirectToAction("AllDamagedAssets");

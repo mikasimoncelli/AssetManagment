@@ -4,9 +4,11 @@
     <h3 class="text-center mt-4 mb-4 display-4">@ViewBag.Office.OfficeName Assets</h3>
     <h5 class="text-center display-6">@ViewBag.Office.Location</h5>
 
-    <!-- Filter and Search -->
     <div class="row justify-content-center mb-3">
         <div class="col-md-10">
+                                    <button type="button" style="width: 150px;" onclick="window.location.href='@Url.Action("Index", "Offices")'" class="btn btn-secondary">Back to Offices</button>
+                                    <br />
+<br />
             <h6 class="form-label">Filter by Asset Type:</h6>
             <select id="assetTypeDropdown" class="form-control mb-3" onchange="filterAssetType()">
                 <option value="">All Asset Types</option>

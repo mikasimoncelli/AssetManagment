@@ -1,37 +1,48 @@
 ﻿@model IEnumerable<AssetManager.Models.CheckedOutAsset>
 
-<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
-    <h3 class="text-center mt-4 mb-4">Available Assets</h3>
+<div class="container-wrapper">
+    <div class="form-container">
 
-    <div class="row justify-content-center mb-3">
-        <div class="col-md-10">
-            <h6 for="assetTypeDropdown" class="form-label">Filter by Asset Type:</h6>
-            <select id="assetTypeDropdown" class="form-control mb-3" onchange="filterAssetType()">
-                <option value="">All Asset Types</option>
-                @foreach (var type in ((IEnumerable<Asset>)ViewBag.availableAssets).Select(a => a.EquipmentType).Distinct())
-                {
-                    <option value="@type">@type</option>
-                }
-            </select>
+        <h3 class="text-center mb-4 display-4" style="border: 1px">Available Assets For Loan</h3>
+        <p class="text-center">Please select asset type to view availble assets for loan. Optionally select a location.</p>
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-5">
+                <label for="assetTypeDropdown" class="form-label">Select Asset Type:</label>
+                <select id="assetTypeDropdown" class="form-control mb-3" onchange="applyFilters()">
+                    <option value="All">All Types</option> 
+                    @foreach (var type in ((IEnumerable<Asset>)ViewBag.availableAssets).Select(a => a.EquipmentType).Distinct())
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </select>
+            </div>
 
-            <div class="input-group mb-3">
-                <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" style="margin-right: 20px;" />
-                <button type="button" class="btn btn-primary" onclick="resetAllFilters()">Reset Search</button>
+            <div class="col-md-5">
+                <label for="officeDropdown" class="form-label">Select Office:</label>
+                <select id="officeDropdown" class="form-control mb-3" onchange="applyFilters()">
+                    <option value="Any">Any</option>
+                    @foreach (var office in ((IEnumerable<Asset>)ViewBag.availableAssets).Select(a => a.Office.OfficeName).Distinct())
+                    {
+                        <option value="@office">@office</option>
+                    }
+                </select>
             </div>
         </div>
-    </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div id="noResultsMessage" class="text-center mt-4" style="display: none;">
+            <p>Sorry, no results.</p>
+        </div>
+
+        <div id="assetsSection" style="display: none;">
             <div class="table-responsive">
                 @foreach (var equipmentGroup in ((IEnumerable<Asset>)ViewBag.availableAssets).GroupBy(a => a.EquipmentType))
                 {
-                    <div class="equipment-type-section" data-type="@equipmentGroup.Key">
+                    <div class="equipment-type-section" data-type="@equipmentGroup.Key" style="display: none;">
                         <h4 class="text-center mt-4 mb-3" style="color: #343a40; padding-bottom: 5px;">@equipmentGroup.Key</h4>
 
                         <table class="table table-bordered text-center table-sm asset-table">
                             <thead>
-                                <tr style="background-color: purple; color: #fff;">
+                                <tr style="background-color: #0d6efd; color: #fff;">
                                     <th>Description</th>
                                     <th>Manufacturer</th>
                                     <th>Asset Number</th>
@@ -40,10 +51,10 @@
                                     <th>Office Location</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="assetsTableBody">
                                 @foreach (var asset in equipmentGroup)
                                 {
-                                    <tr onclick="window.location.href='@Url.Action("AddNewCheckedOutAsset", "CheckedOutAssets", new { id = asset.AssetID })'">
+                                    <tr class="asset-row" data-type="@asset.EquipmentType" data-office="@asset.Office.OfficeName" onclick="window.location.href='@Url.Action("AddNewCheckedOutAsset", "CheckedOutAssets", new { id = asset.AssetID })'">
                                         <td>@asset.Description</td>
                                         <td>@asset.Manufacturer</td>
                                         <td>@asset.AssetNumber</td>
@@ -62,49 +73,81 @@
 </div>
 
 <script>
-        // Filter by asset type
-    function filterAssetType() {
-        const selectedType = document.getElementById("assetTypeDropdown").value.toLowerCase();
-        document.querySelectorAll(".equipment-type-section").forEach(section => {
-            const type = section.getAttribute("data-type").toLowerCase();
-                section.style.display = selectedType && type !== selectedType ? "none" : "block";
-        });
+    function applyFilters() {
+        const selectedType = document.getElementById("assetTypeDropdown").value;
+        const selectedOffice = document.getElementById("officeDropdown").value;
+
+        // Check if the default "All Types" option is selected
+        if (selectedType === "All") {
+            document.getElementById("assetsSection").style.display = "none"; // Hide table
+            document.getElementById("noResultsMessage").style.display = "none"; // Hide no results message
+            return; // Exit function if "All Types" is selected
+        }
+
+        // Only show the results if an asset type is selected
+        if (selectedType) {
+            document.getElementById("assetsSection").style.display = "block";
+            filterAssets(selectedType, selectedOffice);
+        } else {
+            document.getElementById("assetsSection").style.display = "none";
+            document.getElementById("noResultsMessage").style.display = "none";
+        }
     }
 
-    // Global search function with type table hiding
-        function applyGlobalSearch() {
-        const searchValue = document.getElementById('searchInput').value.toLowerCase();
-        document.querySelectorAll(".equipment-type-section").forEach(section => {
-            const rows = section.querySelectorAll("tbody tr");
-            let rowMatchCount = 0;
+    function filterAssets(selectedType, selectedOffice) {
+        let hasResults = false;
 
-            rows.forEach(row => {
-                const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(" ");
-                const isVisible = rowText.includes(searchValue);
+        // Hide all equipment sections initially
+        document.querySelectorAll(".equipment-type-section").forEach(section => {
+            section.style.display = "none";
+        });
+
+        // Show only the matching equipment section
+        const equipmentSection = document.querySelector(`.equipment-type-section[data-type="${selectedType}"]`);
+        if (equipmentSection) {
+            equipmentSection.style.display = "block";
+            equipmentSection.querySelectorAll(".asset-row").forEach(row => {
+                const assetOffice = row.getAttribute("data-office");
+
+                // Show all rows if "Any" is selected, otherwise match specific office
+                const isVisible = (selectedOffice === "Any" || assetOffice === selectedOffice);
                 row.style.display = isVisible ? "" : "none";
-                    if ( i sVisible) rowMatchCount++;
+
+                if (isVisible) hasResults = true;
             });
+        }
 
-            // Hide the section if no rows match
-            section.style.display = rowMatchCount > 0 ? "block" : "none";
-    });
-    }
-
-    // Reset all filters
-    function resetAllFilters() {
-        document.getElementById('searchInput').value = '';
-        document.getElementById('assetTypeDropdown').value = '';
-        document.querySelectorAll(".equipment-type-section").forEach(section => {
-            section.style.display = "block";
-            section.querySelectorAll("tbody tr").forEach(row => row.style.display = "");
-        });
+        // Show or hide the no results message based on whether there are matching results
+        document.getElementById("assetsSection").style.display = hasResults ? "block" : "none";
+        document.getElementById("noResultsMessage").style.display = hasResults ? "none" : "block";
     }
 </script>
 
 <style>
+    .container-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 20px;
+
+    }
+
+    .form-container {
+        width: 1500px;
+        padding: 50px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        margin-top: 20px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
     .asset-table {
         width: 100%;
         border: solid 1px #ddd;
+        margin: 0 auto;
     }
 
     th, td {
@@ -116,14 +159,11 @@
             background-color: #dcdcdc;
         }
 
-    .bg-light {
-        background-color: #f8f9fa !important;
-    }
-
     .equipment-type-section {
         margin-bottom: 30px;
         padding: 15px;
         border: 1px solid #ddd;
         border-radius: 5px;
+        text-align: center;
     }
 </style>

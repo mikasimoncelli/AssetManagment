@@ -5,8 +5,12 @@
 </head>
 
 <body>
+    <div class="container-fluid d-flex justify-content-center align-items-center">
+        <div class="center-wrapper">
+            <div class="form-container">
     <div class="container">
         <h1 class="text-center display-4">Offices</h1>
+        <p class="text-center">Please select an office to view the assets for that location.</p>
         <table class="table">
             <thead>
                 <tr>
@@ -28,6 +32,20 @@
 </body>
 
 <style>
+    .form-container {
+        width: 2000px; /* Adjust width as needed */
+        padding: 50px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        margin-top: 20px;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        height: 100px;
+    }
+
     .table {
         width: 100%;
         border-collapse: collapse;

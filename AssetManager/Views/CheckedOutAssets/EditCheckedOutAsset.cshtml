@@ -1,16 +1,14 @@
 ﻿@model AssetManager.Models.CheckedOutAsset
 
-<div class="center-wrapper">
+<div class="container-wrapper">
     <form asp-action="EditCheckedOutAsset" method="post">
         <input type="hidden" name="CheckedOutID" value="@Model.CheckedOutID" />
 
-        <div class="form-container full-width">
-            <h4 class="text-center">Update Checked-Out Equipment</h4>
+        <div class="form-container">
+            <h1 class="text-center display-4">Update Loan Details</h1>
             <h5 class="text-center">@Model.Asset.Manufacturer - @Model.Asset.Description</h5>
-            <p class="text-center">Please review all details before making changes.</p>
 
-            <!-- Asset Information Section -->
-            <h5 class="mt-4">Asset Details</h5>
+            <h6 class="section-title">Asset Details</h6>
             <div class="form-group row">
                 <div class="col-md-6">
                     <label>Asset Description:</label>
@@ -32,8 +30,19 @@
                 </div>
             </div>
 
-            <!-- User Information Section -->
-            <h5 class="mt-4">User Details</h5>
+            <h6 class="section-title">Office Details</h6>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label>Office Name:</label>
+                    <p class="form-control-plaintext">@Model.Asset.Office?.OfficeName</p>
+                </div>
+                <div class="col-md-6">
+                    <label>Location:</label>
+                    <p class="form-control-plaintext">@Model.Asset.Office?.Location</p>
+                </div>
+            </div>
+
+            <h6 class="section-title">User Details</h6>
             <div class="form-group row">
                 <div class="col-md-6">
                     <label>User Name:</label>
@@ -45,21 +54,7 @@
                 </div>
             </div>
 
-            <!-- Office Information Section -->
-            <h5 class="mt-4">Office Details</h5>
-            <div class="form-group row">
-                <div class="col-md-6">
-                    <label>Office Name:</label>
-                    <p class="form-control-plaintext">@Model.Asset.Office.OfficeName</p>
-                </div>
-                <div class="col-md-6">
-                    <label>Location:</label>
-                    <p class="form-control-plaintext">@Model.Asset.Office.Location</p>
-                </div>
-            </div>
-
-            <!-- Input Fields for Due Date and Date Returned -->
-            <h5 class="mt-4">Update Details</h5>
+            <h6 class="section-title">Update Details</h6>
             <div class="form-group row">
                 <div class="col-md-6">
                     <label for="DueDate">Due Date:</label>
@@ -70,40 +65,92 @@
                     <input type="date" class="form-control" id="DateReturned" name="DateReturned" value="@Model.DateReturned?.ToString("yyyy-MM-dd")" />
                 </div>
             </div>
+            <p>Please review all details before making changes.</p>
 
-
-            <!-- Save button -->
-            <button type="submit" class="btn btn-primary btn-block mt-4">Save Changes</button>
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a asp-action="AllCheckedOutAssets" class="btn btn-secondary">Back to List</a>
+            </div>
         </div>
     </form>
 </div>
 
 <style>
-    .center-wrapper {
-        width: 100%;
+    .container-wrapper {
         display: flex;
         justify-content: center;
-        margin-top: 25px;
-        padding-top: 25px;
+        width: 100%;
+        padding: 20px;
     }
 
-    .form-container.full-width {
-        padding: 30px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #f9f9f9;
+    .form-container {
+        width: 1000px;
+        padding: 50px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     }
 
-    .list-group-item {
-        cursor: pointer;
+    .text-center {
+        margin-bottom: 30px;
     }
 
-        .list-group-item:hover {
-            background-color: #e9ecef;
-        }
+    .section-title {
+        border-bottom: 2px solid #ccc;
+        margin-top: 30px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
 
     label {
         font-weight: bold;
+        color: #333;
     }
+
+    .form-control-plaintext {
+        background-color: #e9ecef;
+        border: 1px solid #ccc;
+        padding: 15px;
+        border-radius: 4px;
+    }
+
+    .form-control {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 12px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+    }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9;
+        }
 </style>

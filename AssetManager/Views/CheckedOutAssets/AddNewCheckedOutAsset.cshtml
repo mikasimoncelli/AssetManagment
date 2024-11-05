@@ -3,18 +3,18 @@
     var users = ViewBag.Users as List<User>;
 }
 
-<div class="center-wrapper">
+<div class="container-wrapper">
     <form method="post" action="@Url.Action("AddNewCheckedOutAsset", "CheckedOutAssets")">
-        <div class="form-container full-width">
-            <h4 class="text-center">Assign Equipment to Staff Member Below</h4>
+        <div class="form-container">
+            <h1 class="text-center display-4">Assign Equipment to Staff Member</h1>
             <h5 class="text-center">@Model.Manufacturer - @Model.Description</h5>
-            <p class="text-center">Please double check all details are correct.</p>
+            <p class="text-center">Please double-check all details are correct.</p>
 
-            <h5 class="mt-4">Equipment Details</h5>
+            <h6 class="section-title">Equipment Details</h6>
             <div class="form-group row">
                 <div class="col-md-6">
-    <input type="hidden" name="assetID" value="@Model.AssetID" />
-    <input type="hidden" id="userID" name="UserID" />
+                    <input type="hidden" name="assetID" value="@Model.AssetID" />
+                    <input type="hidden" id="userID" name="UserID" />
                     <label>Description:</label>
                     <p class="form-control-plaintext">@Model.Description</p>
                 </div>
@@ -34,7 +34,7 @@
                 </div>
             </div>
 
-            <h5 class="mt-4">Office Details</h5>
+            <h6 class="section-title">Office Details</h6>
             <div class="form-group row">
                 <div class="col-md-6">
                     <label>Office Name:</label>
@@ -47,11 +47,11 @@
             </div>
 
             <div class="form-group row">
-                <label>Please enter a Due Date for the item to be returned (Optional) :</label>
+                <label for="DueDate">Due Date (Optional):</label>
                 <input type="date" class="form-control" name="DueDate" id="DueDate" />
             </div>
 
-            <h5 class="mt-4">Select User</h5>
+            <h6 class="section-title">Select User</h6>
             <input type="text" id="userSearchInput" class="form-control" placeholder="Search for a user..." onkeyup="searchUsers()" />
             <ul id="userList" class="list-group mt-2" style="display: none;">
                 @foreach (var user in users)
@@ -86,7 +86,9 @@
                 <button type="button" class="btn btn-secondary mt-3" onclick="deselectUser()">Deselect User</button>
             </div>
 
-            <button type="button" class="btn btn-warning btn-block mt-4" onclick="confirmSave()">Save Changes</button>
+            <div class="button-group">
+                <button type="button" class="btn btn-primary" onclick="confirmSave()">Save Changes</button>
+            </div>
         </div>
     </form>
 </div>
@@ -96,16 +98,32 @@
         function searchUsers() {
             const searchInput = document.getElementById("userSearchInput").value.toLowerCase();
             const userList = document.getElementById("userList");
-            const userListItems = userList.querySelectorAll("li");
+            const userListItems = Array.from(userList.querySelectorAll("li"));
 
+            console.log("Search input:", searchInput); // Log input
+            console.log("User list items count:", userListItems.length); // Log items count
+
+            // Show or hide the list based on input
             userList.style.display = searchInput ? "block" : "none";
 
+            let matchesFound = false;
             userListItems.forEach(item => {
-                const firstName = item.dataset.firstName.toLowerCase();
-                const lastName = item.dataset.lastName.toLowerCase();
+                const firstName = item.getAttribute("data-first-name").toLowerCase();
+                const lastName = item.getAttribute("data-last-name").toLowerCase();
                 const fullName = `${firstName} ${lastName}`;
-                item.style.display = fullName.includes(searchInput) ? "" : "none";
+
+                if (fullName.includes(searchInput)) {
+                    item.style.display = ""; // Show matching item
+                    matchesFound = true;
+                } else {
+                    item.style.display = "none"; // Hide non-matching item
+                }
             });
+
+            // Hide list if no matches found
+            if (!matchesFound) {
+                userList.style.display = "none";
+            }
         }
 
         function selectUser(userElement) {
@@ -115,9 +133,7 @@
             document.getElementById("userDetails").style.display = "block";
             document.getElementById("userSearchInput").value = "";
             document.getElementById("userList").style.display = "none";
-
             document.getElementById("userID").value = userElement.dataset.userId;
-
         }
 
         function deselectUser() {
@@ -140,20 +156,82 @@
 }
 
 <style>
-    .center-wrapper {
-        width: 100%;
+    .container-wrapper {
         display: flex;
         justify-content: center;
-        margin-top: 25px;
-        padding-top: 25px;
+        width: 100%;
+        padding: 20px;
     }
 
-    .form-container.full-width {
-        padding: 30px;
+    .form-container {
+        width: 1000px;
+        padding: 50px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .text-center {
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        border-bottom: 2px solid #ccc;
+        margin-top: 30px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-control-plaintext {
+        background-color: #e9ecef;
         border: 1px solid #ccc;
-        border-radius: 10px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 4px;
+    }
+
+    .form-control {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 12px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+    }
+
+    .btn-primary:hover, .btn-secondary:hover {
+        opacity: 0.9;
     }
 
     .list-group-item {
@@ -162,9 +240,5 @@
 
     .list-group-item:hover {
         background-color: #e9ecef;
-    }
-
-    label {
-        font-weight: bold;
     }
 </style>

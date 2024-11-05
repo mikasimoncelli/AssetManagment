@@ -2,12 +2,12 @@
 <br /><br />
 
     <div class="form-container">
-    <h5 class="text-center">@Model.FirstName @Model.LastName</h5>
+    <h5 class="text-center display-4">@Model.FirstName @Model.LastName</h5>
     <p class="text-center">@Model.Email</p>
 
     <form method="post" action="@Url.Action("UpdateUser", "Users")" class="mt-4">
         <input type="hidden" name="UserID" value="@Model.UserID" />
-        <p style="color:red;">Edit User details below by updating information and clicking Save Changes.</p>
+        <p>Edit User details below by updating information and clicking Save Changes.</p>
 
         <div class="form-group">
             <label for="FirstName">First Name</label>
@@ -24,7 +24,7 @@
             <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" placeholder="Enter email" />
         </div>
 
-        <button type="submit" class="btn btn-warning btn-block">Save Changes</button>
+        <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
     </form>
 
     <br />
@@ -47,7 +47,7 @@
         padding-top: 20px;
         margin: 0 auto;
         padding: 30px;
-        max-width: 600px;
+        max-width: 1000px;
         border: 1px solid #ccc;
         border-radius: 10px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);

@@ -4,40 +4,42 @@
     <form asp-action="EditAssetDamage" method="post">
         <input type="hidden" asp-for="AssetDamageID" />
         <div class="form-container">
-            <h2 class="text-center">Edit Damage Report</h2>
+            <h1 class="text-center display-4">Edit Damage Report</h1>
 
-            <h4 class="section-title">Equipment Details</h4>
-            <div class="form-group row">
-                <div class="col-md-4">
-                    <label>Description:</label>
-                    <p class="form-control-plaintext">@Model.Asset?.Description</p>
+            <h4 class="section-title display-6">Equipment Details</h4>
+            <div class="equipment-details-box">
+                <div class="form-group row">
+                    <div class="col-md-4">
+                        <label>Description:</label>
+                        <p class="form-control-plaintext">@Model.Asset?.Description</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Manufacturer:</label>
+                        <p class="form-control-plaintext">@Model.Asset?.Manufacturer</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Asset Number:</label>
+                        <p class="form-control-plaintext">@Model.Asset?.AssetNumber</p>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <label>Manufacturer:</label>
-                    <p class="form-control-plaintext">@Model.Asset?.Manufacturer</p>
-                </div>
-                <div class="col-md-4">
-                    <label>Asset Number:</label>
-                    <p class="form-control-plaintext">@Model.Asset?.AssetNumber</p>
+
+                <div class="form-group row">
+                    <div class="col-md-4">
+                        <label>Serial Number:</label>
+                        <p class="form-control-plaintext">@Model.Asset?.SerialNumber</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Office Name:</label>
+                        <p class="form-control-plaintext">@Model.Asset?.Office?.OfficeName</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Location:</label>
+                        <p class="form-control-plaintext">@Model.Asset?.Office?.Location</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group row">
-                <div class="col-md-4">
-                    <label>Serial Number:</label>
-                    <p class="form-control-plaintext">@Model.Asset?.SerialNumber</p>
-                </div>
-                <div class="col-md-4">
-                    <label>Office Name:</label>
-                    <p class="form-control-plaintext">@Model.Asset?.Office?.OfficeName</p>
-                </div>
-                <div class="col-md-4">
-                    <label>Location:</label>
-                    <p class="form-control-plaintext">@Model.Asset?.Office?.Location</p>
-                </div>
-            </div>
-
-            <h4 class="section-title">Damage Report Details</h4>
+            <h4 class="section-title display-6">Damage Report Details</h4>
 
             <div class="form-group row">
                 <div class="col-md-6">
@@ -81,8 +83,8 @@
     }
 
     .form-container {
-        width: 1000px; 
-        padding: 50px; 
+        width: 1000px;
+        padding: 50px;
         border: 1px solid #ddd;
         border-radius: 8px;
         background-color: #fdfdfd;
@@ -90,18 +92,13 @@
     }
 
     h2.text-center {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 30px; 
+        margin-bottom: 30px;
     }
 
     .section-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #555;
         border-bottom: 2px solid #ccc;
         margin-top: 30px;
-        margin-bottom: 20px; 
+        margin-bottom: 20px;
         padding-bottom: 10px;
     }
 
@@ -110,36 +107,41 @@
         color: #333;
     }
 
+    .equipment-details-box {
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
     .form-control-plaintext {
-        background-color: #e9ecef;
-        padding: 15px; 
+        background-color: #e9ecef; 
+        border: 1px solid #ccc;
+        padding: 15px;
         border-radius: 4px;
     }
 
     .form-control {
+        background-color: #fff; 
         border-radius: 4px;
-        padding: 12px; 
-    }
-
-    textarea.form-control {
-        min-height: 100px; 
+        padding: 12px;
+        border: 1px solid #ccc;
     }
 
     .form-group {
-        margin-bottom: 20px; 
+        margin-bottom: 20px;
     }
 
     .button-group {
         display: flex;
         justify-content: space-between;
-        margin-top: 30px; 
+        margin-top: 30px;
     }
 
     .btn-primary {
         background-color: #007bff;
         color: #fff;
         border: none;
-        padding: 12px 24px; 
+        padding: 12px 24px;
         border-radius: 4px;
     }
 
@@ -151,9 +153,7 @@
         border-radius: 4px;
     }
 
-    .btn-primary:hover, .btn-secondary:hover {
-        opacity: 0.9;
-    }
-
-
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9;
+        }
 </style>

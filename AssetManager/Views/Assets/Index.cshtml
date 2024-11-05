@@ -1,15 +1,15 @@
 ﻿
 @model List<AssetManager.Models.Asset>
 
-<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
-    <br />
-    <h2 class="text-center mt-4 mb-4 display-4">View All Assets</h2>
-    <p class="text-center">View all assets in inventory below. Use filter and search to refine your results.</p>
+<div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 100vh; padding: 0 20px;">
+    <div class="center-wrapper">
+        <div class="form-container">
+            <h2 class="text-center mt-4 mb-4 display-4">View All Assets</h2>
+            <p class="text-center">View all assets in inventory below. Use filter and search to refine your results.</p>
 
 
 
     <div class="row justify-content-center">
-
         <div class="col-md-10">
             <h6 for="equipmentTypeDropdown" class="form-label">Filter Types:</h6>
             <select id="equipmentTypeDropdown" class="form-control mb-3" onchange="showSelectedType()">
@@ -24,8 +24,8 @@
             <div class="input-group mb-3">
                 <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" />
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" onclick="resetAllFilters()">
-                        Reset
+                    <button type="button" class="btn btn-primary ms-2" onclick="resetAllFilters()">
+                        Reset Search
                     </button>
                 </div>
             </div>
@@ -34,15 +34,14 @@
 
 
 
-
     <div class="row justify-content-center">
         <div class="col-md-10">
             @foreach (var group in Model.GroupBy(a => a.EquipmentType))
             {
                 <div class="equipment-type-section" data-type="@group.Key">
-                    <h4 class="text-center mt-4 mb-3">@group.Key</h4>
+                    <h4 class="text-center mt-4 mb-3 display-6">@($"{group.Key}s")</h4>
                     <div class="table-responsive">
-                        <table class="table text-center table-sm assetTable">
+                        <table class="table text-center table-sm assetTable table-bordered">
                             <thead class="thead-dark">
                                 <tr style="background-color: #0d6efd; color: #fff;">
                                     <th>AssetID</th>
@@ -132,7 +131,9 @@
         </div>
     </div>
 
-
+    </div>
+    </div>
+    </div>
 
     <script>
         const filterValues = {};
@@ -140,7 +141,6 @@
         function showSelectedType() {
             const selectedType = document.getElementById("equipmentTypeDropdown").value;
 
-            // Show all sections if no type is selected
             document.querySelectorAll(".equipment-type-section").forEach(section => {
                 section.style.display = selectedType && section.getAttribute("data-type") !== selectedType ? "none" : "block";
             });
@@ -254,6 +254,23 @@
     </script>
 
     <style>
+
+
+
+        .form-container {
+            width: 2000px; 
+            padding: 50px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+            margin-top: 20px;
+            justify-content: center;
+            align-items: center;
+        min-height: 100vh;
+        }
+
+
         .equipment-type-section {
             margin-bottom: 30px;
             border: 1px solid #ddd;
@@ -275,7 +292,6 @@
         }
 
         table {
-            background-color: lightgrey; /* Choose any color */
         }
 
             tr:hover {
