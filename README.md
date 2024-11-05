@@ -1,6 +1,6 @@
 # Asset Manager
 
-Asset Manager is an ASP.NET MVC application designed to efficiently track and manage company assets. It provides a user-friendly interface for adding, editing, and viewing assets, along with powerful filtering and search capabilities. The application includes features for assigning assets on loan, tracking previously loaned assets, reporting damaged assets, maintaining up-to-date damage records, and recording disposed assets.
+Asset Manager is an ASP.NET MVC application designed to efficiently track and manage company assets. It provides a user-friendly interface for adding, editing, and viewing assets, along with efficient filtering and search capabilities. The application includes features for assigning assets on loan, tracking previously loaned assets, reporting damaged assets, maintaining up-to-date damage records, and recording disposed assets.
 
 ## Features
 
