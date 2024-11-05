@@ -15,6 +15,15 @@ Asset Manager is an ASP.NET MVC application designed to efficiently track and ma
 <br>
 <img width="1896" alt="image" src="https://github.com/user-attachments/assets/3c116c54-13fb-475d-bf18-a9f85a66849a">
 
+
+## Technologies Used
+
+- **ASP.NET Core MVC**: Backend framework for handling server-side logic.
+- **Entity Framework Core**: ORM for managing database access and persistence.
+- **SQL Server**: Database for storing asset data.
+- **Bootstrap**: CSS framework for building responsive layouts.
+- **jQuery**: For client-side functionality such as search and filter.
+
 ## Database Structure
 
 The database includes the following tables:
@@ -28,14 +37,6 @@ The database includes the following tables:
 
 <img width="842" alt="image" src="https://github.com/user-attachments/assets/3b01368f-dea8-4f61-8989-9b382e1abd7d">
 
-
-## Technologies Used
-
-- **ASP.NET Core MVC**: Backend framework for handling server-side logic.
-- **Entity Framework Core**: ORM for managing database access and persistence.
-- **SQL Server**: Database for storing asset data.
-- **Bootstrap**: CSS framework for building responsive layouts.
-- **jQuery**: For client-side functionality such as search and filter.
 
 ## Getting Started
 
