@@ -56,3 +56,16 @@ To run this project, you'll need:
    ```bash
    git clone https://github.com/mikasimoncelli/AssetManagment.git
    cd AssetManagment
+
+
+## Prototype Side-nav designs:
+
+<img width="1896" alt="image" src="https://github.com/user-attachments/assets/f103aea2-2a6a-4920-81bb-fc376c42a0ab">
+
+<img width="1884" alt="image" src="https://github.com/user-attachments/assets/6db7d62d-4214-4f49-ae45-da2a54cc2270">
+
+<img width="1887" alt="image" src="https://github.com/user-attachments/assets/cefeccca-dbce-4f69-81f1-eee39a690bdc">
+
+
+
+
