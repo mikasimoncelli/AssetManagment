@@ -65,7 +65,7 @@
                                 data-description="@asset.Description.ToLower()"
                                 data-manufacturer="@asset.Manufacturer.ToLower()"
                                 data-assetnumber="@asset.AssetNumber.ToLower()"
-                                onclick="window.location.href='@Url.Action("AssetDamages", "Assets", new { assetID = asset.AssetID })'">
+                                onclick="window.location.href='@Url.Action("AssetDamages", "Damages", new { assetID = asset.AssetID })'">
                                 <td>@asset.Description</td>
                                 <td>@asset.Manufacturer</td>
                                 <td>@asset.AssetNumber</td>

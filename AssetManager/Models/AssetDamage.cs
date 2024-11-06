@@ -13,6 +13,8 @@ namespace AssetManager.Models
         public DateTime? RepairDate { get; set; }
 
         public Asset Asset { get; set; }
+
+
     }
 
 }

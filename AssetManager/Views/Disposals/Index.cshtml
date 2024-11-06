@@ -1,0 +1,135 @@
+﻿@model IEnumerable<AssetManager.Models.AssetDisposal>
+
+<div class="container-wrapper">
+    <div class="form-container">
+        <h3 class="text-center mt-4 mb-4 display-4 pb-3">All Disposed Assets</h3>
+
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-10">
+                <h6 class="form-label">Filter by Asset Type:</h6>
+                <select id="assetTypeDropdown" class="form-control mb-3" onchange="filterAssetType()">
+                    <option value="">All Asset Types</option>
+                    @foreach (var type in Model.Select(m => m.Asset?.EquipmentType).Distinct())
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </select>
+
+                <div class="input-group mb-3">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search disposed assets..." onkeyup="applyGlobalSearch()" style="margin-right: 20px;" />
+                    <button type="button" class="btn btn-primary" onclick="resetAllFilters()">Reset Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h6>
+                    View all reported disposed assets below. Click an asset to open and edit the disposal report:
+                </h6>
+                <div class="table-responsive">
+                    <div class="equipment-type-section">
+                        <table class="table table-bordered text-center table-sm asset-table">
+                            <thead>
+                                <tr style="background-color: #0d6efd; color: #fff;">
+                                    <th>Disposal Reason</th>
+                                    <th>Asset Type</th>
+                                    <th>Manufacturer</th>
+                                    <th>Asset Number</th>
+                                    <th>Serial Number</th>
+                                    <th>Date Disposed</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var assetDisposal in Model)
+                                {
+                                    <tr onclick="window.location.href='@Url.Action("EditAssetDisposal", "Disposals", new { id = assetDisposal.AssetDisposalID })'" style="cursor: pointer;">
+                                        <td>@assetDisposal.DisposalReason</td>
+                                        <td>@assetDisposal.Asset?.EquipmentType</td>
+                                        <td>@assetDisposal.Asset?.Manufacturer</td>
+                                        <td>@assetDisposal.Asset?.AssetNumber</td>
+                                        <td>@assetDisposal.Asset?.SerialNumber</td>
+                                        <td>@assetDisposal.DisposalDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@assetDisposal.Notes</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filter by asset type
+    function filterAssetType() {
+        const selectedType = document.getElementById("assetTypeDropdown").value.toLowerCase();
+        document.querySelectorAll(".asset-table tbody tr").forEach(row => {
+            const assetType = row.cells[1].textContent.toLowerCase();
+            row.style.display = selectedType && assetType !== selectedType ? "none" : "";
+        });
+    }
+
+    // Global search function
+    function applyGlobalSearch() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll(".asset-table tbody tr").forEach(row => {
+            const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(" ");
+            row.style.display = rowText.includes(searchValue) ? "" : "none";
+        });
+    }
+
+    // Reset all filters
+    function resetAllFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('assetTypeDropdown').value = '';
+        document.querySelectorAll(".asset-table tbody tr").forEach(row => row.style.display = "");
+    }
+</script>
+
+<style>
+    .container-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 20px;
+        min-height: 100vh;
+    }
+
+    .form-container {
+        width: 2100px;
+        padding: 20px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .container-fluid {
+        background-color: #f8f9fa;
+    }
+
+    .asset-table {
+        width: 100%;
+        border: solid 1px #ddd;
+    }
+
+    th, td {
+        padding: 8px;
+        cursor: pointer;
+    }
+
+    th:hover, tr:hover {
+        background-color: #dcdcdc;
+    }
+
+    .equipment-type-section {
+        margin-bottom: 30px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+</style>

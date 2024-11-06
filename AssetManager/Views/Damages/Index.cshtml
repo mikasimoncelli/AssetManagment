@@ -2,7 +2,7 @@
 
 <div class="container-wrapper">
     <div class="form-container">
-        <h3 class="text-center mt-4 mb-4 display-4 border-bottom border-1 border-dark pb-3">All Damaged Assets</h3>
+        <h3 class="text-center mt-4 mb-4 display-4 pb-3">All Damaged Assets</h3>
 
     <div class="row justify-content-center mb-3">
         <div class="col-md-10">
@@ -49,7 +49,7 @@
                         <tbody>
                             @foreach (var assetDamage in Model)
                             {
-                                <tr onclick="window.location.href='@Url.Action("EditAssetDamage", "Assets", new { id = assetDamage.AssetDamageID })'" style="cursor: pointer;">
+                                <tr onclick="window.location.href='@Url.Action("EditAssetDamage", "Damages", new { id = assetDamage.AssetDamageID })'" style="cursor: pointer;">
                                     <td>@assetDamage.RepairStatus</td>
 
                                     <td>@assetDamage.DamageDescription</td>

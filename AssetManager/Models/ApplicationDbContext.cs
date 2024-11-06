@@ -18,6 +18,8 @@ namespace AssetManager.Models
 
         public DbSet<AssetDamage> AssetDamages { get; set; }
 
+        public DbSet<AssetDisposal> AssetDisposals { get; set; }
+
 
 
     }
