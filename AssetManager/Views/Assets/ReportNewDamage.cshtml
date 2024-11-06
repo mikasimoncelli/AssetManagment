@@ -1,0 +1,152 @@
+﻿@model IEnumerable<AssetManager.Models.Asset>
+
+<div class="container-wrapper">
+    <div class="form-container">
+        <h3 class="text-center mb-4 display-4">Report New Damage</h3>
+        <p class="text-center">Use the search bar to find an asset or filter by type and location to report damage.</p>
+
+        <!-- Search Bar (above filters) -->
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-6">
+                <label for="searchBar" class="form-label">Search All Columns:</label>
+                <input type="text" id="searchBar" class="form-control mb-3" onkeyup="applyFilters()" placeholder="Search by any column">
+            </div>
+        </div>
+
+        <!-- Filters for Asset Type and Office -->
+        <div class="row justify-content-center mb-3">
+            <!-- Asset Type Dropdown -->
+            <div class="col-md-4">
+                <label for="assetTypeDropdown" class="form-label">Select Asset Type:</label>
+                <select id="assetTypeDropdown" class="form-control mb-3" onchange="applyFilters()">
+                    <option value="All">All Types</option>
+                    @foreach (var type in ViewBag.EquipmentTypes)
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Office Dropdown -->
+            <div class="col-md-4">
+                <label for="officeDropdown" class="form-label">Select Office:</label>
+                <select id="officeDropdown" class="form-control mb-3" onchange="applyFilters()">
+                    <option value="Any">Any</option>
+                    @foreach (var office in ViewBag.Offices)
+                    {
+                        <option value="@office">@office</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div id="noResultsMessage" class="text-center mt-4" style="display: none;">
+            <p>Sorry, no results.</p>
+        </div>
+
+        <!-- Assets Table (initially hidden) -->
+        <div id="assetsSection" style="display: none;">
+            <div class="table-responsive">
+                <table class="table table-bordered text-center table-sm asset-table">
+                    <thead>
+                        <tr style="background-color: #0d6efd; color: #fff;">
+                            <th>Description</th>
+                            <th>Manufacturer</th>
+                            <th>Asset Number</th>
+                            <th>Office Name</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assetsTableBody">
+                        @foreach (var asset in Model)
+                        {
+                            <tr class="asset-row"
+                                data-type="@asset.EquipmentType"
+                                data-office="@asset.Office.OfficeName"
+                                data-description="@asset.Description.ToLower()"
+                                data-manufacturer="@asset.Manufacturer.ToLower()"
+                                data-assetnumber="@asset.AssetNumber.ToLower()"
+                                onclick="window.location.href='@Url.Action("AssetDamages", "Assets", new { assetID = asset.AssetID })'">
+                                <td>@asset.Description</td>
+                                <td>@asset.Manufacturer</td>
+                                <td>@asset.AssetNumber</td>
+                                <td>@asset.Office.OfficeName</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function applyFilters() {
+        const selectedType = document.getElementById("assetTypeDropdown").value;
+        const selectedOffice = document.getElementById("officeDropdown").value;
+        const searchText = document.getElementById("searchBar").value.toLowerCase();
+
+        let hasResults = false;
+        let hasFilter = searchText || selectedType !== "All" || selectedOffice !== "Any";
+
+        document.querySelectorAll(".asset-row").forEach(row => {
+            const assetType = row.getAttribute("data-type");
+            const assetOffice = row.getAttribute("data-office");
+            const assetDescription = row.getAttribute("data-description");
+            const assetManufacturer = row.getAttribute("data-manufacturer");
+            const assetNumber = row.getAttribute("data-assetnumber");
+
+            const matchesType = (selectedType === "All" || assetType === selectedType);
+            const matchesOffice = (selectedOffice === "Any" || assetOffice === selectedOffice);
+
+            const matchesSearch = (
+                assetDescription.includes(searchText) ||
+                assetManufacturer.includes(searchText) ||
+                assetNumber.includes(searchText) ||
+                assetOffice.toLowerCase().includes(searchText)
+            );
+
+            const isVisible = matchesType && matchesOffice && matchesSearch;
+            row.style.display = isVisible ? "" : "none";
+
+            if (isVisible) hasResults = true;
+        });
+
+        // Display assets table only if there are filters or search input
+        document.getElementById("assetsSection").style.display = hasFilter && hasResults ? "block" : "none";
+        document.getElementById("noResultsMessage").style.display = hasFilter && !hasResults ? "block" : "none";
+    }
+</script>
+
+<style>
+    .container-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 20px;
+        min-height: 100vh;
+    }
+
+    .form-container {
+        width: 2100px;
+        padding: 20px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .asset-table {
+        width: 100%;
+        border: solid 1px #ddd;
+        margin: 0 auto;
+    }
+
+    th, td {
+        cursor: pointer;
+        padding: 8px;
+    }
+
+        th:hover, tr:hover {
+            background-color: #dcdcdc;
+        }
+</style>

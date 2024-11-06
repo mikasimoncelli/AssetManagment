@@ -197,4 +197,19 @@ public class AssetsController : Controller
     }
 
 
+    [HttpGet]
+    public IActionResult ReportNewDamage()
+    {
+        var assets = _context.Assets.Include(a => a.Office).ToList();
+        var equipmentTypes = assets.Select(a => a.EquipmentType).Distinct().ToList();
+        var offices = assets.Select(a => a.Office.OfficeName).Distinct().ToList();
+
+        ViewBag.EquipmentTypes = equipmentTypes;
+        ViewBag.Offices = offices;
+
+        return View(assets);
+    }
+
+
+
 }

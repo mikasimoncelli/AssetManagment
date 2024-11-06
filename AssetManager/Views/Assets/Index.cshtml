@@ -1,139 +1,137 @@
 ﻿
 @model List<AssetManager.Models.Asset>
 
-<div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 100vh; padding: 0 20px;">
-    <div class="center-wrapper">
-        <div class="form-container">
-            <h2 class="text-center mt-4 mb-4 display-4">View All Assets</h2>
-            <p class="text-center">View all assets in inventory below. Use filter and search to refine your results.</p>
+<div class="container-wrapper">
+    <div class="form-container">
+        <h2 class="text-center mt-4 mb-4 display-4">View All Assets</h2>
+        <p class="text-center pb-3">View all assets in inventory below. Use filter and search to refine your results.</p>
 
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-4">
+                <h6 for="equipmentTypeDropdown" class="form-label" style="font-size: 1.1rem;">
+                    Filter by Equipment Type:
+                </h6>
+                <select id="equipmentTypeDropdown" class="form-control mb-3" onchange="showSelectedType()">
+                    <option value="">Select Equipment Type</option>
+                    @foreach (var type in Model.Select(a => a.EquipmentType).Distinct())
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </select>
+            </div>
 
-
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <h6 for="equipmentTypeDropdown" class="form-label">Filter Types:</h6>
-            <select id="equipmentTypeDropdown" class="form-control mb-3" onchange="showSelectedType()">
-                <option value="">Select Equipment Type</option>
-                @foreach (var type in Model.Select(a => a.EquipmentType).Distinct())
-                {
-                    <option value="@type">@type</option>
-                }
-            </select>
-
-            <h6 for="searchInput" class="form-label">Search for Asset:</h6>
-            <div class="input-group mb-3">
-                <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" />
-                <div class="input-group-append">
-                    <button type="button" class="btn btn-primary ms-2" onclick="resetAllFilters()">
-                        Reset Search
-                    </button>
+            <div class="col-md-6">
+                <h6 for="searchInput" class="form-label" style="font-size: 1.1rem;">Search for Asset:</h6>
+                <div class="input-group mb-3">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search assets..." onkeyup="applyGlobalSearch()" />
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-primary ms-2" onclick="resetAllFilters()">
+                            Reset Search
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-
-
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            @foreach (var group in Model.GroupBy(a => a.EquipmentType))
-            {
-                <div class="equipment-type-section" data-type="@group.Key">
-                    <h4 class="text-center mt-4 mb-3 display-6">@($"{group.Key}s")</h4>
-                    <div class="table-responsive">
-                        <table class="table text-center table-sm assetTable table-bordered">
-                            <thead class="thead-dark">
-                                <tr style="background-color: #0d6efd; color: #fff;">
-                                    <th>AssetID</th>
-                                    <th onclick="applySort(this, 1)">Description</th>
-                                    <th onclick="applySort(this, 2)">Manufacturer</th>
-                                    <th onclick="applySort(this, 3)">Asset Number</th>
-                                    <th onclick="applySort(this, 4)">Serial Number</th>
-                                    <th onclick="applySort(this, 5)">Office Name</th>
-                                    <th onclick="applySort(this, 6)">Office Location</th>
-                                </tr>
-                                <tr>
-                                    <th></th> 
-                                    <th>
-                                        <select onchange="applyColumnFilter(this, 1)">
-                                            <option value="">All</option>
-                                            @foreach (var description in group.Select(a => a.Description).Distinct())
-                                            {
-                                                <option value="@description">@description</option>
-                                            }
-                                        </select>
-                                    </th>
-                                    <th>
-                                        <select onchange="applyColumnFilter(this, 2)">
-                                            <option value="">All</option>
-                                            @foreach (var manufacturer in group.Select(a => a.Manufacturer).Distinct())
-                                            {
-                                                <option value="@manufacturer">@manufacturer</option>
-                                            }
-                                        </select>
-                                    </th>
-                                    <th>
-                                        <select onchange="applyColumnFilter(this, 3)">
-                                            <option value="">All</option>
-                                            @foreach (var assetNumber in group.Select(a => a.AssetNumber).Distinct())
-                                            {
-                                                <option value="@assetNumber">@assetNumber</option>
-                                            }
-                                        </select>
-                                    </th>
-                                    <th>
-                                        <select onchange="applyColumnFilter(this, 4)">
-                                            <option value="">All</option>
-                                            @foreach (var serialNumber in group.Select(a => a.SerialNumber).Distinct())
-                                            {
-                                                <option value="@serialNumber">@serialNumber</option>
-                                            }
-                                        </select>
-                                    </th>
-                                    <th>
-                                        <select onchange="applyColumnFilter(this, 5)">
-                                            <option value="">All</option>
-                                            @foreach (var officeName in group.Select(a => a.Office.OfficeName).Distinct())
-                                            {
-                                                <option value="@officeName">@officeName</option>
-                                            }
-                                        </select>
-                                    </th>
-                                    <th>
-                                        <select onchange="applyColumnFilter(this, 6)">
-                                            <option value="">All</option>
-                                            @foreach (var location in group.Select(a => a.Office.Location).Distinct())
-                                            {
-                                                <option value="@location">@location</option>
-                                            }
-                                        </select>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var asset in group)
-                                {
-                                    <tr onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = asset.AssetID })'">
-                                        <td>@asset.AssetID</td>
-                                        <td>@asset.Description</td>
-                                        <td>@asset.Manufacturer</td>
-                                        <td>@asset.AssetNumber</td>
-                                        <td>@asset.SerialNumber</td>
-                                        <td>@asset.Office.OfficeName</td>
-                                        <td>@asset.Office.Location</td>
+        <!-- Assets Table Section -->
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                @foreach (var group in Model.GroupBy(a => a.EquipmentType))
+                {
+                    <div class="equipment-type-section" data-type="@group.Key">
+                        <h4 class="text-center mt-4 mb-3 display-6">@($"{group.Key}s")</h4>
+                        <div class="table-responsive">
+                            <table class="table text-center table-sm assetTable table-bordered bg-white">
+                                <thead class="thead-dark">
+                                    <tr style="background-color: #0d6efd; color: #fff;">
+                                        <th>AssetID</th>
+                                        <th onclick="applySort(this, 1)">Description</th>
+                                        <th onclick="applySort(this, 2)">Manufacturer</th>
+                                        <th onclick="applySort(this, 3)">Asset Number</th>
+                                        <th onclick="applySort(this, 4)">Serial Number</th>
+                                        <th onclick="applySort(this, 5)">Office Name</th>
+                                        <th onclick="applySort(this, 6)">Office Location</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    <tr>
+                                        <th></th>
+                                        <th>
+                                            <select onchange="applyColumnFilter(this, 1)">
+                                                <option value="">All</option>
+                                                @foreach (var description in group.Select(a => a.Description).Distinct())
+                                                {
+                                                    <option value="@description">@description</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th>
+                                            <select onchange="applyColumnFilter(this, 2)">
+                                                <option value="">All</option>
+                                                @foreach (var manufacturer in group.Select(a => a.Manufacturer).Distinct())
+                                                {
+                                                    <option value="@manufacturer">@manufacturer</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th>
+                                            <select onchange="applyColumnFilter(this, 3)">
+                                                <option value="">All</option>
+                                                @foreach (var assetNumber in group.Select(a => a.AssetNumber).Distinct())
+                                                {
+                                                    <option value="@assetNumber">@assetNumber</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th>
+                                            <select onchange="applyColumnFilter(this, 4)">
+                                                <option value="">All</option>
+                                                @foreach (var serialNumber in group.Select(a => a.SerialNumber).Distinct())
+                                                {
+                                                    <option value="@serialNumber">@serialNumber</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th>
+                                            <select onchange="applyColumnFilter(this, 5)">
+                                                <option value="">All</option>
+                                                @foreach (var officeName in group.Select(a => a.Office.OfficeName).Distinct())
+                                                {
+                                                    <option value="@officeName">@officeName</option>
+                                                }
+                                            </select>
+                                        </th>
+                                        <th>
+                                            <select onchange="applyColumnFilter(this, 6)">
+                                                <option value="">All</option>
+                                                @foreach (var location in group.Select(a => a.Office.Location).Distinct())
+                                                {
+                                                    <option value="@location">@location</option>
+                                                }
+                                            </select>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var asset in group)
+                                    {
+                                        <tr onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = asset.AssetID })'">
+                                            <td>@asset.AssetID</td>
+                                            <td>@asset.Description</td>
+                                            <td>@asset.Manufacturer</td>
+                                            <td>@asset.AssetNumber</td>
+                                            <td>@asset.SerialNumber</td>
+                                            <td>@asset.Office.OfficeName</td>
+                                            <td>@asset.Office.Location</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
         </div>
     </div>
-
-    </div>
-    </div>
-    </div>
+</div>
 
     <script>
         const filterValues = {};
@@ -253,80 +251,50 @@
         }
     </script>
 
-    <style>
+<style>
+    .container-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 20px;
+    }
 
+    .form-container {
+        width: 2100px;
+        padding: 20px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
 
+    .asset-table {
+        width: 100%;
+        border: solid 1px #ddd;
+        margin: 0 auto;
+    }
 
-        .form-container {
-            width: 2000px; 
-            padding: 50px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fdfdfd;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-            margin-top: 20px;
-            justify-content: center;
-            align-items: center;
-        min-height: 100vh;
-        }
+    th, td {
+        cursor: pointer;
+        padding: 8px;
+    }
 
-
-        .equipment-type-section {
-            margin-bottom: 30px;
-            border: 1px solid #ddd;
-        }
-
-        h4 {
-            color: #333;
-            font-weight: bold;
-            padding-bottom: 5px;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            width: 14.3%;
-        }
-
-        tr {
-            cursor: pointer;
-        }
-
-        table {
-        }
-
-            tr:hover {
-                background-color: #f5f5f5;
-            }
-
-        th {
-            cursor: pointer;
-        }
-
-        .assetTable th {
-            border: none;
-        }
-
-        thead {
-        }
-
-        th:hover {
+        th:hover, tr:hover {
             background-color: #dcdcdc;
         }
 
-        .equipment-type-section {
-            margin-bottom: 30px;
-            padding: 15px; 
-            border-radius: 5px; 
-        }
+    .equipment-type-section {
+        margin-bottom: 30px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+        text-align: center;
+    }
 
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #555;
-            border-bottom: 2px solid #ccc;
-            margin-top: 30px;
-            margin-bottom: 20px; 
-            padding-bottom: 10px;
-        }
-
-    </style>
+    h4 {
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+</style>

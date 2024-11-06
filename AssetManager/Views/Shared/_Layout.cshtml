@@ -10,11 +10,11 @@
 
 <body>
     <div class="d-flex" style="min-height: 100vh;">
-        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 320px;">
+        <div class="d-flex flex-column flex-shrink-0 p-3 bg-dark sidebar" style="width: 320px;">
             <a href="@Url.Action("Index", "Home")"
                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
                 <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-                <span class="display-6">Asset Management</span>
+                <span class="display-5 text-white">Asset Manager</span>
             </a>
             <hr>
 
@@ -33,7 +33,6 @@
                         <ul class="list-unstyled fw-normal pt-2">
                             <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
                             <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
-                            <li><a asp-controller="Assets" asp-action="AllDamagedAssets" class="link-dark rounded">View Damaged Assets</a></li>
                             <li><a asp-controller="Offices" asp-action="Index" class="link-dark rounded">View Office Assets</a></li>
 
 
@@ -52,6 +51,33 @@
 
                             <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">Create New Loan</a></li>
                             <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">View Returned Loans</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#damages-collapse" aria-expanded="false">
+                        Damages
+                    </button>
+                    <div class="collapse" id="damages-collapse">
+                        <ul class="list-unstyled fw-normal pt-2">
+                            <li><a asp-controller="Assets" asp-action="AllDamagedAssets" class="link-dark rounded">View All Damages</a></li>
+
+                            <li><a asp-controller="Assets" asp-action="ReportNewDamage" class="link-dark rounded">Report New Damage</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#disposals-collapse" aria-expanded="false">
+                        Disposals
+                    </button>
+                    <div class="collapse" id="disposals-collapse">
+                        <ul class="list-unstyled fw-normal pt-2">
+                            <li><a asp-controller="Disposals" asp-action="AllDamagedAssets" class="link-dark rounded">View All Disposals</a></li>
+
+                            <li><a asp-controller="Disposals" asp-action="ReportNewDamage" class="link-dark rounded">Report New Disposal</a></li>
                         </ul>
                     </div>
                 </li>
@@ -124,7 +150,7 @@
     .list-unstyled .link-dark {
         font-size: 18px; 
         font-weight: normal;
-        color: black;
+        color: white;
         text-decoration: none;
     }
 
@@ -139,7 +165,7 @@
         font-size: 18px;
         font-weight: 500; 
 
-        color: black;
+        color: white;
         display: flex;
         align-items: center;
         width: 100%;
@@ -158,7 +184,7 @@
             font-size: 20px;
             margin-right: 10px;
             transition: transform 0.3s;
-            color: black;
+            color: white;
         }
 
         .btn-toggle[aria-expanded="true"]::before {
@@ -179,16 +205,27 @@
     }
 
     .sidebar {
-        position: relative;
-        height: 100vh;
-        width: 100px
+        position: fixed; /* Keeps the sidebar fixed as you scroll */
+        top: 0;
+        left: 0;
+        height: 100vh; /* Full viewport height */
+        width: 320px; /* Sidebar width */
+        background-color: white; /* Optional: background color */
+        color: white;
+        flex-shrink: 0;
     }
+
+    .container-fluid {
+        margin-left: 320px; /* Offsets the main content by the sidebar width */
+    }
+
 
     .list-unstyled.fw-normal.pt-2 li a {
         padding: 5px 15px;
         font-size: 16px; 
         display: block;
         text-decoration: none;
+
     }
 
     footer {
@@ -209,14 +246,20 @@
             color: #007bff;
         }
 
+    /* Add border-bottom only to main menu items */
+    .list-unstyled > .mb-1 {
+        border-bottom: 1px solid grey; /* Change the color to fit your design */
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+
+
     .list-unstyled > li {
-        border-bottom: 1px solid #ddd; 
         padding-bottom: 10px; 
-        margin-bottom: 10px; 
+        margin-bottom: 10px;
     }
 
     .list-unstyled.fw-normal.pt-2 li {
-        border-bottom: 1px solid #ddd; 
         padding-bottom: 10px;
         margin-bottom: 10px;
     }
@@ -227,7 +270,6 @@
         }
 
         .list-unstyled.fw-normal.pt-2 li:first-child {
-            border-top: 1px solid #ddd;
         }
 
 

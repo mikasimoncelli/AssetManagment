@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<AssetManager.Models.AssetDamage>
 
-<div class="container-fluid" style="min-height: 100vh; padding: 0 20px;">
-    <br />
-    <h3 class="text-center mt-4 mb-4 display-4">Damaged Assets</h3>
+<div class="container-wrapper">
+    <div class="form-container">
+        <h3 class="text-center mt-4 mb-4 display-4 border-bottom border-1 border-dark pb-3">All Damaged Assets</h3>
 
     <div class="row justify-content-center mb-3">
         <div class="col-md-10">
@@ -22,8 +22,13 @@
         </div>
     </div>
 
+
     <div class="row justify-content-center">
+
         <div class="col-md-10">
+                <h6>
+                    View all reported damaged assets below. Click an asset to open and edit the damage report:
+                </h6>
             <div class="table-responsive">
                 <div class="equipment-type-section">
                     <table class="table table-bordered text-center table-sm asset-table">
@@ -54,7 +59,7 @@
                                     <td>@assetDamage.Asset?.AssetNumber</td>
                                     <td>@assetDamage.Asset?.SerialNumber</td>
                                     <td>@assetDamage.DateReported.ToString("yyyy-MM-dd")</td>
-                                    <td>@assetDamage.RepairDate?.ToString("yyyy-MM-dd") ?? "N/A"</td>
+                                    <td>@assetDamage.RepairDate?.ToString("yyyy-MM-dd")</td>
 
                                 </tr>
                             }
@@ -64,7 +69,7 @@
             </div>
         </div>
     </div>
-</div>
+</div></div>
 
 <script>
     // Filter by asset type
@@ -94,6 +99,28 @@
 </script>
 
 <style>
+
+            .container-wrapper {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                padding: 20px;
+                min-height: 100vh;
+            }
+
+            .form-container {
+                width: 2100px;
+                padding: 20px;
+                border: 2px solid #ddd;
+                border-radius: 8px;
+                background-color: #fdfdfd;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+            }
+
+            .container-fluid {
+                background-color: #f8f9fa;
+            }
+
     .asset-table {
         width: 100%;
         border: solid 1px #ddd;
