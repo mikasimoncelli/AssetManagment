@@ -25,7 +25,7 @@ namespace AssetManager.Controllers
 
         // asset damage form focus on asset
         [HttpGet]
-        public IActionResult AssetDamages(int assetID)
+        public IActionResult AssetDamagesForm(int assetID)
         {
             var asset = _context.Assets
                 .Include(a => a.Office)
@@ -39,7 +39,7 @@ namespace AssetManager.Controllers
 
         // post for assetr damage form focus on asset
         [HttpPost]
-        public IActionResult AssetDamages(AssetDamage model)
+        public IActionResult AssetDamagesForm(AssetDamage model)
         {
             var assetDamage = new AssetDamage
             {

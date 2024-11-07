@@ -1,6 +1,4 @@
-﻿using AssetManager.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace AssetManager.Models
 {

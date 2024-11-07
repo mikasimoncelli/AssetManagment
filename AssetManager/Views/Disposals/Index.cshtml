@@ -44,13 +44,14 @@
                             <tbody>
                                 @foreach (var assetDisposal in Model)
                                 {
-                                    <tr onclick="window.location.href='@Url.Action("EditAssetDisposal", "Disposals", new { id = assetDisposal.AssetDisposalID })'" style="cursor: pointer;">
-                                        <td>@assetDisposal.DisposalReason</td>
+@*                                     <tr onclick="window.location.href='@Url.Action("EditAssetDisposal", "Disposals", new { id = assetDisposal.AssetDisposalID })'" style="cursor: pointer;">
+ *@ <tr>                                      
+ <td>@assetDisposal.DisposalReason</td>
                                         <td>@assetDisposal.Asset?.EquipmentType</td>
                                         <td>@assetDisposal.Asset?.Manufacturer</td>
                                         <td>@assetDisposal.Asset?.AssetNumber</td>
                                         <td>@assetDisposal.Asset?.SerialNumber</td>
-                                        <td>@assetDisposal.DisposalDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@assetDisposal.DateDisposed.ToString("yyyy-MM-dd")</td>
                                         <td>@assetDisposal.Notes</td>
                                     </tr>
                                 }
