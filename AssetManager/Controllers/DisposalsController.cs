@@ -42,4 +42,29 @@ namespace AssetManager.Controllers
             return View(asset);
 
         }
+
+
+
+        [HttpPost]
+        public IActionResult AssetDisposalForm(AssetDisposal model)
+        {
+            var assetDisposal = new AssetDisposal
+            {
+                AssetID = model.AssetID,
+                DisposalDescription = model.DisposalDescription,
+                DisposalReason = model.DisposalReason,
+                Notes = model.Notes,
+                DateDisposed = model.DateDisposed,
+                DisposalStatus = model.DisposalStatus,
+
+            };
+
+            _context.AssetDisposals.Add(assetDisposal);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+
+
+        }
     }
+}

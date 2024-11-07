@@ -1,9 +1,9 @@
 ﻿@model AssetManager.Models.Asset
 
 <div class="container-wrapper">
-    <form asp-action="AssetDamages" method="post">
+    <form asp-action="AssetDisposalForm" method="post">
         <div class="form-container">
-            <h2 class="text-center">Damage Form</h2>
+            <h2 class="text-center display-4">Disposal Form</h2>
             <p class="text-center">Please double-check all details are correct.</p>
 
             <h4 class="section-title">Equipment Details</h4>
@@ -30,42 +30,55 @@
                 </div>
             </div>
 
-            <h4 class="section-title">Damage Report Details</h4>
+            <h4 class="section-title">Disposal Report Details</h4>
 
-            <!-- Damage Reason Dropdown -->
             <div class="form-group row">
                 <div class="col-md-6">
-                    <label>Damage Reason:</label>
-                    <select name="DamageReason" class="form-control" required>
+                    <label>Disposal Reason:</label>
+                    <select name="DisposalReason" id="damageReason" class="form-control" required onchange="toggleOtherReasonInput()">
                         <option value="">Select a reason...</option>
-                        <option value="Wear and Tear">Wear and Tear</option>
-                        <option value="Accidental Damage">Accidental Damage</option>
-                        <option value="Environmental Damage">Environmental Damage</option>
-                        <option value="Electrical Fault">Electrical Fault</option>
-                        <option value="User Error">User Error</option>
+                        <option value="Physical Damage">Physical Damage</option>
+                        <option value="Electrical Fault">Electrical Damage</option>
+                        <option value="Water Damage">Water Damage</option>
+                        <option value="Software Malfunction">Software Malfunction</option>
+                        <option value="Hardware Failure">Hardware Failure</option>
+                        <option value="Display Issue">Display Issue</option>
+                        <option value="Input Issue">Keyboard or Input Issue</option>
+                        <option value="Normal Wear and Tear">Old or Unused Equipment</option>
+                        <option value="System Failure">Software or System Failure</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
+            </div>
+
+            <!-- Hidden input for custom reason if "Other" is selected -->
+            <div class="form-group row" id="otherReasonContainer" style="display: none;">
                 <div class="col-md-6">
-                    <label>Damage Status:</label>
-                    <select name="RepairStatus" class="form-control" required>
+                    <label>Specify Other Reason:</label>
+                    <input type="text" name="OtherReason" class="form-control" required placeholder="Please specify the reason">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label>Disposal Status:</label>
+                    <select name="DisposalStatus" class="form-control" required>
                         <option value="Pending">Pending</option>
-                        <option value="In-Progress">In-Progress</option>
-                        <option value="Resolved">Resolved</option>
+                        <option value="Disposed">Disposed</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group row">
                 <div class="col-md-6">
-                    <label>Repair Date:</label>
-                    <input name="RepairDate" type="date" class="form-control" />
+                    <label>Disposal Date:</label>
+                    <input name="DisposalDate" required type="date" class="form-control" />
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Description of Damage:</label>
-                <textarea name="DamageDescription" rows="5" class="form-control" placeholder="Describe the damage..."></textarea>
+                <label>Description of Disposal:</label>
+                <textarea name="DisposalDescription" rows="5" required class="form-control" placeholder="Describe the damage..."></textarea>
             </div>
 
             <div class="form-group">
@@ -80,6 +93,7 @@
         </div>
     </form>
 </div>
+   
 
 <style>
     .container-wrapper {
@@ -164,3 +178,20 @@
         opacity: 0.9;
     }
 </style>
+
+
+
+
+
+<script>
+    function toggleOtherReasonInput() {
+        const damageReason = document.getElementById("damageReason").value;
+        const otherReasonContainer = document.getElementById("otherReasonContainer");
+
+        if (damageReason === "Other") {
+            otherReasonContainer.style.display = "block";
+        } else {
+            otherReasonContainer.style.display = "none";
+        }
+    }
+</script>
