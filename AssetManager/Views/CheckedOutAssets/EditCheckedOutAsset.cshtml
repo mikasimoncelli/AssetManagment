@@ -8,7 +8,7 @@
             <h1 class="text-center display-4">Update Loan Details</h1>
             <h5 class="text-center">@Model.Asset.Manufacturer - @Model.Asset.Description</h5>
 
-            <h6 class="section-title">Asset Details</h6>
+            <h6 class="section-title">Loan Details:</h6>
             <div class="form-group row">
                 <div class="col-md-6">
                     <label>Asset Description:</label>
@@ -17,6 +17,10 @@
                 <div class="col-md-6">
                     <label>Equipment Type:</label>
                     <p class="form-control-plaintext">@Model.Asset.EquipmentType</p>
+                </div>
+                <div class="col-md-6">
+                    <label>Location:</label>
+                    <p class="form-control-plaintext">@Model.Asset.Office?.Location</p>
                 </div>
             </div>
             <div class="form-group row">
@@ -28,21 +32,18 @@
                     <label>Asset Number:</label>
                     <p class="form-control-plaintext">@Model.Asset.AssetNumber</p>
                 </div>
-            </div>
-
-            <h6 class="section-title">Office Details</h6>
-            <div class="form-group row">
                 <div class="col-md-6">
                     <label>Office Name:</label>
                     <p class="form-control-plaintext">@Model.Asset.Office?.OfficeName</p>
                 </div>
-                <div class="col-md-6">
-                    <label>Location:</label>
-                    <p class="form-control-plaintext">@Model.Asset.Office?.Location</p>
-                </div>
             </div>
 
-            <h6 class="section-title">User Details</h6>
+        
+            
+    
+            </div>
+
+            <h6 class="section-title">Staff:</h6>
             <div class="form-group row">
                 <div class="col-md-6">
                     <label>User Name:</label>
@@ -52,6 +53,10 @@
                     <label>Email:</label>
                     <p class="form-control-plaintext">@Model.User.Email</p>
                 </div>
+            <div class="col-md-6">
+                <label>Date Loaned:</label>
+                <p class="form-control-plaintext">@Model.DateLentOut.ToString("dd-MM-yyyy")</p>
+            </div>
             </div>
 
             <h6 class="section-title">Update Details</h6>
@@ -68,12 +73,11 @@
             <p>Please review all details before making changes.</p>
 
             <div class="button-group">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button> </form>
                 <a asp-action="AllCheckedOutAssets" class="btn btn-secondary">Back to List</a>
             </div>
         </div>
-    </form>
-</div>
+
 
 <style>
     .container-wrapper {
@@ -84,7 +88,7 @@
     }
 
     .form-container {
-        width: 1000px;
+        width: 1500px;
         padding: 50px;
         border: 1px solid #ddd;
         border-radius: 8px;
