@@ -104,18 +104,40 @@ public class AssetsController : Controller
 
 
 
-    [HttpPost]
-    public IActionResult DeleteAsset(int assetID)
+    [HttpGet]
+    public JsonResult CheckReferences(int assetID)
     {
-        var asset = _context.Assets.Find(assetID);
-        if (asset != null)
+        var checkedOutAsset = _context.CheckedOutAssets.Include(c => c.User).FirstOrDefault(c => c.AssetID == assetID);
+
+        if (checkedOutAsset != null)
         {
-            _context.Assets.Remove(asset);
-            _context.SaveChanges();
+            return Json(new
+            {
+                hasReferences = true,
+                checkedOutID = checkedOutAsset.CheckedOutID,
+                userName = checkedOutAsset.User.FirstName + ' ' + checkedOutAsset.User.LastName,
+                checkedOutDate = checkedOutAsset.DateLentOut.ToString("dd-MM-yyyy")
+            });
         }
 
-        return RedirectToAction("Index");
+
+
+        return Json(new { hasReferences=false});
+
+
+
     }
+
+    [HttpDelete]
+    public IActionResult DeleteAsset(int assetID)
+    {
+        var checkedOutAssets = _context.CheckedOutAssets.Where(c => c.AssetID == assetID).ToList();
+        _context.CheckedOutAssets.RemoveRange(checkedOutAssets);
+        _context.Assets.Remove(_context.Assets.Find(assetID));
+        _context.SaveChanges();
+        return Ok();
+    }
+
 
 
 

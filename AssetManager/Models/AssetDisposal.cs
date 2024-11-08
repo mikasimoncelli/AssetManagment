@@ -11,6 +11,7 @@
         public string DisposalDescription { get; set; }
 
         public string? Notes { get; set; }
+
         public DateTime DateDisposed { get; set; }
 
         public Asset Asset { get; set; }
