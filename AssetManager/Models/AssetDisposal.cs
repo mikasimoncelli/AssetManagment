@@ -12,7 +12,7 @@
 
         public string? Notes { get; set; }
 
-        public DateTime DateDisposed { get; set; }
+        public DateTime? DateDisposed { get; set; }
 
         public Asset Asset { get; set; }
 

@@ -80,7 +80,7 @@
 
 
             <!-- Delete Button -->
-            <button type="button" onclick="confirmDelete(@Model.AssetID, event)" class="btn btn-2">Delete Asset</button>
+            <button type="button" onclick="confirmDelete(@Model.AssetID, event)" class="btn btn-1">Delete Asset</button>
 
             <div id="deleteModal" class="modal">
                 <div class="modal-content">
@@ -256,55 +256,6 @@
                             transform: translateX(0);
                         }
 
-
-                .btn-2 {
-                    position: relative;
-                    display: inline-block;
-                    padding: 10px 20px;
-                    color: white; /* White text */
-                    background-color: red; /* Red background */
-                    overflow: hidden;
-                    border: none;
-                    transition: color 0.3s ease;
-                    text-decoration: none;
-                    font-weight: bold;
-                    z-index: 1;
-                }
-
-                    .btn-2:before,
-                    .btn-2:after {
-                        content: '';
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        border-top: 25px solid darkred; /* Darker shade of red */
-                        border-bottom: 25px solid darkred;
-                        transition: transform 0.4s ease;
-                    }
-
-                    .btn-2:before {
-                        border-right: 25px solid transparent;
-                        transform: translateX(-100%);
-                    }
-
-                    .btn-2:after {
-                        border-left: 25px solid transparent;
-                        transform: translateX(100%);
-                    }
-
-                    .btn-2:hover {
-                        color: white; /* Keep text white on hover */
-                    }
-
-                        .btn-2:hover:before {
-                            transform: translateX(-30%); /* Slide inwards on hover */
-                        }
-
-                        .btn-2:hover:after {
-                            transform: translateX(30%); /* Slide inwards on hover */
-                        }
 
 
 

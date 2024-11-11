@@ -72,7 +72,7 @@
             <div class="form-group row">
                 <div class="col-md-6">
                     <label>Disposal Date:</label>
-                    <input name="DisposalDate" required type="date" class="form-control" />
+                    <input name="DateDisposed" type="date" class="form-control" />
                 </div>
             </div>
 
@@ -84,7 +84,7 @@
             <div class="form-group">
                 <label>Additional Notes:</label>
                 <textarea name="Notes" rows="5" class="form-control" placeholder="Add any additional notes here..."></textarea>
-            </div>
+            </div> 
 
             <div class="button-group">
                 <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -187,11 +187,18 @@
     function toggleOtherReasonInput() {
         const damageReason = document.getElementById("damageReason").value;
         const otherReasonContainer = document.getElementById("otherReasonContainer");
+        const otherReasonInput = document.querySelector("input[name='OtherReason']");
 
         if (damageReason === "Other") {
             otherReasonContainer.style.display = "block";
+            otherReasonInput.required = true;
         } else {
             otherReasonContainer.style.display = "none";
+            otherReasonInput.required = false;
         }
     }
+
+    // Ensure this function runs when the form loads, in case "Other" is already selected
+    document.addEventListener("DOMContentLoaded", toggleOtherReasonInput);
+
 </script>

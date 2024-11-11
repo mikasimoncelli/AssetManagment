@@ -24,14 +24,16 @@
 
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <h6>
-                    View all reported disposed assets below. Click an asset to open and edit the disposal report:
-                </h6>
+                <h4>Pending Disposals</h4>
+                <!-- Edit button, initially hidden -->
+                <button id="editButton" class="btn btn-primary mb-3" style="display: none;" onclick="openEditModal(false)">Edit Selected</button>
+
                 <div class="table-responsive">
                     <div class="equipment-type-section">
-                        <table class="table table-bordered text-center table-sm asset-table">
+                        <table class="table table-bordered text-center table-sm asset-table" id="pending-table">
                             <thead>
-                                <tr style="background-color: #0d6efd; color: #fff;">
+                                <tr style="background-color: #1768ad; color: #fff;">
+                                    <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()" /></th>
                                     <th>Disposal Reason</th>
                                     <th>Asset Type</th>
                                     <th>Manufacturer</th>
@@ -42,16 +44,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var assetDisposal in Model)
+                                @foreach (var assetDisposal in Model.Where(ad => ad.DisposalStatus == "Pending"))
                                 {
-@*                                     <tr onclick="window.location.href='@Url.Action("EditAssetDisposal", "Disposals", new { id = assetDisposal.AssetDisposalID })'" style="cursor: pointer;">
- *@ <tr>                                      
- <td>@assetDisposal.DisposalReason</td>
+                                    <tr onclick="window.location.href='@Url.Action("EditDisposal", "Disposals", new { id = assetDisposal.AssetDisposalID })'" style="cursor: pointer;">
+                                        <td><input type="checkbox" class="select-row" data-id="@assetDisposal.AssetDisposalID" onchange="toggleEditButton()" onclick="stopPropagation(event)" /></td>
+                                        <td>@assetDisposal.DisposalReason</td>
                                         <td>@assetDisposal.Asset?.EquipmentType</td>
                                         <td>@assetDisposal.Asset?.Manufacturer</td>
                                         <td>@assetDisposal.Asset?.AssetNumber</td>
                                         <td>@assetDisposal.Asset?.SerialNumber</td>
-                                        <td>@assetDisposal.DateDisposed.ToString("yyyy-MM-dd")</td>
+                                        <td>@assetDisposal.DateDisposed?.ToString("yyyy-MM-dd")</td>
                                         <td>@assetDisposal.Notes</td>
                                     </tr>
                                 }
@@ -61,36 +63,199 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-10">
+                <h4>Disposed Assets</h4>
+                <!-- Edit button for Disposed Assets, initially hidden -->
+                <button id="editDisposedButton" class="btn btn-primary mb-3" style="display: none;" onclick="openEditModal(true)">Edit Selected</button>
+
+                <div class="table-responsive">
+                    <div class="equipment-type-section">
+                        <table class="table table-bordered text-center table-sm asset-table" id="disposed-table">
+                            <thead>
+                                <tr style="background-color: #0b3d91; color: #fff;">
+                                    <th><input type="checkbox" id="selectAllDisposed" onclick="toggleSelectAllDisposed()" /></th>
+                                    <th>Disposal Reason</th>
+                                    <th>Asset Type</th>
+                                    <th>Manufacturer</th>
+                                    <th>Asset Number</th>
+                                    <th>Serial Number</th>
+                                    <th>Date Disposed</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var assetDisposal in Model.Where(ad => ad.DisposalStatus == "Disposed"))
+                                {
+                                    <tr onclick="window.location.href='@Url.Action("EditDisposal", "Disposals", new { id = assetDisposal.AssetDisposalID })'" style="cursor: pointer;">
+                                        <td><input type="checkbox" class="select-row-disposed" data-id="@assetDisposal.AssetDisposalID" onchange="toggleEditDisposedButton()" onclick="stopPropagation(event)" /></td>
+                                        <td>@assetDisposal.DisposalReason</td>
+                                        <td>@assetDisposal.Asset?.EquipmentType</td>
+                                        <td>@assetDisposal.Asset?.Manufacturer</td>
+                                        <td>@assetDisposal.Asset?.AssetNumber</td>
+                                        <td>@assetDisposal.Asset?.SerialNumber</td>
+                                        <td>@assetDisposal.DateDisposed?.ToString("yyyy-MM-dd")</td>
+                                        <td>@assetDisposal.Notes</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 
+<div id="editModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Selected Disposals</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <div class="form-group">
+                        <label for="newStatus">Status:</label>
+                        <select id="newStatus" class="form-control">
+                            <option value="Pending">Pending</option>
+                            <option value="Disposed">Disposed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newDate">Date Disposed:</label>
+                        <input type="date" id="newDate" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="additionalNotes">Additional Notes:</label>
+                        <textarea id="additionalNotes" class="form-control" placeholder="Add notes..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="submitEditForm()">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
-    // Filter by asset type
+    // Update the filter functions to work on both tables
     function filterAssetType() {
         const selectedType = document.getElementById("assetTypeDropdown").value.toLowerCase();
-        document.querySelectorAll(".asset-table tbody tr").forEach(row => {
-            const assetType = row.cells[1].textContent.toLowerCase();
-            row.style.display = selectedType && assetType !== selectedType ? "none" : "";
+        ['pending-table', 'disposed-table'].forEach(tableId => {
+            document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => {
+                const assetType = row.cells[1].textContent.toLowerCase();
+                row.style.display = selectedType && assetType !== selectedType ? "none" : "";
+            });
         });
     }
 
-    // Global search function
     function applyGlobalSearch() {
         const searchValue = document.getElementById('searchInput').value.toLowerCase();
-        document.querySelectorAll(".asset-table tbody tr").forEach(row => {
-            const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(" ");
-            row.style.display = rowText.includes(searchValue) ? "" : "none";
+        ['pending-table', 'disposed-table'].forEach(tableId => {
+            document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => {
+                const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(" ");
+                row.style.display = rowText.includes(searchValue) ? "" : "none";
+            });
         });
     }
 
-    // Reset all filters
     function resetAllFilters() {
         document.getElementById('searchInput').value = '';
         document.getElementById('assetTypeDropdown').value = '';
-        document.querySelectorAll(".asset-table tbody tr").forEach(row => row.style.display = "");
+        ['pending-table', 'disposed-table'].forEach(tableId => {
+            document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => row.style.display = "");
+        });
     }
-</script>
 
+
+
+
+
+    function toggleEditButton() {
+        const selectedRows = document.querySelectorAll('.select-row:checked');
+        document.getElementById('editButton').style.display = selectedRows.length > 0 ? 'inline-block' : 'none';
+    }
+
+    function toggleSelectAll() {
+        const isChecked = document.getElementById('selectAll').checked;
+        document.querySelectorAll('.select-row').forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+        toggleEditButton();
+    }
+
+
+
+    let isEditingDisposed = false;
+
+    function openEditModal(isDisposed = false) {
+        isEditingDisposed = isDisposed;
+        $('#editModal').modal('show');
+    }
+
+    function submitEditForm() {
+        const selectedClass = isEditingDisposed ? '.select-row-disposed' : '.select-row';
+        const selectedIds = Array.from(document.querySelectorAll(`${selectedClass}:checked`)).map(cb => cb.getAttribute('data-id'));
+        const newStatus = document.getElementById('newStatus').value;
+        const newDate = document.getElementById('newDate').value;
+        const additionalNotes = document.getElementById('additionalNotes').value;
+
+        // Send AJAX request to BulkUpdate endpoint
+        fetch('/Disposals/BulkUpdate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ids: selectedIds,
+                status: newStatus,
+                dateDisposed: newDate,
+                additionalNotes: additionalNotes
+            })
+        }).then(response => {
+            if (response.ok) {
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                alert("Failed to update disposals.");
+            }
+        });
+
+        $('#editModal').modal('hide');
+    }
+
+
+
+    function toggleEditDisposedButton() {
+        const selectedRows = document.querySelectorAll('.select-row-disposed:checked');
+        document.getElementById('editDisposedButton').style.display = selectedRows.length > 0 ? 'inline-block' : 'none';
+    }
+
+    function toggleSelectAllDisposed() {
+        const isChecked = document.getElementById('selectAllDisposed').checked;
+        document.querySelectorAll('.select-row-disposed').forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+        toggleEditDisposedButton();
+    }
+
+
+    function stopPropagation(event) {
+        event.stopPropagation();
+    }
+
+
+</script>
 <style>
     .container-wrapper {
         display: flex;

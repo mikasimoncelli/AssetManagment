@@ -1,7 +1,7 @@
 ﻿@model AssetManager.Models.Asset
 
 <div class="container-wrapper">
-    <form asp-action="AssetDamages" method="post">
+    <form asp-action="AssetDamagesForm" method="post">
         <div class="form-container">
             <h2 class="text-center display-4">Damage Form</h2>
             <p class="text-center">Please double check all details are correct.</p>
@@ -52,9 +52,32 @@
                         <option value="Resolved">Resolved</option>
                     </select>
                 </div>
+
+                <div class="col-md-6">
+                    <label>Damage Type:</label>
+                    <select name="DamageType" class="form-control" required>
+                        <option value="">Select a reason...</option>
+                        <option value="Physical Damage">Physical Damage</option>
+                        <option value="Normal Wear and Tear">Normal Wear and Tear</option>
+                        <option value="Software Malfunction">Software Fault</option>
+                        <option value="Hardware Failure">Hardware Fault</option>
+                        <option value="Electrical Fault">Electrical Fault</option>
+                        <option value="Water Damage">Water Damage</option>
+                     
+                        <option value="Display Issue">Display Issue</option>
+                        <option value="Input Issue">Keyboard or Input Issue</option>
+                        <option value="System Failure">System Failure</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
                 <div class="col-md-6">
                     <label>Repair Date:</label>
                     <input name="RepairDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label>Date Reported:</label>
+                    <input name="DateReported" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                 </div>
             </div>
 
@@ -85,7 +108,7 @@
     }
 
     .form-container {
-        width: 1000px; 
+        width: 1600px; 
         padding: 50px; 
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -93,11 +116,7 @@
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     }
 
-    h2.text-center {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 30px; 
-    }
+
 
     .section-title {
         font-size: 1.25rem;

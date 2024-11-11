@@ -1,10 +1,10 @@
-﻿@model AssetManager.Models.AssetDamage
+﻿@model AssetManager.Models.AssetDisposal
 
 <div class="container-wrapper">
-    <form asp-action="EditAssetDamage" method="post">
-        <input type="hidden" asp-for="AssetDamageID" />
+    <form asp-action="EditDisposal" method="post">
+        <input type="hidden" asp-for="AssetDisposalID" />
         <div class="form-container">
-            <h1 class="text-center display-4">Edit Damage Report</h1>
+            <h1 class="text-center display-4">Edit Disposal Report</h1>
 
             <h4 class="section-title display-6">Equipment Details</h4>
             <div class="equipment-details-box">
@@ -28,63 +28,31 @@
                         <label>Serial Number:</label>
                         <p class="form-control-plaintext">@Model.Asset?.SerialNumber</p>
                     </div>
-                    <div class="col-md-4">
-                        <label>Office Name:</label>
-                        <p class="form-control-plaintext">@Model.Asset?.Office?.OfficeName</p>
-                    </div>
-                    <div class="col-md-4">
-                        <label>Location:</label>
-                        <p class="form-control-plaintext">@Model.Asset?.Office?.Location</p>
-                    </div>
                 </div>
             </div>
 
-            <h4 class="section-title display-6">Damage Report Details</h4>
+            <h4 class="section-title display-6">Disposal Report Details</h4>
 
             <div class="form-group row">
-
-
-                <div class="col-md-6">
-                    <label>Date Reported:</label>
-                    <input asp-for="DateReported" type="date" class="form-control" readonly />
-                </div>
-                <div class="col-md-6">
-                    <label>Repair Date:</label>
-                    <input asp-for="RepairDate" type="date" class="form-control" />
-                </div>
-
-                <div class="col-md-6">
-                    <label>Damage Status:</label>
-                    <select asp-for="RepairStatus" class="form-control" required>
-                        <option value="Pending">Pending</option>
-                        <option value="In-Progress">In-Progress</option>
-                        <option value="Resolved">Resolved</option>
-                    </select>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label>Disposal Status:</label>
+                        <select asp-for="DisposalStatus" class="form-control">
+                            <option value="Pending">Pending</option>
+                            <option value="Disposed">Disposed</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="col-md-6">
-                    <label>Damage Type:</label>
-                    <select asp-for="DamageType" class="form-control" required>
-                        <option value="">Select a reason...</option>
-                        <option value="Physical Damage">Physical Damage</option>
-                        <option value="Normal Wear and Tear">Normal Wear and Tear</option>
-                        <option value="Software Malfunction">Software Malfunction</option>
-                        <option value="Hardware Failure">Hardware Failure</option>
-                        <option value="Electrical Fault">Electrical Fault</option>
-                        <option value="Water Damage">Water Damage</option>
-                        <option value="Display Issue">Display Issue</option>
-                        <option value="Input Issue">Keyboard or Input Issue</option>
-                        <option value="System Failure">System Failure</option>
-                        <option value="Other">Other</option>
-                    </select>
+                    <label>Disposal Date:</label>
+                    <input asp-for="DateDisposed" type="date" class="form-control" />
                 </div>
-
-      
             </div>
 
             <div class="form-group">
-                <label>Description of Damage:</label>
-                <textarea asp-for="DamageDescription" rows="5" class="form-control" placeholder="Describe the damage..."></textarea>
+                <label>Description of Disposal:</label>
+                <textarea asp-for="DisposalDescription" rows="5" class="form-control" placeholder="Describe the disposal..."></textarea>
             </div>
 
             <div class="form-group">
@@ -100,7 +68,6 @@
     </form>
 </div>
 
-
 <style>
     .container-wrapper {
         display: flex;
@@ -110,7 +77,7 @@
     }
 
     .form-container {
-        width: 1600px;
+        width: 1000px;
         padding: 50px;
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -118,11 +85,16 @@
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     }
 
-    h2.text-center {
+    h1.text-center {
+        font-weight: 600;
+        color: #333;
         margin-bottom: 30px;
     }
 
     .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #555;
         border-bottom: 2px solid #ccc;
         margin-top: 30px;
         margin-bottom: 20px;
@@ -134,24 +106,19 @@
         color: #333;
     }
 
-    .equipment-details-box {
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-    }
-
     .form-control-plaintext {
-        background-color: #e9ecef; 
-        border: 1px solid #ccc;
+        background-color: #e9ecef;
         padding: 15px;
         border-radius: 4px;
     }
 
     .form-control {
-        background-color: #fff; 
         border-radius: 4px;
         padding: 12px;
-        border: 1px solid #ccc;
+    }
+
+    textarea.form-control {
+        min-height: 100px;
     }
 
     .form-group {

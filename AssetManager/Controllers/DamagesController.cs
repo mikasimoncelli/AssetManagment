@@ -47,12 +47,13 @@ namespace AssetManager.Controllers
                 DamageDescription = model.DamageDescription,
                 Notes = model.Notes,
                 RepairStatus = model.RepairStatus,
+                DamageType = model.DamageType
             };
 
             _context.AssetDamages.Add(assetDamage);
             _context.SaveChanges();
 
-            return RedirectToAction("AllDamagedAssets");
+            return RedirectToAction("Index");
         }
 
 
@@ -83,9 +84,10 @@ namespace AssetManager.Controllers
             assetDamage.RepairStatus = model.RepairStatus;
             assetDamage.RepairDate = model.RepairDate;
             assetDamage.Notes = model.Notes;
+            assetDamage.DamageType = model.DamageType;
 
             _context.SaveChanges();
-            return RedirectToAction("AllDamagedAssets");
+            return RedirectToAction("Index");
         }
 
 
@@ -103,6 +105,38 @@ namespace AssetManager.Controllers
             return View(assets);
         }
 
+
+        [HttpPost]
+        public IActionResult BulkUpdate([FromBody] BulkUpdateModel model)
+        {
+            if (model == null || model.Ids == null || !model.Ids.Any())
+            {
+                return BadRequest("Invalid data.");
+            }
+
+            // Process each ID in the model
+            foreach (var id in model.Ids)
+            {
+                var assetDamage = _context.AssetDamages.Find(id);
+                if (assetDamage != null)
+                {
+                    assetDamage.RepairStatus = model.Status;
+                    assetDamage.RepairDate = model.DateRepaired;
+                    assetDamage.Notes = model.Notes;
+                }
+            }
+
+            _context.SaveChanges();
+
+            return Ok("Damages updated successfully.");
+        }
+        public class BulkUpdateModel
+        {
+            public List<int> Ids { get; set; }
+            public string Status { get; set; }
+            public DateTime? DateRepaired { get; set; }
+            public string Notes { get; set; }
+        }
 
 
 
