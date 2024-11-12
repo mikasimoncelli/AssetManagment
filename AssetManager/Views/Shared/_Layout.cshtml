@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Asset</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css" integrity="sha384-Qas6B3lNjWxC/Z+z69Jp3Byc9LvAedS2C8A11yI+/jRj9+vN7y+vn1ddvCk4E+i3" crossorigin="anonymous">
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
@@ -21,7 +23,8 @@
             <ul class="list-unstyled">
                 <li class="mb-1">
                     <a id="home-toggle" asp-controller="Home" asp-action="Index" class="btn btn-toggle align-items-center rounded">
-                        Home
+                        Home<span class="bi bi-house-door-fill"></span>
+
                     </a>
                 </li>
 
@@ -147,6 +150,17 @@
 </body>
 
 <style>
+    .btn-toggle i {
+        font-size: 16px; /* Adjust icon size */
+        color: white; /* Set icon color */
+    }
+
+    .link-dark i {
+        font-size: 14px; /* Adjust nested icon size */
+        color: #007bff; /* Set icon color for nested items */
+    }
+
+
     .list-unstyled .link-dark {
         font-size: 18px; 
         font-weight: normal;
