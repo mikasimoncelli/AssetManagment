@@ -7,7 +7,7 @@
             <div class="input-group">
                 <input style="margin-right: 20px" type="text" id="searchInput" class="form-control" placeholder="Search users..." onkeyup="filterTable()" />
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-warning" onclick="resetFilters()">Reset Search</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset Search</button>
                 </div>
             </div>
         </div>
@@ -18,8 +18,8 @@
             <div class="table-responsive">
                 <table id="userTable" class="table table-bordered text-center table-sm">
                     <thead class="thead-dark">
-                        <tr>
-                            <th style="width: 10%;">User ID</th>
+                            <tr style="background-color: #0b3d91; color: #fff;">
+                                <th style="width: 10%;">User ID</th>
                             <th style="width: 20%;" onclick="sortTable(1)">First Name</th>
                             <th style="width: 20%;" onclick="sortTable(2)">Last Name</th>
                             <th style="width: 30%;" onclick="sortTable(3)">Email</th>

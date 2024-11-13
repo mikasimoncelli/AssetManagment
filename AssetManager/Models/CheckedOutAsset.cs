@@ -17,5 +17,7 @@ namespace AssetManager.Models
         public DateTime? DateReturned { get; set; }
         public DateTime? DueDate { get; set; }
 
+        public string? Notes { get; set; }
+ 
     }
 }

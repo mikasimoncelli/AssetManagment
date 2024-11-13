@@ -10,7 +10,9 @@
             <h5 class="text-center">@Model.Manufacturer - @Model.Description</h5>
             <p class="text-center">Please double-check all details are correct.</p>
 
-            <h6 class="section-title">Select User</h6>
+            <h6 class="section-title">Loan Details</h6>
+            <label for="DueDate">Select User:</label>
+
             <input type="text" id="userSearchInput" class="form-control" placeholder="Search for a user..." onkeyup="searchUsers()" />
             <ul id="userList" class="list-group mt-2" style="display: none;">
                 @foreach (var user in users)
@@ -43,6 +45,21 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary mt-3" onclick="deselectUser()">Deselect User</button>
+            </div>
+            <br />
+
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label for="DueDate">Due Date (Optional):</label>
+                    <input type="date" class="form-control" name="DueDate" id="DueDate" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <label for="Notes">Notes:</label>
+                    <textarea class="form-control" id="Notes" name="Notes" rows="4" placeholder="Enter any additional notes here..."></textarea>
+                </div>
             </div>
 
             <h6 class="section-title">Equipment Details</h6>
@@ -81,21 +98,9 @@
                 </div>
             </div>
 
-            <div class="form-group row">
-                <div class="col-md-6">
-                    <label for="DueDate">Due Date (Optional):</label>
-                    <input type="date" class="form-control" name="DueDate" id="DueDate" />
-                </div>
-            </div>
+    
 
-            <!-- Notes Section -->
-            <h6 class="section-title">Notes</h6>
-            <div class="form-group row">
-                <div class="col-md-12">
-                    <label for="Notes">Notes:</label>
-                    <textarea class="form-control" id="Notes" name="Notes" rows="4" placeholder="Enter any additional notes here..."></textarea>
-                </div>
-            </div>
+       
 
    
 
@@ -177,7 +182,7 @@
     }
 
     .form-container {
-        width: 1000px;
+        width: 1500px;
         padding: 50px;
         border: 1px solid #ddd;
         border-radius: 8px;

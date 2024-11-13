@@ -87,7 +87,7 @@ namespace AssetManager.Controllers
 
 
         [HttpPost]
-        public IActionResult AddNewCheckedOutAsset(int assetID, int userID, DateTime DueDate)
+        public IActionResult AddNewCheckedOutAsset(int assetID, int userID, DateTime DueDate, string Notes)
         {
             var asset = _context.Assets.Find(assetID);
             var user = _context.Users.Find(userID);
@@ -98,7 +98,8 @@ namespace AssetManager.Controllers
                 UserID = user.UserID,
                 DateLentOut = System.DateTime.Now,
                 DateReturned = null,
-                DueDate = DueDate
+                DueDate = DueDate,
+                Notes = Notes
 
             };
 
@@ -127,7 +128,7 @@ namespace AssetManager.Controllers
 
 
         [HttpPost]
-        public IActionResult EditCheckedOutAsset(int CheckedOutID, DateTime? DateReturned, DateTime? DueDate)
+        public IActionResult EditCheckedOutAsset(int CheckedOutID, DateTime? DateReturned, DateTime? DueDate, string? Notes)
         {
             var asset = _context.CheckedOutAssets.FirstOrDefault(c => c.CheckedOutID == CheckedOutID);
 
@@ -140,6 +141,9 @@ namespace AssetManager.Controllers
             {
                 asset.DateReturned = DateReturned;
             }
+
+           
+            asset.Notes = Notes;
             
 
             _context.SaveChanges();
