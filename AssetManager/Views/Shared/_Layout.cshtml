@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - Asset</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css" integrity="sha384-Qas6B3lNjWxC/Z+z69Jp3Byc9LvAedS2C8A11yI+/jRj9+vN7y+vn1ddvCk4E+i3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
@@ -23,20 +24,20 @@
             <ul class="list-unstyled">
                 <li class="mb-1">
                     <a id="home-toggle" asp-controller="Home" asp-action="Index" class="btn btn-toggle align-items-center rounded">
-                        Home<span class="bi bi-house-door-fill"></span>
+                        <span class="bi bi-house-door-fill me-2"></span> Home
 
                     </a>
                 </li>
 
                 <li class="mb-1">
                     <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false">
-                        Manage Assets
+                        <i class="bi bi-grid-3x3-gap-fill me-2"></i> Manage Assets
                     </button>
                     <div class="collapse" id="assets-collapse">
                         <ul class="list-unstyled fw-normal pt-2">
                             <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
                             <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
-                            <li><a asp-controller="Offices" asp-action="Index" class="link-dark rounded">View Office Assets</a></li>
+                            <li><a asp-controller="Offices" asp-action="Index" class="link-dark rounded">Offices</a></li>
 
 
 
@@ -46,7 +47,7 @@
 
                 <li class="mb-1">
                     <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#checkedout-collapse" aria-expanded="false">
-                        Loans
+                        <i class="bi bi-laptop-fill me-2"></i> Loans
                     </button>
                     <div class="collapse" id="checkedout-collapse">
                         <ul class="list-unstyled fw-normal pt-2">
@@ -61,7 +62,7 @@
 
                 <li class="mb-1">
                     <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#damages-collapse" aria-expanded="false">
-                        Damages
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Damages
                     </button>
                     <div class="collapse" id="damages-collapse">
                         <ul class="list-unstyled fw-normal pt-2">
@@ -74,7 +75,7 @@
 
                 <li class="mb-1">
                     <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#disposals-collapse" aria-expanded="false">
-                        Disposals
+                        <i class="bi bi-trash-fill me-2"></i> Disposals
                     </button>
                     <div class="collapse" id="disposals-collapse">
                         <ul class="list-unstyled fw-normal pt-2">
@@ -87,7 +88,7 @@
 
                 <li class="mb-1">
                     <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#users-collapse" aria-expanded="false">
-                        Manage Users
+                        <i class="bi bi-people-fill me-2"></i> Manage Users
                     </button>
                     <div class="collapse" id="users-collapse">
                         <ul class="list-unstyled fw-normal pt-2">
@@ -98,7 +99,7 @@
                 </li>
                 <li class="mb-1">
                     <a id="home-toggle" asp-controller="Home" asp-action="Reports" class="btn btn-toggle align-items-center rounded">
-                        Reports
+                        <i class="bi bi-file-earmark-pdf-fill me-2"></i> Reports
                     </a>
                 </li>
             </ul>

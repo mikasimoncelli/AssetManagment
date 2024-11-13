@@ -10,6 +10,41 @@
             <h5 class="text-center">@Model.Manufacturer - @Model.Description</h5>
             <p class="text-center">Please double-check all details are correct.</p>
 
+            <h6 class="section-title">Select User</h6>
+            <input type="text" id="userSearchInput" class="form-control" placeholder="Search for a user..." onkeyup="searchUsers()" />
+            <ul id="userList" class="list-group mt-2" style="display: none;">
+                @foreach (var user in users)
+                {
+                    <li class="list-group-item list-group-item-action"
+                        data-user-id="@user.UserID"
+                        data-first-name="@user.FirstName"
+                        data-last-name="@user.LastName"
+                        data-email="@user.Email"
+                        onclick="selectUser(this)">
+                        @user.FirstName @user.LastName
+                    </li>
+                }
+            </ul>
+
+            <div id="userDetails" class="mt-4" style="display: none;">
+                <h6>Selected User Details</h6>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label>First Name:</label>
+                        <p id="userFirstName" class="form-control-plaintext"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Last Name:</label>
+                        <p id="userLastName" class="form-control-plaintext"></p>
+                    </div>
+                    <div class="col-md-12">
+                        <label>Email:</label>
+                        <p id="userEmail" class="form-control-plaintext"></p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary mt-3" onclick="deselectUser()">Deselect User</button>
+            </div>
+
             <h6 class="section-title">Equipment Details</h6>
             <div class="form-group row">
                 <div class="col-md-6">
@@ -47,44 +82,22 @@
             </div>
 
             <div class="form-group row">
-                <label for="DueDate">Due Date (Optional):</label>
-                <input type="date" class="form-control" name="DueDate" id="DueDate" />
-            </div>
-
-            <h6 class="section-title">Select User</h6>
-            <input type="text" id="userSearchInput" class="form-control" placeholder="Search for a user..." onkeyup="searchUsers()" />
-            <ul id="userList" class="list-group mt-2" style="display: none;">
-                @foreach (var user in users)
-                {
-                    <li class="list-group-item list-group-item-action"
-                        data-user-id="@user.UserID"
-                        data-first-name="@user.FirstName"
-                        data-last-name="@user.LastName"
-                        data-email="@user.Email"
-                        onclick="selectUser(this)">
-                        @user.FirstName @user.LastName
-                    </li>
-                }
-            </ul>
-
-            <div id="userDetails" class="mt-4" style="display: none;">
-                <h6>Selected User Details</h6>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <label>First Name:</label>
-                        <p id="userFirstName" class="form-control-plaintext"></p>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Last Name:</label>
-                        <p id="userLastName" class="form-control-plaintext"></p>
-                    </div>
-                    <div class="col-md-12">
-                        <label>Email:</label>
-                        <p id="userEmail" class="form-control-plaintext"></p>
-                    </div>
+                <div class="col-md-6">
+                    <label for="DueDate">Due Date (Optional):</label>
+                    <input type="date" class="form-control" name="DueDate" id="DueDate" />
                 </div>
-                <button type="button" class="btn btn-secondary mt-3" onclick="deselectUser()">Deselect User</button>
             </div>
+
+            <!-- Notes Section -->
+            <h6 class="section-title">Notes</h6>
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <label for="Notes">Notes:</label>
+                    <textarea class="form-control" id="Notes" name="Notes" rows="4" placeholder="Enter any additional notes here..."></textarea>
+                </div>
+            </div>
+
+   
 
             <div class="button-group">
                 <button type="button" class="btn btn-primary" onclick="confirmSave()">Save Changes</button>
@@ -145,9 +158,9 @@
             document.getElementById("userList").style.display = "none";
         }
 
-        function confirmSave(){
+        function confirmSave() {
             const userConfirmed = confirm("Are you sure you want to save this asset as checked-out?");
-            if(userConfirmed){
+            if (userConfirmed) {
                 alert("Checked-out asset saved successfully");
                 document.querySelector("form").submit();
             }
@@ -230,15 +243,15 @@
         border-radius: 4px;
     }
 
-    .btn-primary:hover, .btn-secondary:hover {
-        opacity: 0.9;
-    }
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9;
+        }
 
     .list-group-item {
         cursor: pointer;
     }
 
-    .list-group-item:hover {
-        background-color: #e9ecef;
-    }
+        .list-group-item:hover {
+            background-color: #e9ecef;
+        }
 </style>

@@ -1,74 +1,109 @@
-﻿<html>
-<head>
-    <title>Offices</title>
+﻿@model IEnumerable<AssetManager.Models.Office>
+        @{
+            var offices = ViewBag.Offices;
+        }
+        <div class="container-wrapper">
+            <div class="form-container">
 
-</head>
+        <div class="row mb-4 align-items-center">
+            <div class="col"></div>
+            <div class="col-md-auto text-center">
+                <h2 class="display-4 mx-auto" style="width: fit-content;">View All Offices</h2>
+            </div>
+            <div class="col-sm text-end me-3">
+                <!-- Small black label -->
+                <p class="mb-0" style="font-size: 1rem; color: black;">Total Offices:</p>
+                <!-- Large blue number below the label -->
+                <h2 class="mb-0" style="font-size: 5rem; color: #0b3d91;">@ViewBag.TotalOffices</h2>
+            </div>
+        </div>
 
-<body>
-    <div class="container-wrapper">
-        <div class="form-container">
- 
-    <div class="container">
-        <h1 class="text-center display-4">Offices</h1>
-        <p class="text-center">Please select an office to view the assets for that location.</p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Office Name</th>
-                    <th>Location</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var office in ViewBag.Offices)
-                {
-                    <tr onclick="window.location.href='@Url.Action("ViewOfficeAssets", "Offices", new { officeID = office.OfficeID })'">
-                        <td>@office.OfficeName</td>
-                        <td>@office.Location</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</body>
 
+
+                <p class="text-center pb-3">View all offices below. Use filter and search to refine your results.</p>
+
+                <!-- Offices Table Section -->
+                <div class="table-responsive centered-table">
+                    <table class="table text-center table-sm office-table table-bordered bg-white">
+                        <thead class="thead-dark">
+                            <tr style="background-color: #0d6efd; color: #fff;">
+                                <th>Office Name</th>
+                                <th>Location</th>
+                                <th>Number of Assets</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var office in offices)
+                            {
+                                <tr onclick="window.location.href='@Url.Action("ViewOfficeAssets", "Offices", new { officeID = office.OfficeID })'">
+                                    <td>@office.OfficeName</td>
+                                    <td>@office.Location</td>
+                                    <td>@office.AssetCount</td> <!-- Display asset count from anonymous object -->
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+<!-- JavaScript for filtering and searching -->
+<script>
+    function filterLocation() {
+        const selectedLocation = document.getElementById("officeLocationDropdown").value.toLowerCase();
+        document.querySelectorAll(".office-table tbody tr").forEach(row => {
+            const location = row.cells[1].textContent.toLowerCase();
+            row.style.display = selectedLocation && location !== selectedLocation ? "none" : "";
+        });
+    }
+
+    function applyGlobalSearch() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll(".office-table tbody tr").forEach(row => {
+            const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(" ");
+            row.style.display = rowText.includes(searchValue) ? "" : "none";
+        });
+    }
+
+    function resetAllFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('officeLocationDropdown').value = '';
+        document.querySelectorAll(".office-table tbody tr").forEach(row => row.style.display = "");
+    }
+</script>
+
+<!-- CSS styling to match asset table styling -->
 <style>
-
-            .container-wrapper {
-                display: flex;
-                justify-content: center;
-                width: 100%;
-                padding: 20px;
-                min-height: 100vh;
-            }
-
-            .form-container {
-                width: 2100px;
-                padding: 50px;
-                border: 2px solid #ddd;
-                border-radius: 8px;
-                background-color: #fdfdfd;
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-            }
-    
-    .container-fluid {
-        background-color: #f8f9fa;
-    }
-
-    .table {
+    .container-wrapper {
+        display: flex;
+        justify-content: center;
         width: 100%;
-        border-collapse: collapse;
+        padding: 20px;
     }
 
-        .table th, .table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            cursor: pointer;
-        }
-        /* Hover effect */
-        .table tr:hover {
-            background-color: #f1f1f1; /* Light grey for hover */
-            transition: background-color 0.3s; /* Smooth transition */
-        }
+    .form-container {
+        width: 100%;
+        padding: 20px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .office-table {
+        width: 80%;
+justify-content: center;        
+border: solid 1px #ddd;
+        margin: 0 auto; /* Centers the table */
+    }
+
+    th, td {
+        cursor: pointer;
+        padding: 12px;
+    }
+
+    th:hover, tr:hover {
+        background-color: #dcdcdc;
+    }
 </style>
-</html>

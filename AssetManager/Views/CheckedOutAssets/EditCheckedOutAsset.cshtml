@@ -8,75 +8,74 @@
             <h1 class="text-center display-4">Update Loan Details</h1>
             <h5 class="text-center">@Model.Asset.Manufacturer - @Model.Asset.Description</h5>
 
+            <!-- Loan Details Section -->
             <h6 class="section-title">Loan Details:</h6>
             <div class="form-group row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label>Asset Description:</label>
                     <p class="form-control-plaintext">@Model.Asset.Description</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label>Equipment Type:</label>
                     <p class="form-control-plaintext">@Model.Asset.EquipmentType</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label>Location:</label>
                     <p class="form-control-plaintext">@Model.Asset.Office?.Location</p>
                 </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label>Serial Number:</label>
                     <p class="form-control-plaintext">@Model.Asset.SerialNumber</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label>Asset Number:</label>
                     <p class="form-control-plaintext">@Model.Asset.AssetNumber</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label>Office Name:</label>
                     <p class="form-control-plaintext">@Model.Asset.Office?.OfficeName</p>
                 </div>
             </div>
 
-        
-            
-    
-            </div>
-
+            <!-- Staff Section -->
             <h6 class="section-title">Staff:</h6>
             <div class="form-group row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label>User Name:</label>
                     <p class="form-control-plaintext">@Model.User.FirstName @Model.User.LastName</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label>Email:</label>
                     <p class="form-control-plaintext">@Model.User.Email</p>
                 </div>
-            <div class="col-md-6">
-                <label>Date Loaned:</label>
-                <p class="form-control-plaintext">@Model.DateLentOut.ToString("dd-MM-yyyy")</p>
-            </div>
+                <div class="col-md-4">
+                    <label>Date Loaned:</label>
+                    <p class="form-control-plaintext">@Model.DateLentOut.ToString("dd-MM-yyyy")</p>
+                </div>
             </div>
 
+            <!-- Update Details Section -->
             <h6 class="section-title">Update Details</h6>
             <div class="form-group row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label for="DueDate">Due Date:</label>
                     <input type="date" class="form-control" id="DueDate" name="DueDate" value="@Model.DueDate?.ToString("yyyy-MM-dd")" />
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label for="DateReturned">Date Returned:</label>
                     <input type="date" class="form-control" id="DateReturned" name="DateReturned" value="@Model.DateReturned?.ToString("yyyy-MM-dd")" />
                 </div>
             </div>
             <p>Please review all details before making changes.</p>
 
+            <!-- Buttons -->
             <div class="button-group">
-                <button type="submit" class="btn btn-primary">Save Changes</button> </form>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
                 <a asp-action="AllCheckedOutAssets" class="btn btn-secondary">Back to List</a>
             </div>
         </div>
+    </form>
+</div>
 
 
 <style>

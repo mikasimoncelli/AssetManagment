@@ -27,7 +27,7 @@ namespace AssetManager.Controllers
                 .ToList();
 
 
-
+            ViewBag.LoansCount = checkedOutAssets.Count();
             ViewBag.checkedOutAssets = checkedOutAssets;
 
             return View();

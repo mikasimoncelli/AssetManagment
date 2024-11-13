@@ -15,7 +15,9 @@ public class AssetsController : Controller
     {
         var assetsWithOffices = _context.Assets
             .Include(a => a.Office)
-            .ToList(); 
+            .ToList();
+
+        ViewBag.TotalAssets = assetsWithOffices.Count;
 
         return View(assetsWithOffices);
     }

@@ -16,13 +16,21 @@ namespace AssetManager.Controllers
 
         public IActionResult Index()
         {
-            var offices = _context.Offices.ToList();
+            var offices = _context.Offices
+                .Select(o => new
+                {
+                    o.OfficeID,
+                    o.OfficeName,
+                    o.Location,
+                    AssetCount = _context.Assets.Count(a => a.OfficeID == o.OfficeID) 
+                })
+                .ToList();
+            ViewBag.TotalOffices = offices.Count; 
 
             ViewBag.Offices = offices;
-
             return View();
-
         }
+
 
         [Route("Assets/Office/{officeID}")]
         public IActionResult ViewOfficeAssets(int officeID)
