@@ -1,5 +1,7 @@
 ﻿@model AssetManager.Models.AssetDisposal
-
+@{
+    ViewData["Title"] = "Edit Disposal";
+}
 <div class="container-wrapper">
     <form asp-action="EditDisposal" method="post">
         <input type="hidden" asp-for="AssetDisposalID" />

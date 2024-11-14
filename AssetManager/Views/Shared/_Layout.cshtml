@@ -3,12 +3,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Asset</title>
+    <title>@ViewData["Title"] - Asset Manager</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css" integrity="sha384-Qas6B3lNjWxC/Z+z69Jp3Byc9LvAedS2C8A11yI+/jRj9+vN7y+vn1ddvCk4E+i3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <link rel="icon" type="image/x-icon" href="~/images/favicon-32x32.png" />
+
 </head>
 
 <body>
@@ -22,19 +25,28 @@
             <hr>
 
             <ul class="list-unstyled">
-                <li class="mb-1">
-                    <a id="home-toggle" asp-controller="Home" asp-action="Index" class="btn btn-toggle align-items-center rounded">
-                        <span class="bi bi-house-door-fill me-2"></span> Home
+ <li class="mb-1">
+    <button id="home-toggle" class="btn btn-toggle align-items-center rounded" onclick="openSearch()">
+        <span><i class="bi bi-search me-3 ms-4"></i> Search</span>
+    </button>
+</li>
 
-                    </a>
+
+                </li>
+                <li class="mb-1">
+                    <button id="home-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Index", "Home")'">
+                        <span><i class="bi bi-house-door-fill me-3 ms-4"></i> Home</span>
+                    </button>
+
                 </li>
 
                 <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false">
-                        <i class="bi bi-grid-3x3-gap-fill me-2"></i> Manage Assets
+                    <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false">
+                        <span><i class="bi bi-grid-3x3-gap-fill me-3 ms-4"></i> Manage Assets</span>
                     </button>
+
                     <div class="collapse" id="assets-collapse">
-                        <ul class="list-unstyled fw-normal pt-2">
+                        <ul class="list-unstyled fw-normal pt-2 ms-5">
                             <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
                             <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
                             <li><a asp-controller="Offices" asp-action="Index" class="link-dark rounded">Offices</a></li>
@@ -46,11 +58,11 @@
                 </li>
 
                 <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#checkedout-collapse" aria-expanded="false">
-                        <i class="bi bi-laptop-fill me-2"></i> Loans
+                    <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#checkedout-collapse" aria-expanded="false">
+                        <span><i class="bi bi-laptop-fill me-3 ms-4"></i> Loans</span>
                     </button>
                     <div class="collapse" id="checkedout-collapse">
-                        <ul class="list-unstyled fw-normal pt-2">
+                        <ul class="list-unstyled fw-normal pt-2 ms-5">
                             <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">View All Loans</a></li>
 
                             <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">Create New Loan</a></li>
@@ -61,11 +73,11 @@
 
 
                 <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#damages-collapse" aria-expanded="false">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Damages
+                    <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#damages-collapse" aria-expanded="false">
+                        <span><i class="bi bi-exclamation-triangle-fill me-3 ms-4"></i>Damages</span>
                     </button>
                     <div class="collapse" id="damages-collapse">
-                        <ul class="list-unstyled fw-normal pt-2">
+                        <ul class="list-unstyled fw-normal pt-2 ms-5">
                             <li><a asp-controller="Damages" asp-action="Index" class="link-dark rounded">View All Damages</a></li>
 
                             <li><a asp-controller="Damages" asp-action="ReportNewDamage" class="link-dark rounded">Report New Damage</a></li>
@@ -74,11 +86,11 @@
                 </li>
 
                 <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#disposals-collapse" aria-expanded="false">
-                        <i class="bi bi-trash-fill me-2"></i> Disposals
+                    <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#disposals-collapse" aria-expanded="false">
+                        <span> <i class="bi bi-trash-fill me-3 ms-4"></i> Disposals</span>
                     </button>
                     <div class="collapse" id="disposals-collapse">
-                        <ul class="list-unstyled fw-normal pt-2">
+                        <ul class="list-unstyled fw-normal pt-2 ms-5">
                             <li><a asp-controller="Disposals" asp-action="Index" class="link-dark rounded">View All Disposals</a></li>
 
                             <li><a asp-controller="Disposals" asp-action="ReportNewDisposal" class="link-dark rounded">Report New Disposal</a></li>
@@ -87,22 +99,25 @@
                 </li>
 
                 <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#users-collapse" aria-expanded="false">
-                        <i class="bi bi-people-fill me-2"></i> Manage Users
+                    <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#users-collapse" aria-expanded="false">
+                        <span><i class="bi bi-people-fill me-3 ms-4"></i> Manage Users</span>
                     </button>
                     <div class="collapse" id="users-collapse">
-                        <ul class="list-unstyled fw-normal pt-2">
+                        <ul class="list-unstyled fw-normal pt-2 ms-5">
                             <li><a asp-controller="Users" asp-action="Index" class="link-dark rounded">View All Users</a></li>
                             <li><a asp-controller="Users" asp-action="AddUser" class="link-dark rounded">Add New User</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="mb-1">
-                    <a id="home-toggle" asp-controller="Home" asp-action="Reports" class="btn btn-toggle align-items-center rounded">
-                        <i class="bi bi-file-earmark-pdf-fill me-2"></i> Reports
-                    </a>
+                    <button id="home-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Reports", "Home")'">
+                        <i class="bi bi-file-earmark-pdf-fill me-3 ms-4"></i> Reports
+                    </button>
+
                 </li>
             </ul>
+
+            
         </div>
 
         <div class="container-fluid">
@@ -111,6 +126,18 @@
             </main>
         </div>
     </div>
+
+
+<div class="search-overlay" id="searchOverlay">
+    <input type="text" id="searchInput" class="search-bar" placeholder="Search for assets, users, or offices..." oninput="filterResults()">
+    <button id="closeSearch" onclick="closeSearch()">Close</button>
+    <div id="searchResults" class="results-container"></div>
+</div>
+
+
+
+
+
 
     <footer>
         <div class="social-icons">
@@ -145,12 +172,165 @@
                 });
             });
         });
+
+
+
+// Function to open the search overlay
+function openSearch() {
+    document.getElementById('searchOverlay').style.display = 'flex';
+    document.getElementById('searchInput').focus();
+}
+
+// Function to close the search overlay
+function closeSearch() {
+    document.getElementById('searchOverlay').style.display = 'none';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchResults').innerHTML = '';
+}
+
+
+       // Prepare data from ViewBag
+        const assets = @Html.Raw(Json.Serialize(ViewBag.Assets));
+        const users = @Html.Raw(Json.Serialize(ViewBag.Users));
+        const offices = @Html.Raw(Json.Serialize(ViewBag.Offices));
+        
+        // Combine all entities into a single array
+        const allData = [
+            ...assets.map(a => ({ type: "Asset", name: a.Description, id: a.AssetID })),
+            ...users.map(u => ({ type: "User", name: `${u.FirstName} ${u.LastName}`, id: u.UserID })),
+            ...offices.map(o => ({ type: "Office", name: o.OfficeName, id: o.OfficeID }))
+        ];
+
+        // Function to filter results based on input
+        function filterResults() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const resultsContainer = document.getElementById("searchResults");
+            resultsContainer.innerHTML = ""; // Clear previous results
+
+            // Filter and display matching results
+            const filteredResults = allData.filter(item => item.name.toLowerCase().includes(query));
+            if (filteredResults.length > 0) {
+                filteredResults.forEach(result => {
+                    const resultDiv = document.createElement("div");
+                    resultDiv.classList.add("result-item");
+                    resultDiv.textContent = `${result.type}: ${result.name}`;
+                    resultDiv.onclick = () => window.location.href = `/${result.type}s/Edit/${result.id}`;
+                    resultsContainer.appendChild(resultDiv);
+                });
+            } else {
+                resultsContainer.innerHTML = "<p>No results found</p>";
+            }
+        }
+
+        // Function to close the search overlay
+        function closeSearch() {
+            document.getElementById("searchOverlay").style.display = "none";
+            document.getElementById("searchInput").value = "";
+            document.getElementById("searchResults").innerHTML = "";
+        }
+
+
+
+
+
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 
 <style>
+    
+.results-container {
+    margin-top: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 60%;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+}
+
+.result-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.result-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Overlay Background */
+.search-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: flex-start;
+    padding-top: 40px; /* Space from the top of the screen */
+}
+
+/* Centered Search Bar */
+.search-bar {
+    position: relative;
+    width: 50%; /* Make it wider */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px; /* Reduced padding for a shorter height */
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e0e0e0; /* Light grey background */
+    color: #333;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        transform: translateX(20%) translateY(200px);
+
+}
+
+/* Close Button */
+.close-btn {
+    background: transparent;
+    color: #333;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+
+/* Search Results Styling */
+.search-results {
+    max-height: 300px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+
+
+    .sidebar .btn-toggle i,
+    .sidebar .link-dark i,
+    .sidebar .fw-normal i {
+        font-size: 30px !important; /* Set to desired size with !important */
+    }
+
+
+    .logo-bottom {
+        width: 100%;
+        text-align: center; /* Center-align the image */
+    }
+
+        .logo-bottom img {
+            width: 100%; /* Make the image fill the container width */
+            height: auto; /* Maintain the aspect ratio */
+            object-fit: cover; /* Ensure it covers the full area without distortion */
+        }
+
     .btn-toggle i {
         font-size: 16px; /* Adjust icon size */
         color: white; /* Set icon color */
@@ -175,36 +355,45 @@
         }
 
     .btn-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start; /* Aligns items to the left */
         background-color: transparent;
         border: none;
         font-size: 18px;
-        font-weight: 500; 
-
+        font-weight: 500;
         color: white;
-        display: flex;
-        align-items: center;
         width: 100%;
-        text-align: left;
         padding: 8px 0;
+        text-align: left;
         outline: none;
     }
 
+        .btn-toggle span {
+            display: flex;
+            align-items: center; /* Keeps icon and text aligned */
+        }
+
+    /* Only add the arrow to items with the 'arrow-item' class */
+    .arrow-item::after {
+        content: "\1F896"; /* Right arrow character */
+        font-size: 20px;
+        color: white;
+        margin-left: auto; /* Pushes arrow to the right */
+        transition: transform 0.3s;
+    }
+
+    .arrow-item[aria-expanded="true"]::after {
+        content: "\1F897"; /* Change to desired expanded arrow */
+    }
+
+
+
+
+
         .btn-toggle:focus {
-            outline: none; 
-            box-shadow: none; 
-        }
-
-        .btn-toggle::before {
-            content: "\1F896";
-            font-size: 20px;
-            margin-right: 10px;
-
-            transition: transform 0.3s;
-            color: white;
-        }
-
-        .btn-toggle[aria-expanded="true"]::before {
-            content: "\1F897";
+            outline: none;
+            box-shadow: none;
         }
 
         .btn-toggle:hover {

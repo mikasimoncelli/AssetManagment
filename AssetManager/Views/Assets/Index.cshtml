@@ -1,7 +1,13 @@
-﻿
+﻿@{
+    ViewData["Title"] = "All Assets";
+}
+
 @model List<AssetManager.Models.Asset>
 <div class="container-wrapper">
     <div class="form-container">
+        <div class="logo-top-right">
+            <img src="~/images/Favicon.jpg" alt="Company Logo" class="img-fluid">
+        </div>
         <div class="row mb-4 align-items-center">
             <!-- Empty Column -->
             <!-- Right-Aligned Total Count Column -->
@@ -54,8 +60,25 @@
             <div class="col-md-12">
                 @foreach (var group in Model.GroupBy(a => a.EquipmentType))
                 {
+                    var assetCount = group.Count();
+
                     <div class="equipment-type-section" data-type="@group.Key">
-                        <h4 class="text-center mt-4 mb-3 display-6">@($"{group.Key}s")</h4>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Total count on the left -->
+                            <div class="text-start" style="flex: 1;">
+                                <p class="mb-0" style="font-size: 1.25rem; color: #0b3d91; font-weight: bold;">
+                                    Total: @assetCount
+                                </p>
+                            </div>
+
+                            <!-- Asset type name centered -->
+                            <div class="text-center" style="flex: 2;">
+                                <h4 class="mt-4 mb-3 display-6">@($"{group.Key}s")</h4>
+                            </div>
+
+                            <!-- Empty div to balance the layout on the right -->
+                            <div style="flex: 1;"></div>
+                        </div>
                         <div class="table-responsive">
                             <table class="table text-center table-sm assetTable table-bordered bg-white">
                                 <thead class="thead-dark" style="padding: 42px">
@@ -313,4 +336,15 @@
         font-weight: bold;
         margin-bottom: 20px;
     }
+
+    .logo-top-right {
+        position: absolute;
+        top: 40px; /* Adjust as needed */
+        right: 90px; /* Adjust as needed */
+    }
+
+        .logo-top-right img {
+            max-width: 100px; /* Adjust the size as needed */
+            height: auto;
+        }
 </style>

@@ -1,4 +1,7 @@
 ﻿@model AssetManager.Models.CheckedOutAsset
+@{
+    ViewData["Title"] = "Edit Loan";
+}
 
 <div class="container-wrapper">
     <form asp-action="EditCheckedOutAsset" method="post">
@@ -55,11 +58,13 @@
             <!-- Update Details Section -->
             <h6 class="section-title">Update Details</h6>
             <div class="form-group row">
- 
+
                 <div class="col-md-4">
                     <label for="DueDate">Due Date: (Optional)</label>
-                    <input type="date" class="form-control" id="DueDate" name="DueDate" value="@Model.DueDate?.ToString("yyyy-MM-dd")" />
+                    <input type="date" class="form-control" id="DueDate" name="DueDate"
+                           value="@Model.DueDate?.ToString("yyyy-MM-dd")" placeholder="Enter due date" />
                 </div>
+
 
             </div>
 

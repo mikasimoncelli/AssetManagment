@@ -1,5 +1,7 @@
 ﻿@model AssetManager.Models.Asset
-
+@{
+    ViewData["Title"] = "Disposal Form";
+}
 <div class="container-wrapper">
     <form asp-action="AssetDisposalForm" method="post">
         <div class="form-container">
@@ -104,7 +106,7 @@
     }
 
     .form-container {
-        width: 1000px;
+        width: 1600px;
         padding: 50px;
         border: 1px solid #ddd;
         border-radius: 8px;

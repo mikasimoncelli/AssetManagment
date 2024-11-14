@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<AssetManager.Models.Asset>
 <body>
-
+    @{
+        ViewData["Title"] = $"{ViewBag.Office.OfficeName} Assets";
+    }
 
     <div class="container-wrapper">
         <div class="form-container">

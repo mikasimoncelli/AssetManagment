@@ -1,6 +1,8 @@
 ﻿@model AssetManager.Models.User
 <br /><br />
-
+@{
+    ViewData["Title"] = "Edit User";
+}
     <div class="form-container">
     <h5 class="text-center display-4">@Model.FirstName @Model.LastName</h5>
     <p class="text-center">@Model.Email</p>

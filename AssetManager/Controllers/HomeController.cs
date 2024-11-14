@@ -43,6 +43,37 @@ namespace AssetManager.Controllers
                 })
                 .ToList();
 
+            // Separate overdue and upcoming returns
+            var overdueReturns = _context.CheckedOutAssets
+                .Where(c => c.DateReturned == null && c.DueDate < DateTime.Now)
+                .OrderBy(c => c.DueDate)
+                .Select(c => new
+                {
+                    CheckedOutID = c.CheckedOutID, // Include CheckedOutID
+                    AssetName = c.Asset.Description,
+                    AssetType = c.Asset.EquipmentType,
+                    DueDate = c.DueDate,
+                    UserName = c.User.FirstName + ' ' + c.User.LastName
+                })
+                .ToList();
+
+            var upcomingReturns = _context.CheckedOutAssets
+                .Where(c => c.DateReturned == null && c.DueDate >= DateTime.Now && c.DueDate <= DateTime.Now.AddDays(7))
+                .OrderBy(c => c.DueDate)
+                .Select(c => new
+                {
+                    CheckedOutID = c.CheckedOutID, // Include CheckedOutID
+                    AssetName = c.Asset.Description,
+                    AssetType = c.Asset.EquipmentType,
+                    DueDate = c.DueDate,
+                    UserName = c.User.FirstName + ' ' + c.User.LastName
+                })
+                .ToList();
+
+            // Pass the lists to the view
+            ViewBag.OverdueReturns = overdueReturns;
+            ViewBag.UpcomingReturns = upcomingReturns;
+
             ViewBag.totalAssets = assetCount.Sum(a => a.AssetsCount);
             ViewBag.assetCount = assetCount;
             ViewBag.phoneAvailability = CalculateAvailabilityPercentage("Phone", currentlyCheckedOutAssetIds);
@@ -322,6 +353,20 @@ namespace AssetManager.Controllers
                 return File(stream.ToArray(), "application/pdf", "UsersReport.pdf");
             }
         }
+
+        [HttpGet]
+        public IActionResult Search()
+        {
+            // Load lists of assets, users, and offices into ViewBag
+            ViewBag.Assets = _context.Assets.ToList();
+            ViewBag.Users = _context.Users.ToList();
+            ViewBag.Offices = _context.Offices.ToList();
+
+            return View();
+        }
+
+
+
 
 
     }
