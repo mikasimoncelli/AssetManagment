@@ -357,13 +357,57 @@ namespace AssetManager.Controllers
         [HttpGet]
         public IActionResult Search()
         {
-            // Load lists of assets, users, and offices into ViewBag
-            ViewBag.Assets = _context.Assets.ToList();
-            ViewBag.Users = _context.Users.ToList();
-            ViewBag.Offices = _context.Offices.ToList();
+            // Fetch and structure the data
+            var assets = _context.Assets
+                .Select(a => new
+                {
+                    id = a.AssetID,         // Replace with actual Asset ID
+                    type = "Asset",
+                    name = a.Description    // Replace with actual Asset name/description field
+                })
+                .ToList();
+
+            var users = _context.Users
+                .Select(u => new
+                {
+                    id = u.UserID,          // Replace with actual User ID
+                    type = "User",
+                    name = u.FirstName + " " + u.LastName  // Combine First and Last Name
+                })
+                .ToList();
+
+            var offices = _context.Offices
+                .Select(o => new
+                {
+                    id = o.OfficeID,        // Replace with actual Office ID
+                    type = "Office",
+                    name = o.OfficeName     // Replace with actual Office Name field
+                })
+                .ToList();
+
+            // Combine all data into a single list
+            var combinedData = assets.Concat(users).Concat(offices);
+
+            // Pass the data to the View
+            ViewBag.AssetsData = combinedData;
+
+            if (!combinedData.Any())
+            {
+                Console.WriteLine("Combined data is empty!");
+            }
+            else
+            {
+                ViewBag.AssetsData = combinedData;
+            }
+            Console.WriteLine("HEREEEEEEEEEEEEEEEEEEEEEEEE");
+
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(combinedData));
 
             return View();
         }
+
+
+
 
 
 

@@ -25,11 +25,14 @@
             <hr>
 
             <ul class="list-unstyled">
- <li class="mb-1">
-    <button id="home-toggle" class="btn btn-toggle align-items-center rounded" onclick="openSearch()">
-        <span><i class="bi bi-search me-3 ms-4"></i> Search</span>
-    </button>
+<li class="mb-1">
+<button id="search-toggle" class="btn btn-toggle align-items-center rounded">
+    <span><i class="bi bi-search me-3 ms-4"></i> Search</span>
+</button>
+
 </li>
+
+
 
 
                 </li>
@@ -129,8 +132,16 @@
 
 
 <div class="search-overlay" id="searchOverlay">
-    <input type="text" id="searchInput" class="search-bar" placeholder="Search for assets, users, or offices..." oninput="filterResults()">
-    <button id="closeSearch" onclick="closeSearch()">Close</button>
+    <div style="position: relative; width: 100%; text-align: center;">
+        <input
+            type="text"
+            id="searchInput"
+            class="search-bar"
+            placeholder="Search for assets, users, or offices..."
+            oninput="filterResults()"
+        />
+        <button id="closeSearch" onclick="closeSearch()">Close</button>
+    </div>
     <div id="searchResults" class="results-container"></div>
 </div>
 
@@ -173,61 +184,64 @@
             });
         });
 
+document.addEventListener('DOMContentLoaded', function () {
+    // DOM Elements
+    const searchButton = document.getElementById('search-toggle');
+    const closeButton = document.getElementById('closeSearch');
+    const searchOverlay = document.getElementById('searchOverlay');
+    const searchInput = document.getElementById('searchInput');
+    const resultsContainer = document.getElementById('searchResults');
 
+    // Load data from the backend via ViewBag
+    const assets = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.AssetsData));
+        console.log("Assets Data:", assets); // Check in browser console if data is loaded
 
-// Function to open the search overlay
-function openSearch() {
-    document.getElementById('searchOverlay').style.display = 'flex';
-    document.getElementById('searchInput').focus();
-}
+    // Open the search overlay
+    searchButton.addEventListener('click', () => {
+        searchOverlay.style.display = 'flex'; // Show overlay
+        searchInput.focus(); // Focus on the input field
+    });
 
-// Function to close the search overlay
-function closeSearch() {
-    document.getElementById('searchOverlay').style.display = 'none';
-    document.getElementById('searchInput').value = '';
-    document.getElementById('searchResults').innerHTML = '';
-}
+    // Close the search overlay
+    closeButton.addEventListener('click', () => {
+        searchOverlay.style.display = 'none'; // Hide overlay
+        searchInput.value = ''; // Clear the input field
+        resultsContainer.innerHTML = ''; // Clear previous results
+        resultsContainer.style.display = 'none'; // Hide results container
+    });
 
+    // Real-time search filtering
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value.toLowerCase(); // Get user input
+        resultsContainer.innerHTML = ''; // Clear previous results
 
-       // Prepare data from ViewBag
-        const assets = @Html.Raw(Json.Serialize(ViewBag.Assets));
-        const users = @Html.Raw(Json.Serialize(ViewBag.Users));
-        const offices = @Html.Raw(Json.Serialize(ViewBag.Offices));
-        
-        // Combine all entities into a single array
-        const allData = [
-            ...assets.map(a => ({ type: "Asset", name: a.Description, id: a.AssetID })),
-            ...users.map(u => ({ type: "User", name: `${u.FirstName} ${u.LastName}`, id: u.UserID })),
-            ...offices.map(o => ({ type: "Office", name: o.OfficeName, id: o.OfficeID }))
-        ];
-
-        // Function to filter results based on input
-        function filterResults() {
-            const query = document.getElementById("searchInput").value.toLowerCase();
-            const resultsContainer = document.getElementById("searchResults");
-            resultsContainer.innerHTML = ""; // Clear previous results
-
-            // Filter and display matching results
-            const filteredResults = allData.filter(item => item.name.toLowerCase().includes(query));
-            if (filteredResults.length > 0) {
-                filteredResults.forEach(result => {
-                    const resultDiv = document.createElement("div");
-                    resultDiv.classList.add("result-item");
-                    resultDiv.textContent = `${result.type}: ${result.name}`;
-                    resultDiv.onclick = () => window.location.href = `/${result.type}s/Edit/${result.id}`;
-                    resultsContainer.appendChild(resultDiv);
-                });
-            } else {
-                resultsContainer.innerHTML = "<p>No results found</p>";
-            }
+        if (!query) {
+            resultsContainer.style.display = 'none'; // Hide results container if no query
+            return;
         }
 
-        // Function to close the search overlay
-        function closeSearch() {
-            document.getElementById("searchOverlay").style.display = "none";
-            document.getElementById("searchInput").value = "";
-            document.getElementById("searchResults").innerHTML = "";
+        // Filter results by the 'name' field
+        const filteredResults = assets.filter(item =>
+            item.name.toLowerCase().includes(query)
+        );
+
+        // Display results
+        resultsContainer.style.display = 'block';
+
+        if (filteredResults.length > 0) {
+            filteredResults.forEach(result => {
+                const resultDiv = document.createElement('div');
+                resultDiv.classList.add('result-item');
+                resultDiv.textContent = `${result.type}: ${result.name}`; // Show type and name
+                resultDiv.onclick = () => window.location.href = `/${result.type}s/Edit/${result.id}`; // Navigate to edit page
+                resultsContainer.appendChild(resultDiv); // Add to results container
+            });
+        } else {
+            resultsContainer.innerHTML = '<p>No results found</p>';
         }
+    });
+});
+
 
 
 
@@ -239,77 +253,143 @@ function closeSearch() {
 </body>
 
 <style>
-    
-.results-container {
-    margin-top: 20px;
-    max-height: 200px;
-    overflow-y: auto;
+/* Search Overlay Styles */
+.search-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    z-index: 1000; /* Ensure it overlays other elements */
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 100px;
+}
+
+/* Search Bar Styling */
+.search-bar {
     width: 60%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Close Button Styling */
+#closeSearch {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Search Results Container */
+.results-container {
+    display: none; /* Hidden until results are shown */
+    margin-top: 20px;
+    position: absolute;
+    width: 60%;
+    max-width: 800px;
     background-color: #fff;
     border-radius: 4px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 2001; /* Ensure it's above the overlay */
 }
 
+/* Individual Result Item */
 .result-item {
     padding: 10px;
+    font-size: 16px;
+    color: #333;
     cursor: pointer;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease;
 }
 
 .result-item:hover {
     background-color: #f0f0f0;
 }
 
-/* Overlay Background */
-.search-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-    align-items: flex-start;
-    padding-top: 40px; /* Space from the top of the screen */
-}
-
-/* Centered Search Bar */
-.search-bar {
-    position: relative;
-    width: 50%; /* Make it wider */
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 10px; /* Reduced padding for a shorter height */
-    font-size: 18px;
-    border: none;
+/* Equipment Type Section */
+.equipment-type-section {
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: #e0e0e0; /* Light grey background */
-    color: #333;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        transform: translateX(20%) translateY(200px);
-
+    background-color: #fff;
 }
 
-/* Close Button */
-.close-btn {
-    background: transparent;
-    color: #333;
-    font-size: 24px;
-    border: none;
-    cursor: pointer;
-    position: absolute;
-    top: 15px;
-    right: 15px;
+/* Table Styling */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.assetTable {
+    width: 100%;
+}
+
+th, td {
+    padding: 8px;
+}
+
+th {
+    background-color: #0b3d91;
+    color: #fff;
+}
+
+/* Placeholder for "No Results" */
+.results-container p {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+    margin: 20px 0;
 }
 
 
-/* Search Results Styling */
-.search-results {
-    max-height: 300px;
-    overflow-y: auto;
-    text-align: left;
-}
+
+
+    .equipment-type-section {
+        margin-bottom: 30px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .assetTable {
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    th {
+        cursor: pointer;
+        background-color: #0b3d91;
+        color: #fff;
+    }
+
+
+
 
 
 
