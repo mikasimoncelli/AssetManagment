@@ -138,7 +138,6 @@
             id="searchInput"
             class="search-bar"
             placeholder="Search for assets, users, or offices..."
-            oninput="filterAssets()"
         />
         <button id="closeSearch" onclick="closeSearch()">Close</button>
     </div>
@@ -147,10 +146,15 @@
             <thead>
                 <tr>
 
-                    <th>Description</th>
-                    <th>Manufacturer</th>
-                    <th>Asset Number</th>
-                    <th>Serial Number</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Manufacturer</th>
+            <th>Asset Number</th>
+            <th>Serial Number</th>
+            <th>Office Name</th>
+            <th>Office Location</th>
+            <th>Full Name</th>
+            <th>Email</th>
               
                 </tr>
             </thead>
@@ -202,7 +206,6 @@
 
 
 
-
 document.addEventListener('DOMContentLoaded', function () {
     const searchButton = document.getElementById('search-toggle');
     const closeButton = document.getElementById('closeSearch');
@@ -211,106 +214,146 @@ document.addEventListener('DOMContentLoaded', function () {
     const assetsTable = document.getElementById('assetsTable');
     const assetsTableBody = document.getElementById('assetsTableBody');
 
-    let allAssets = []; // To store fetched assets for filtering
+    let allData = []; // To store fetched data (assets, users, and offices)
 
-    // Initially hide the table
-    assetsTable.style.display = 'none';
-
-    // Function to populate the table
-    function populateTable(assets) {
-        assetsTableBody.innerHTML = ""; // Clear existing rows
-
-        if (assets.length === 0) {
-            const row = document.createElement('tr');
-            row.innerHTML = `<td colspan="6">No assets found</td>`;
-            assetsTableBody.appendChild(row);
-            return;
-        }
-
-        assets.forEach(asset => {
-            const row = document.createElement('tr');
-            row.onclick = () => navigateToEditAsset(asset.assetID); // Attach click event
-
-            row.innerHTML = `
-                <td>${asset.description || ''}</td>
-                <td>${asset.manufacturer || ''}</td>
-                <td>${asset.assetNumber || ''}</td>
-                <td>${asset.serialNumber || ''}</td>
-                
-            `;
-            assetsTableBody.appendChild(row);
-        });
-    }
-
-    // Function to filter assets
-    function filterAssets() {
-        const query = searchInput.value.toLowerCase();
-
-        // Show the table only if there's input
-        if (query.trim() === '') {
-            assetsTable.style.display = 'none';
-            return;
-        }
-
-        assetsTable.style.display = 'table'; // Show the table if input exists
-        const filteredAssets = allAssets.filter(asset => {
-            return Object.values(asset).some(value =>
-                String(value).toLowerCase().includes(query)
-            );
-        });
-        populateTable(filteredAssets);
-    }
-
-    // Open search overlay and fetch assets
+    // Open search overlay and fetch data
     searchButton.addEventListener('click', () => {
         searchOverlay.style.display = 'block'; // Show the overlay
-        searchInput.focus(); // Focus the search input
+        searchInput.focus(); // Focus the search bar
 
-        // Fetch assets if not already fetched
-        if (allAssets.length === 0) {
-            fetch('/Home/GetAllAssets')
+        if (allData.length === 0) {
+            fetch('/Home/GetAllData')
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`Error fetching assets: ${response.statusText}`);
+                        throw new Error('Error fetching data');
                     }
                     return response.json();
                 })
-                .then(assets => {
-                    allAssets = assets;
+                .then(data => {
+                    allData = data; // Store fetched data
                 })
-                .catch(error => console.error('Error fetching assets:', error));
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
         }
     });
 
     // Close search overlay
     closeButton.addEventListener('click', () => {
+        clearSearch(); // Clear and close the search
+    });
+
+    // Clear search bar and table content
+    function clearSearch() {
         searchOverlay.style.display = 'none'; // Hide the overlay
-        searchInput.value = ''; // Clear the search input
+        searchInput.value = ''; // Clear search input
         assetsTable.style.display = 'none'; // Hide the table
-        assetsTableBody.innerHTML = ''; // Clear the table
+        assetsTableBody.innerHTML = ''; // Clear table content
+    }
+
+
+function populateTable(filteredData) {
+    assetsTableBody.innerHTML = ''; // Clear table content
+
+    if (filteredData.length === 0) {
+        assetsTableBody.innerHTML = `<tr><td colspan="9">No results found</td></tr>`;
+        return;
+    }
+
+    filteredData.forEach(item => {
+        const row = document.createElement('tr');
+
+        // Build the row based on the item type
+        if (item.type === 'Asset') {
+            row.innerHTML = `
+                <td>${item.type || ''}</td>
+                <td>${item.description || ''}</td>
+                <td>${item.manufacturer || ''}</td>
+                <td>${item.assetNumber || ''}</td>
+                <td>${item.serialNumber || ''}</td>
+                <td>${item.officeName || ''}</td>
+                <td>${item.officeLocation || ''}</td>
+                <td>${''}</td>
+                <td>${''}</td>
+            `;
+        } else if (item.type === 'Office') {
+            row.innerHTML = `
+                <td>${item.type || ''}</td>
+                <td>${''}</td>
+                <td>${''}</td>
+                <td>${''}</td>
+                <td>${''}</td>
+                <td>${item.officeName || ''}</td>
+                <td>${item.location || ''}</td>
+                <td>${''}</td>
+                <td>${''}</td>
+            `;
+        } else if (item.type === 'User') {
+            row.innerHTML = `
+                <td>${item.type || ''}</td>
+                <td>${''}</td>
+                <td>${''}</td>
+                <td>${''}</td>
+                <td>${''}</td>
+                <td>${''}</td>
+                <td>${''}</td>
+                <td>${item.fullName || ''}</td>
+                <td>${item.email || ''}</td>
+            `;
+        }
+
+        // Attach click event to navigate
+        row.onclick = () => handleRowClick(item);
+
+        assetsTableBody.appendChild(row);
     });
 
-    // Filter assets on input
-    searchInput.addEventListener('input', filterAssets);
-
-        // Close search bar when clicking outside
-    document.addEventListener('click', function (event) {
-        if (!searchOverlay.contains(event.target) && event.target !== searchButton) {
-            closeSearch();
-        }
-    });
-
-
-    function navigateToEditAsset(id) {
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.value = ''; // Clear search input
-        }
-        window.location.href = `/Assets/EditAsset/${id}`;
+    assetsTable.style.display = 'table'; // Show the table
 }
 
 
+
+
+    // Filter data based on search query
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+
+        if (!query) {
+            assetsTable.style.display = 'none'; // Hide the table if no query
+            return;
+        }
+
+        const filteredData = allData.filter(item =>
+            Object.values(item).some(value =>
+                String(value).toLowerCase().includes(query)
+            )
+        );
+
+        populateTable(filteredData); // Populate the table with filtered results
+    });
+
+    // Handle row click and navigation
+    function handleRowClick(item) {
+        if (item.Type === 'Asset') {
+            window.location.href = `/Assets/EditAsset/${item.AssetID}`;
+        } else if (item.Type === 'Office') {
+            window.location.href = `/Offices/EditOffice/${item.OfficeID}`;
+        } else if (item.Type === 'User') {
+            window.location.href = `/Users/EditUser/${item.UserID}`;
+        }
+
+        clearSearch(); // Clear search after navigation
+    }
+
+    // Close search overlay when clicking outside
+    document.addEventListener('click', function (event) {
+        if (!searchOverlay.contains(event.target) && event.target !== searchButton) {
+            clearSearch();
+        }
+    });
 });
+
+
 
 
 

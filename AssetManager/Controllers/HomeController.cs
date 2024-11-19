@@ -354,23 +354,54 @@ namespace AssetManager.Controllers
             }
         }
 
-
-        public IActionResult GetAllAssets()
+        public IActionResult GetAllData()
         {
-            var assets = _context.Assets.Select(a => new
-            {
-                a.AssetID,
-                a.Description,
-                a.Manufacturer,
-                a.AssetNumber,
-                a.SerialNumber,
-                OfficeName = a.Office.OfficeName,
-                OfficeLocation = a.Office.Location
-            }).ToList();
+            // Materialize Assets with navigation properties in memory
+            var assets = _context.Assets
+                .Include(a => a.Office)
+                .Select(a => new
+                {
+                    Type = "Asset",
+                    a.AssetID,
+                    a.Description,
+                    a.Manufacturer,
+                    a.AssetNumber,
+                    a.SerialNumber,
+                    OfficeName = a.Office.OfficeName,
+                    OfficeLocation = a.Office.Location
+                })
+                .ToList(); // Materialize the query
 
-            return Json(assets);
+            // Materialize Offices in memory
+            var offices = _context.Offices
+                .Select(o => new
+                {
+                    Type = "Office",
+                    o.OfficeID,
+                    o.OfficeName,
+                    o.Location
+                })
+                .ToList(); // Materialize the query
+
+            // Materialize Users in memory
+            var users = _context.Users
+                .Select(u => new
+                {
+                    Type = "User",
+                    u.UserID,
+                    FullName = u.FirstName + " " + u.LastName,
+                    u.Email
+                })
+                .ToList(); // Materialize the query
+
+            // Combine the data sets in memory
+            var combinedData = assets.Cast<object>()
+                .Concat(offices)
+                .Concat(users)
+                .ToList();
+
+            return Json(combinedData); // Return the combined data
         }
-
 
 
 
