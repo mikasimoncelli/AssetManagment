@@ -131,18 +131,34 @@
     </div>
 
 
-<div class="search-overlay" id="searchOverlay">
-    <div style="position: relative; width: 100%; text-align: center;">
+<div class="search-overlay" id="searchOverlay" style="overflow-x: auto">
+    <div style="position: relative; width: 100%; text-align: center; margin-bottom: 20px;">
         <input
             type="text"
             id="searchInput"
             class="search-bar"
             placeholder="Search for assets, users, or offices..."
-            oninput="filterResults()"
+            oninput="filterAssets()"
         />
         <button id="closeSearch" onclick="closeSearch()">Close</button>
     </div>
-    <div id="searchResults" class="results-container"></div>
+    <div class="table-responsive">
+        <table id="assetsTable" class="table table-sm table-bordered text-center bg-light">
+            <thead>
+                <tr>
+
+                    <th>Description</th>
+                    <th>Manufacturer</th>
+                    <th>Asset Number</th>
+                    <th>Serial Number</th>
+              
+                </tr>
+            </thead>
+            <tbody id="assetsTableBody">
+                <!-- Rows will be dynamically added -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 
@@ -184,66 +200,117 @@
             });
         });
 
+
+
+
 document.addEventListener('DOMContentLoaded', function () {
-    // DOM Elements
     const searchButton = document.getElementById('search-toggle');
     const closeButton = document.getElementById('closeSearch');
     const searchOverlay = document.getElementById('searchOverlay');
     const searchInput = document.getElementById('searchInput');
-    const resultsContainer = document.getElementById('searchResults');
+    const assetsTable = document.getElementById('assetsTable');
+    const assetsTableBody = document.getElementById('assetsTableBody');
 
-    // Load data from the backend via ViewBag
-    const assets = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.AssetsData));
-        console.log("Assets Data:", assets); // Check in browser console if data is loaded
+    let allAssets = []; // To store fetched assets for filtering
 
-    // Open the search overlay
-    searchButton.addEventListener('click', () => {
-        searchOverlay.style.display = 'flex'; // Show overlay
-        searchInput.focus(); // Focus on the input field
-    });
+    // Initially hide the table
+    assetsTable.style.display = 'none';
 
-    // Close the search overlay
-    closeButton.addEventListener('click', () => {
-        searchOverlay.style.display = 'none'; // Hide overlay
-        searchInput.value = ''; // Clear the input field
-        resultsContainer.innerHTML = ''; // Clear previous results
-        resultsContainer.style.display = 'none'; // Hide results container
-    });
+    // Function to populate the table
+    function populateTable(assets) {
+        assetsTableBody.innerHTML = ""; // Clear existing rows
 
-    // Real-time search filtering
-    searchInput.addEventListener('input', function () {
-        const query = searchInput.value.toLowerCase(); // Get user input
-        resultsContainer.innerHTML = ''; // Clear previous results
-
-        if (!query) {
-            resultsContainer.style.display = 'none'; // Hide results container if no query
+        if (assets.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="6">No assets found</td>`;
+            assetsTableBody.appendChild(row);
             return;
         }
 
-        // Filter results by the 'name' field
-        const filteredResults = assets.filter(item =>
-            item.name.toLowerCase().includes(query)
-        );
+        assets.forEach(asset => {
+            const row = document.createElement('tr');
+            row.onclick = () => navigateToEditAsset(asset.assetID); // Attach click event
 
-        // Display results
-        resultsContainer.style.display = 'block';
+            row.innerHTML = `
+                <td>${asset.description || ''}</td>
+                <td>${asset.manufacturer || ''}</td>
+                <td>${asset.assetNumber || ''}</td>
+                <td>${asset.serialNumber || ''}</td>
+                
+            `;
+            assetsTableBody.appendChild(row);
+        });
+    }
 
-        if (filteredResults.length > 0) {
-            filteredResults.forEach(result => {
-                const resultDiv = document.createElement('div');
-                resultDiv.classList.add('result-item');
-                resultDiv.textContent = `${result.type}: ${result.name}`; // Show type and name
-                resultDiv.onclick = () => window.location.href = `/${result.type}s/Edit/${result.id}`; // Navigate to edit page
-                resultsContainer.appendChild(resultDiv); // Add to results container
-            });
-        } else {
-            resultsContainer.innerHTML = '<p>No results found</p>';
+    // Function to filter assets
+    function filterAssets() {
+        const query = searchInput.value.toLowerCase();
+
+        // Show the table only if there's input
+        if (query.trim() === '') {
+            assetsTable.style.display = 'none';
+            return;
+        }
+
+        assetsTable.style.display = 'table'; // Show the table if input exists
+        const filteredAssets = allAssets.filter(asset => {
+            return Object.values(asset).some(value =>
+                String(value).toLowerCase().includes(query)
+            );
+        });
+        populateTable(filteredAssets);
+    }
+
+    // Open search overlay and fetch assets
+    searchButton.addEventListener('click', () => {
+        searchOverlay.style.display = 'block'; // Show the overlay
+        searchInput.focus(); // Focus the search input
+
+        // Fetch assets if not already fetched
+        if (allAssets.length === 0) {
+            fetch('/Home/GetAllAssets')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error fetching assets: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(assets => {
+                    allAssets = assets;
+                })
+                .catch(error => console.error('Error fetching assets:', error));
         }
     });
+
+    // Close search overlay
+    closeButton.addEventListener('click', () => {
+        searchOverlay.style.display = 'none'; // Hide the overlay
+        searchInput.value = ''; // Clear the search input
+        assetsTable.style.display = 'none'; // Hide the table
+        assetsTableBody.innerHTML = ''; // Clear the table
+    });
+
+    // Filter assets on input
+    searchInput.addEventListener('input', filterAssets);
+
+        // Close search bar when clicking outside
+    document.addEventListener('click', function (event) {
+        if (!searchOverlay.contains(event.target) && event.target !== searchButton) {
+            closeSearch();
+        }
+    });
+
+
+    function navigateToEditAsset(id) {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = ''; // Clear search input
+        }
+        window.location.href = `/Assets/EditAsset/${id}`;
+}
+
+
 });
-
-
-
 
 
 
@@ -300,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
     margin-top: 20px;
     position: absolute;
     width: 60%;
-    max-width: 800px;
+    max-width: 500px;
     background-color: #fff;
     border-radius: 4px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -339,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 .assetTable {
-    width: 100%;
+    width: 60%;
 }
 
 th, td {
@@ -360,43 +427,42 @@ th {
 }
 
 
+    
+table.table td, table.table th {
+    color: black;
+}
+table {
+    max-width: 80%; /* Ensures it doesn't exceed the screen width */
+    width: auto; /* Adjusts width based on content */
+    table-layout: auto; /* Allow columns to resize based on content */
+    position: center;
+}
 
+.table-responsive {
+    display: flex; /* Enable flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    width: 100%; /* Full width */
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+    padding: 10px; /* Add padding for spacing */
+    box-sizing: border-box; /* Include padding in width/height */
+}
 
-    .equipment-type-section {
-        margin-bottom: 30px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #fff;
-    }
+table tr {
+    cursor: pointer; /* Change cursor to pointer */
+    transition: background-color 0.3s; /* Smooth transition */
+}
 
-    .table-responsive {
-        overflow-x: auto;
-    }
-
-    .assetTable {
-        width: 100%;
-    }
-
-    th, td {
-        padding: 8px;
-    }
-
-    th {
-        cursor: pointer;
-        background-color: #0b3d91;
-        color: #fff;
-    }
-
-
-
+table tr:hover {
+    background-color: #f0f8ff; /* Highlight on hover */
+}
 
 
 
     .sidebar .btn-toggle i,
     .sidebar .link-dark i,
     .sidebar .fw-normal i {
-        font-size: 30px !important; /* Set to desired size with !important */
+        font-size: 25px !important; /* Set to desired size with !important */
     }
 
 

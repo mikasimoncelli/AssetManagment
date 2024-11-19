@@ -1,0 +1,13 @@
+﻿@model List<AssetManager.Models.Asset>
+
+@foreach (var asset in Model)
+{
+    <tr>
+        <td>@asset.AssetID</td>
+        <td>@asset.Description</td>
+        <td>@asset.Manufacturer</td>
+        <td>@asset.AssetNumber</td>
+        <td>@asset.Office.OfficeName</td>
+        <td>@asset.Office.Location</td>
+    </tr>
+}

@@ -63,7 +63,7 @@ public class AssetsController : Controller
     }
 
 
-    [HttpGet]
+    [HttpGet("Assets/EditAsset/{id}")]
     public IActionResult EditAsset(int id)
     {
         var asset = _context.Assets

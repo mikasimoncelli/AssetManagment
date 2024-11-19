@@ -151,7 +151,7 @@ namespace AssetManager.Controllers
                     .ToList();
 
                 // Display Total Asset Count and Office Asset Counts
-                document.Add(new Paragraph($"Total Asset Count: {totalAssets}").SetFontSize( 8).SetBold().SetMarginTop(10));
+                document.Add(new Paragraph($"Total Asset Count: {totalAssets}").SetFontSize(8).SetBold().SetMarginTop(10));
                 foreach (var office in officeAssetCounts)
                 {
                     document.Add(new Paragraph($"{office.OfficeName}: {office.OfficeCount}").SetFontSize(8).SetMarginLeft(0));
@@ -200,7 +200,7 @@ namespace AssetManager.Controllers
             }
         }
 
-       
+
         [HttpGet]
         public IActionResult LoanedAssetsReport()
         {
@@ -354,57 +354,24 @@ namespace AssetManager.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult Search()
+
+        public IActionResult GetAllAssets()
         {
-            // Fetch and structure the data
-            var assets = _context.Assets
-                .Select(a => new
-                {
-                    id = a.AssetID,         // Replace with actual Asset ID
-                    type = "Asset",
-                    name = a.Description    // Replace with actual Asset name/description field
-                })
-                .ToList();
-
-            var users = _context.Users
-                .Select(u => new
-                {
-                    id = u.UserID,          // Replace with actual User ID
-                    type = "User",
-                    name = u.FirstName + " " + u.LastName  // Combine First and Last Name
-                })
-                .ToList();
-
-            var offices = _context.Offices
-                .Select(o => new
-                {
-                    id = o.OfficeID,        // Replace with actual Office ID
-                    type = "Office",
-                    name = o.OfficeName     // Replace with actual Office Name field
-                })
-                .ToList();
-
-            // Combine all data into a single list
-            var combinedData = assets.Concat(users).Concat(offices);
-
-            // Pass the data to the View
-            ViewBag.AssetsData = combinedData;
-
-            if (!combinedData.Any())
+            var assets = _context.Assets.Select(a => new
             {
-                Console.WriteLine("Combined data is empty!");
-            }
-            else
-            {
-                ViewBag.AssetsData = combinedData;
-            }
-            Console.WriteLine("HEREEEEEEEEEEEEEEEEEEEEEEEE");
+                a.AssetID,
+                a.Description,
+                a.Manufacturer,
+                a.AssetNumber,
+                a.SerialNumber,
+                OfficeName = a.Office.OfficeName,
+                OfficeLocation = a.Office.Location
+            }).ToList();
 
-            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(combinedData));
-
-            return View();
+            return Json(assets);
         }
+
+
 
 
 
@@ -415,4 +382,3 @@ namespace AssetManager.Controllers
 
     }
 }
-
