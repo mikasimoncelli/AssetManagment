@@ -142,10 +142,9 @@
         <button id="closeSearch" onclick="closeSearch()">Close</button>
     </div>
     <div class="table-responsive">
-        <table id="assetsTable" class="table table-sm table-bordered text-center bg-light">
-            <thead>
-                <tr>
-
+<table id="assetsTable" class="modern-table table table-bordered">
+    <thead>
+        <tr>
             <th>Type</th>
             <th>Description</th>
             <th>Manufacturer</th>
@@ -155,13 +154,13 @@
             <th>Office Location</th>
             <th>Full Name</th>
             <th>Email</th>
-              
-                </tr>
-            </thead>
-            <tbody id="assetsTableBody">
-                <!-- Rows will be dynamically added -->
-            </tbody>
-        </table>
+        </tr>
+    </thead>
+    <tbody id="assetsTableBody">
+        <!-- Rows will be dynamically added -->
+    </tbody>
+</table>
+
     </div>
 </div>
 
@@ -205,7 +204,6 @@
         });
 
 
-
 document.addEventListener('DOMContentLoaded', function () {
     const searchButton = document.getElementById('search-toggle');
     const closeButton = document.getElementById('closeSearch');
@@ -238,9 +236,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Close search overlay
+    // Close search overlay when clicking the close button
     closeButton.addEventListener('click', () => {
         clearSearch(); // Clear and close the search
+    });
+
+    // Close search overlay when clicking outside of the search area
+    document.addEventListener('click', (event) => {
+        if (
+            !searchOverlay.contains(event.target) && // If click is outside the overlay
+            event.target !== searchButton // And not on the search button
+        ) {
+            clearSearch(); // Close the overlay
+        }
+    });
+
+    // Prevent clicks inside the overlay from closing it
+    searchOverlay.addEventListener('click', (event) => {
+        event.stopPropagation(); // Stop the click from bubbling up
     });
 
     // Clear search bar and table content
@@ -250,69 +263,6 @@ document.addEventListener('DOMContentLoaded', function () {
         assetsTable.style.display = 'none'; // Hide the table
         assetsTableBody.innerHTML = ''; // Clear table content
     }
-
-
-function populateTable(filteredData) {
-    assetsTableBody.innerHTML = ''; // Clear table content
-
-    if (filteredData.length === 0) {
-        assetsTableBody.innerHTML = `<tr><td colspan="9">No results found</td></tr>`;
-        return;
-    }
-
-    filteredData.forEach(item => {
-        const row = document.createElement('tr');
-
-        // Build the row based on the item type
-        if (item.type === 'Asset') {
-            row.innerHTML = `
-                <td>${item.type || ''}</td>
-                <td>${item.description || ''}</td>
-                <td>${item.manufacturer || ''}</td>
-                <td>${item.assetNumber || ''}</td>
-                <td>${item.serialNumber || ''}</td>
-                <td>${item.officeName || ''}</td>
-                <td>${item.officeLocation || ''}</td>
-                <td>${''}</td>
-                <td>${''}</td>
-            `;
-        } else if (item.type === 'Office') {
-            row.innerHTML = `
-                <td>${item.type || ''}</td>
-                <td>${''}</td>
-                <td>${''}</td>
-                <td>${''}</td>
-                <td>${''}</td>
-                <td>${item.officeName || ''}</td>
-                <td>${item.location || ''}</td>
-                <td>${''}</td>
-                <td>${''}</td>
-            `;
-        } else if (item.type === 'User') {
-            row.innerHTML = `
-                <td>${item.type || ''}</td>
-                <td>${''}</td>
-                <td>${''}</td>
-                <td>${''}</td>
-                <td>${''}</td>
-                <td>${''}</td>
-                <td>${''}</td>
-                <td>${item.fullName || ''}</td>
-                <td>${item.email || ''}</td>
-            `;
-        }
-
-        // Attach click event to navigate
-        row.onclick = () => handleRowClick(item);
-
-        assetsTableBody.appendChild(row);
-    });
-
-    assetsTable.style.display = 'table'; // Show the table
-}
-
-
-
 
     // Filter data based on search query
     searchInput.addEventListener('input', () => {
@@ -332,25 +282,66 @@ function populateTable(filteredData) {
         populateTable(filteredData); // Populate the table with filtered results
     });
 
-    // Handle row click and navigation
-    function handleRowClick(item) {
-        if (item.Type === 'Asset') {
-            window.location.href = `/Assets/EditAsset/${item.AssetID}`;
-        } else if (item.Type === 'Office') {
-            window.location.href = `/Offices/EditOffice/${item.OfficeID}`;
-        } else if (item.Type === 'User') {
-            window.location.href = `/Users/EditUser/${item.UserID}`;
+    // Populate the table with data
+    function populateTable(filteredData) {
+        assetsTableBody.innerHTML = ''; // Clear table content
+
+        if (filteredData.length === 0) {
+            assetsTableBody.innerHTML = `<tr><td colspan="4">No results found</td></tr>`;
+            return;
         }
 
-        clearSearch(); // Clear search after navigation
+        filteredData.forEach(item => {
+            const row = document.createElement('tr');
+
+            // Assign row class for coloring
+            if (item.type === 'Asset') {
+                row.className = 'type-asset';
+                row.innerHTML = `
+                    <td>${item.description || ''}</td>
+                    <td>${item.manufacturer || ''}</td>
+                    <td>${item.assetNumber || ''}</td>
+                    <td>${item.serialNumber || ''}</td>
+                `;
+
+                // Add click event for Asset rows
+                row.addEventListener('click', () => {
+                    window.location.href = `/Assets/EditAsset/${item.assetID}`;
+                });
+            } else if (item.type === 'Office') {
+                row.className = 'type-office';
+                row.innerHTML = `
+                    <td>${item.officeName || ''}</td>
+                    <td>${item.location || ''}</td>
+                    <td></td>
+                    <td></td>
+                `;
+
+                // Add click event for Office rows
+                row.addEventListener('click', () => {
+                    window.location.href = `/Offices/EditOffice/${item.officeID}`;
+                });
+            } else if (item.type === 'User') {
+                row.className = 'type-user';
+                row.innerHTML = `
+                    <td>${item.fullName || ''}</td>
+                    <td>${item.email || ''}</td>
+                    <td></td>
+                    <td></td>
+                `;
+
+                // Add click event for User rows
+                row.addEventListener('click', () => {
+                    window.location.href = `/Users/EditUser/${item.userID}`;
+                });
+            }
+
+            // Append the row to the table body
+            assetsTableBody.appendChild(row);
+        });
+
+        assetsTable.style.display = 'table'; // Show the table
     }
-
-    // Close search overlay when clicking outside
-    document.addEventListener('click', function (event) {
-        if (!searchOverlay.contains(event.target) && event.target !== searchButton) {
-            clearSearch();
-        }
-    });
 });
 
 
@@ -433,34 +424,6 @@ function populateTable(filteredData) {
 .result-item:hover {
     background-color: #f0f0f0;
 }
-
-/* Equipment Type Section */
-.equipment-type-section {
-    margin-bottom: 30px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-}
-
-/* Table Styling */
-.table-responsive {
-    overflow-x: auto;
-}
-
-.assetTable {
-    width: 60%;
-}
-
-th, td {
-    padding: 8px;
-}
-
-th {
-    background-color: #0b3d91;
-    color: #fff;
-}
-
 /* Placeholder for "No Results" */
 .results-container p {
     text-align: center;
@@ -471,34 +434,7 @@ th {
 
 
     
-table.table td, table.table th {
-    color: black;
-}
-table {
-    max-width: 80%; /* Ensures it doesn't exceed the screen width */
-    width: auto; /* Adjusts width based on content */
-    table-layout: auto; /* Allow columns to resize based on content */
-    position: center;
-}
 
-.table-responsive {
-    display: flex; /* Enable flexbox */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    width: 100%; /* Full width */
-    overflow-x: auto; /* Allow horizontal scrolling if needed */
-    padding: 10px; /* Add padding for spacing */
-    box-sizing: border-box; /* Include padding in width/height */
-}
-
-table tr {
-    cursor: pointer; /* Change cursor to pointer */
-    transition: background-color 0.3s; /* Smooth transition */
-}
-
-table tr:hover {
-    background-color: #f0f8ff; /* Highlight on hover */
-}
 
 
 
@@ -665,6 +601,87 @@ table tr:hover {
 
         .list-unstyled.fw-normal.pt-2 li:first-child {
         }
+
+
+        #assetsTable thead {
+    display: none;
+}
+
+
+
+
+/* Row coloring for different types */
+.type-asset {
+    background-color: #d9f7be; /* Light green for assets */
+}
+
+.type-user {
+    background-color: #bae7ff; /* Light blue for users */
+}
+
+.type-office {
+    background-color: #ffe7ba; /* Light orange for offices */
+}
+
+
+
+/* Target the specific table with the class or ID */
+#assetsTable.modern-table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: fixed; /* Ensure equal column widths */
+}
+
+#assetsTable.modern-table th,
+#assetsTable.modern-table td {
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word;
+    white-space: nowrap; /* Prevent excessive wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis for truncated text */
+    font-size: 14px;
+    border: none; /* Remove vertical lines */
+
+}
+
+#assetsTable.modern-table th {
+    background-color: #f7f7f7;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+#assetsTable.modern-table tr:hover {
+    background-color: #f1f1f1; /* Hover effect */
+    cursor: pointer; /* Indicate clickable row */
+    transition: background-color 0.2s ease;
+}
+
+/* Row coloring for different types */
+#assetsTable.modern-table .type-asset {
+    background-color: #bae7ff; 
+}
+
+#assetsTable.modern-table .type-user {
+    background-color: #FFFFC5; 
+}
+
+#assetsTable.modern-table .type-office {
+    background-color: #FFB6C1 
+}
+
+
+
 
 
 </style>

@@ -87,6 +87,57 @@ namespace AssetManager.Controllers
             return RedirectToAction("Index");
         }
 
+
+
+        public IActionResult ViewUser(int id)
+        {
+            // Fetch the user by ID
+            var user = _context.Users.Find(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Find all checked-out assets for the user
+            var checkedOutAssets = _context.CheckedOutAssets
+                .Include(c => c.Asset) // Include related asset details
+                .Where(c => c.UserID == id)
+                .ToList();
+
+            // Separate current loans and previous loans
+            ViewData["CurrentLoans"] = checkedOutAssets.Where(c => c.DateReturned == null).ToList();
+            ViewData["PreviousLoans"] = checkedOutAssets.Where(c => c.DateReturned != null).ToList();
+
+            return View(user);
+        }
+
+
+
+        [HttpGet]
+        public JsonResult CheckUserReferences(int userID)
+        {
+            var checkedOutAsset = _context.CheckedOutAssets
+                .Include(c => c.Asset)
+                .FirstOrDefault(c => c.UserID == userID);
+
+            if (checkedOutAsset != null)
+            {
+                return Json(new
+                {
+                    hasReferences = true,
+                    checkedOutID = checkedOutAsset.CheckedOutID,
+                    assetDescription = checkedOutAsset.Asset?.Description ?? "Unknown",
+                    checkedOutDate = checkedOutAsset.DateLentOut.ToString("dd-MM-yyyy") ?? "N/A"
+                });
+            }
+
+            return Json(new { hasReferences = false });
+        }
+
+
+
+
+
     }
 
 

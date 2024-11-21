@@ -34,7 +34,7 @@
                     <tbody id="userTableBody">
                         @foreach (var user in Model)
                         {
-                            <tr onclick="window.location.href='@Url.Action("EditUser", "Users", new { id = user.UserID })'">
+                            <tr onclick="window.location.href='@Url.Action("ViewUser", "Users", new { id = user.UserID })'">
                                 <td>@user.UserID</td>
                                 <td>@user.FirstName</td>
                                 <td>@user.LastName</td>

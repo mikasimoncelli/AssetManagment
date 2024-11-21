@@ -147,33 +147,41 @@
 
             @section Scripts {
                 <script>
-                    function confirmDelete(assetID, event) {
-                        if (event) event.preventDefault();
+    function confirmDeleteUser(userID, event) {
+        if (event) event.preventDefault();
 
-                        fetch(`/Assets/CheckReferences?assetID=${assetID}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                const deleteMessage = document.getElementById("deleteMessage");
-                                if (data.hasReferences) {
-                                    // If references exist, show detailed message with link
-                                    deleteMessage.innerHTML = `
-                                                <p>This asset has a checked-out record associated with it:</p>
-                                                <ul>
-                                                    <li><strong>User:</strong> ${data.userName}</li>
-                                                    <li><strong>Checked Out Date:</strong> ${data.checkedOutDate}</li>
-                                                </ul>
-                                                <p>Do you want to delete this asset along with its associated record?</p>
-                                                <a href="/CheckedOutAssets/EditCheckedOutAsset?checkedoutid=${data.checkedOutID}" target="_blank">View Checked Out Record</a>
-                                            `;
-                                } else {
-                                    // If no references, show simple confirmation message
-                                    deleteMessage.textContent = "Are you sure you want to delete this asset?";
-                                }
-                                document.getElementById("confirmDeleteButton").setAttribute("onclick", `executeDelete(${assetID})`);
-                                document.getElementById("deleteModal").style.display = "block";
-                            })
-                            .catch(error => console.error('Error:', error));
-                    }
+        fetch(`/Users/CheckUserReferences?userID=${userID}`)
+            .then(response => response.json())
+            .then(data => {
+                const deleteMessage = document.getElementById("deleteUserMessage");
+                
+                if (data.hasReferences) {
+                    // If references exist, show detailed message with link
+                    deleteMessage.innerHTML = `
+                        <p>This user has checked-out assets associated with them:</p>
+                        <ul>
+                            ${data.references.map(ref => `
+                                <li>
+                                    <strong>Asset:</strong> ${ref.Description || 'Unknown'},
+                                    <strong>Date Lent:</strong> ${ref.DateLentOut ? new Date(ref.DateLentOut).toLocaleDateString() : 'N/A'},
+                                    <strong>Status:</strong> ${ref.DateReturned ? "Returned" : "Not Returned"}
+                                </li>
+                            `).join("")}
+                        </ul>
+                        <p>Do you want to delete this user along with the associated records?</p>
+                        <a href="/CheckedOutAssets/EditCheckedOutAsset?checkedoutid=${data.references[0]?.CheckedOutID}" target="_blank">View Checked Out Record</a>
+                    `;
+                } else {
+                    // If no references, show simple confirmation message
+                    deleteMessage.textContent = "Are you sure you want to delete this user?";
+                }
+
+                // Set up the delete button with the user ID
+                document.getElementById("confirmDeleteUserButton").setAttribute("onclick", `executeDeleteUser(${userID})`);
+                document.getElementById("deleteUserModal").style.display = "flex";
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
                     function executeDelete(assetID) {
                         fetch(`/Assets/DeleteAsset?assetID=${assetID}`, { method: "DELETE" })
