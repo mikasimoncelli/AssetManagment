@@ -24,102 +24,109 @@
             </a>
             <hr>
 
-            <ul class="list-unstyled">
-<li class="mb-1">
-<button id="search-toggle" class="btn btn-toggle align-items-center rounded">
-    <span><i class="bi bi-search me-3 ms-4"></i> Search</span>
-</button>
+<ul class="list-unstyled">
+    <!-- Home Button -->
+    <li class="mb-1">
+        <button id="home-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Index", "Home")'">
+            <span><i class="bi bi-house-door-fill me-3 ms-4"></i> <span class="sidenav-text">Home</span></span>
+        </button>
+    </li>
 
-</li>
+    <!-- Search Button -->
+    <li class="mb-1">
+        <button id="search-toggle" class="btn btn-toggle align-items-center rounded">
+            <span><i class="bi bi-search me-3 ms-4"></i> <span class="sidenav-text">Search</span></span>
+        </button>
+    </li>
 
-
-
-
-                </li>
-                <li class="mb-1">
-                    <button id="home-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Index", "Home")'">
-                        <span><i class="bi bi-house-door-fill me-3 ms-4"></i> Home</span>
-                    </button>
-
-                </li>
-
-                <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false">
-                        <span><i class="bi bi-grid-3x3-gap-fill me-3 ms-4"></i> Manage Assets</span>
-                    </button>
-
-                    <div class="collapse" id="assets-collapse">
-                        <ul class="list-unstyled fw-normal pt-2 ms-5">
-                            <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
-                            <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
-                            <li><a asp-controller="Offices" asp-action="Index" class="link-dark rounded">Offices</a></li>
-
-
-
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#checkedout-collapse" aria-expanded="false">
-                        <span><i class="bi bi-laptop-fill me-3 ms-4"></i> Loans</span>
-                    </button>
-                    <div class="collapse" id="checkedout-collapse">
-                        <ul class="list-unstyled fw-normal pt-2 ms-5">
-                            <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">View All Loans</a></li>
-
-                            <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">Create New Loan</a></li>
-                            <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">View Returned Loans</a></li>
-                        </ul>
-                    </div>
-                </li>
-
-
-                <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#damages-collapse" aria-expanded="false">
-                        <span><i class="bi bi-exclamation-triangle-fill me-3 ms-4"></i>Damages</span>
-                    </button>
-                    <div class="collapse" id="damages-collapse">
-                        <ul class="list-unstyled fw-normal pt-2 ms-5">
-                            <li><a asp-controller="Damages" asp-action="Index" class="link-dark rounded">View All Damages</a></li>
-
-                            <li><a asp-controller="Damages" asp-action="ReportNewDamage" class="link-dark rounded">Report New Damage</a></li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#disposals-collapse" aria-expanded="false">
-                        <span> <i class="bi bi-trash-fill me-3 ms-4"></i> Disposals</span>
-                    </button>
-                    <div class="collapse" id="disposals-collapse">
-                        <ul class="list-unstyled fw-normal pt-2 ms-5">
-                            <li><a asp-controller="Disposals" asp-action="Index" class="link-dark rounded">View All Disposals</a></li>
-
-                            <li><a asp-controller="Disposals" asp-action="ReportNewDisposal" class="link-dark rounded">Report New Disposal</a></li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#users-collapse" aria-expanded="false">
-                        <span><i class="bi bi-people-fill me-3 ms-4"></i> Manage Users</span>
-                    </button>
-                    <div class="collapse" id="users-collapse">
-                        <ul class="list-unstyled fw-normal pt-2 ms-5">
-                            <li><a asp-controller="Users" asp-action="Index" class="link-dark rounded">View All Users</a></li>
-                            <li><a asp-controller="Users" asp-action="AddUser" class="link-dark rounded">Add New User</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="mb-1">
-                    <button id="home-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Reports", "Home")'">
-                        <i class="bi bi-file-earmark-pdf-fill me-3 ms-4"></i> Reports
-                    </button>
-
-                </li>
+    <!-- Assets Menu -->
+    <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false">
+            <span><i class="bi bi-grid-3x3-gap-fill me-3 ms-4"></i><span class="sidenav-text">Assets</span></span>
+        </button>
+        <div class="collapse" id="assets-collapse">
+            <ul class="list-unstyled fw-normal pt-2 ms-5">
+                <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
+                <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
+                <li><a asp-controller="Offices" asp-action="Index" class="link-dark rounded">Offices</a></li>
             </ul>
+        </div>
+    </li>
 
+    <!-- Loans Menu -->
+    <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#loans-collapse" aria-expanded="false">
+            <span><i class="bi bi-laptop-fill me-3 ms-4"></i><span class="sidenav-text">Loans</span></span>
+        </button>
+        <div class="collapse" id="loans-collapse">
+            <ul class="list-unstyled fw-normal pt-2 ms-5">
+                <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">View All Loans</a></li>
+                <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">Create New Loan</a></li>
+                <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">View Returned Loans</a></li>
+            </ul>
+        </div>
+    </li>
+
+    <!-- Damages Menu -->
+    <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#damages-collapse" aria-expanded="false">
+            <span><i class="bi bi-exclamation-triangle-fill me-3 ms-4"></i><span class="sidenav-text">Damages</span></span>
+        </button>
+        <div class="collapse" id="damages-collapse">
+            <ul class="list-unstyled fw-normal pt-2 ms-5">
+                <li><a asp-controller="Damages" asp-action="Index" class="link-dark rounded">View All Damages</a></li>
+                <li><a asp-controller="Damages" asp-action="ReportNewDamage" class="link-dark rounded">Report New Damage</a></li>
+            </ul>
+        </div>
+    </li>
+
+    <!-- Disposals Menu -->
+    <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#disposals-collapse" aria-expanded="false">
+            <span><i class="bi bi-trash-fill me-3 ms-4"></i><span class="sidenav-text">Disposals</span></span>
+        </button>
+        <div class="collapse" id="disposals-collapse">
+            <ul class="list-unstyled fw-normal pt-2 ms-5">
+                <li><a asp-controller="Disposals" asp-action="Index" class="link-dark rounded">View All Disposals</a></li>
+                <li><a asp-controller="Disposals" asp-action="ReportNewDisposal" class="link-dark rounded">Report New Disposal</a></li>
+            </ul>
+        </div>
+    </li>
+
+    <!-- Users Menu -->
+    <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#users-collapse" aria-expanded="false">
+            <span><i class="bi bi-people-fill me-3 ms-4"></i><span class="sidenav-text">Manage Users</span></span>
+        </button>
+        <div class="collapse" id="users-collapse">
+            <ul class="list-unstyled fw-normal pt-2 ms-5">
+                <li><a asp-controller="Users" asp-action="Index" class="link-dark rounded">View All Users</a></li>
+                <li><a asp-controller="Users" asp-action="AddUser" class="link-dark rounded">Add New User</a></li>
+            </ul>
+        </div>
+    </li>
+
+    <!-- Reports Button -->
+    <li class="mb-1">
+        <button id="reports-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Reports", "Home")'">
+            <i class="bi bi-file-earmark-pdf-fill me-3 ms-4"></i><span class="sidenav-text">Reports</span>
+        </button>
+    </li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+            <span class="welcome-user mt-auto">
+                <i class="bi-welcome-user bi-person-circle me-3 ms-4"></i> <span class="sidenav-text-welcome-user">Welcome @@User</span>
+            </span>
             
         </div>
 
@@ -131,38 +138,35 @@
     </div>
 
 
-<div class="search-overlay" id="searchOverlay" style="overflow-x: auto">
-    <div style="position: relative; width: 100%; text-align: center; margin-bottom: 20px;">
-        <input
-            type="text"
-            id="searchInput"
-            class="search-bar"
-            placeholder="Search for assets, users, or offices..."
-        />
-        <button id="closeSearch" onclick="closeSearch()">Close</button>
+    <div class="search-overlay" id="searchOverlay-page1" style="overflow-x: auto">
+        <div style="position: relative; width: 100%; text-align: center; margin-bottom: 20px;">
+            <input type="text"
+                   id="searchInput-page1"
+                   class="search-bar"
+                   placeholder="Search for assets, users, or offices..." />
+            <button id="closeSearch-page1" onclick="closeSearch()">Close</button>
+        </div>
+        <div class="table-responsive">
+            <table id="assetsTable-page1" class="modern-table table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Manufacturer</th>
+                        <th>Asset Number</th>
+                        <th>Serial Number</th>
+                        <th>Office Name</th>
+                        <th>Office Location</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody id="assetsTableBody-page1">
+                    <!-- Rows will be dynamically added -->
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="table-responsive">
-<table id="assetsTable" class="modern-table table table-bordered">
-    <thead>
-        <tr>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Manufacturer</th>
-            <th>Asset Number</th>
-            <th>Serial Number</th>
-            <th>Office Name</th>
-            <th>Office Location</th>
-            <th>Full Name</th>
-            <th>Email</th>
-        </tr>
-    </thead>
-    <tbody id="assetsTableBody">
-        <!-- Rows will be dynamically added -->
-    </tbody>
-</table>
-
-    </div>
-</div>
 
 
 
@@ -181,168 +185,181 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+
+
         document.addEventListener('DOMContentLoaded', function () {
-            var collapsibles = document.querySelectorAll('.btn-toggle');
+            // Use unique selectors
+            const searchButton = document.getElementById('search-toggle');
+            const closeButton = document.getElementById('closeSearch-page1');
+            const searchOverlay = document.getElementById('searchOverlay-page1');
+            const searchInput = document.getElementById('searchInput-page1');
+            const assetsTable = document.getElementById('assetsTable-page1');
+            const assetsTableBody = document.getElementById('assetsTableBody-page1');
 
-            collapsibles.forEach(function (button) {
-                var target = button.getAttribute('data-bs-target');
+            let allData = []; // To store fetched data (assets, users, and offices)
 
-                var isExpanded = localStorage.getItem(target);
-                if (isExpanded === 'true') {
-                    var collapseElement = document.querySelector(target);
-                    var bsCollapse = new bootstrap.Collapse(collapseElement, {
-                        toggle: false
-                    });
-                    bsCollapse.show();
+            // Open search overlay and fetch data
+            searchButton?.addEventListener('click', (event) => {
+                event.stopPropagation();
+                searchOverlay.style.display = 'block';
+                searchInput.focus();
+
+                if (allData.length === 0) {
+                    fetch('/Home/GetAllData')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error fetching data');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            allData = data;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching data:', error);
+                        });
                 }
-
-                button.addEventListener('click', function () {
-                    var isCurrentlyExpanded = button.getAttribute('aria-expanded') === 'true';
-                    localStorage.setItem(target, isCurrentlyExpanded ? 'true' : 'false');
-                });
             });
-        });
 
+            // Close search overlay
+            closeButton?.addEventListener('click', () => {
+                clearSearch();
+            });
 
-document.addEventListener('DOMContentLoaded', function () {
-    const searchButton = document.getElementById('search-toggle');
-    const closeButton = document.getElementById('closeSearch');
-    const searchOverlay = document.getElementById('searchOverlay');
-    const searchInput = document.getElementById('searchInput');
-    const assetsTable = document.getElementById('assetsTable');
-    const assetsTableBody = document.getElementById('assetsTableBody');
+            // Close when clicking outside
+            document.addEventListener('click', (event) => {
+                if (
+                    searchOverlay.style.display === 'block' &&
+                    !searchOverlay.contains(event.target) &&
+                    event.target !== searchButton
+                ) {
+                    clearSearch();
+                }
+            });
 
-    let allData = []; // To store fetched data (assets, users, and offices)
+            searchOverlay.addEventListener('click', (event) => {
+                event.stopPropagation();
+            });
 
-    // Open search overlay and fetch data
-    searchButton.addEventListener('click', () => {
-        searchOverlay.style.display = 'block'; // Show the overlay
-        searchInput.focus(); // Focus the search bar
-
-        if (allData.length === 0) {
-            fetch('/Home/GetAllData')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error fetching data');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    allData = data; // Store fetched data
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
-        }
-    });
-
-    // Close search overlay when clicking the close button
-    closeButton.addEventListener('click', () => {
-        clearSearch(); // Clear and close the search
-    });
-
-    // Close search overlay when clicking outside of the search area
-    document.addEventListener('click', (event) => {
-        if (
-            !searchOverlay.contains(event.target) && // If click is outside the overlay
-            event.target !== searchButton // And not on the search button
-        ) {
-            clearSearch(); // Close the overlay
-        }
-    });
-
-    // Prevent clicks inside the overlay from closing it
-    searchOverlay.addEventListener('click', (event) => {
-        event.stopPropagation(); // Stop the click from bubbling up
-    });
-
-    // Clear search bar and table content
-    function clearSearch() {
-        searchOverlay.style.display = 'none'; // Hide the overlay
-        searchInput.value = ''; // Clear search input
-        assetsTable.style.display = 'none'; // Hide the table
-        assetsTableBody.innerHTML = ''; // Clear table content
-    }
-
-    // Filter data based on search query
-    searchInput.addEventListener('input', () => {
-        const query = searchInput.value.toLowerCase().trim();
-
-        if (!query) {
-            assetsTable.style.display = 'none'; // Hide the table if no query
-            return;
-        }
-
-        const filteredData = allData.filter(item =>
-            Object.values(item).some(value =>
-                String(value).toLowerCase().includes(query)
-            )
-        );
-
-        populateTable(filteredData); // Populate the table with filtered results
-    });
-
-    // Populate the table with data
-    function populateTable(filteredData) {
-        assetsTableBody.innerHTML = ''; // Clear table content
-
-        if (filteredData.length === 0) {
-            assetsTableBody.innerHTML = `<tr><td colspan="4">No results found</td></tr>`;
-            return;
-        }
-
-        filteredData.forEach(item => {
-            const row = document.createElement('tr');
-
-            // Assign row class for coloring
-            if (item.type === 'Asset') {
-                row.className = 'type-asset';
-                row.innerHTML = `
-                    <td>${item.description || ''}</td>
-                    <td>${item.manufacturer || ''}</td>
-                    <td>${item.assetNumber || ''}</td>
-                    <td>${item.serialNumber || ''}</td>
-                `;
-
-                // Add click event for Asset rows
-                row.addEventListener('click', () => {
-                    window.location.href = `/Assets/EditAsset/${item.assetID}`;
-                });
-            } else if (item.type === 'Office') {
-                row.className = 'type-office';
-                row.innerHTML = `
-                    <td>${item.officeName || ''}</td>
-                    <td>${item.location || ''}</td>
-                    <td></td>
-                    <td></td>
-                `;
-
-                // Add click event for Office rows
-                row.addEventListener('click', () => {
-                    window.location.href = `/Offices/EditOffice/${item.officeID}`;
-                });
-            } else if (item.type === 'User') {
-                row.className = 'type-user';
-                row.innerHTML = `
-                    <td>${item.fullName || ''}</td>
-                    <td>${item.email || ''}</td>
-                    <td></td>
-                    <td></td>
-                `;
-
-                // Add click event for User rows
-                row.addEventListener('click', () => {
-                    window.location.href = `/Users/EditUser/${item.userID}`;
-                });
+            function clearSearch() {
+                searchOverlay.style.display = 'none';
+                searchInput.value = '';
+                assetsTable.style.display = 'none';
+                assetsTableBody.innerHTML = '';
             }
 
-            // Append the row to the table body
-            assetsTableBody.appendChild(row);
+            searchInput?.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase().trim();
+
+                if (!query) {
+                    assetsTable.style.display = 'none';
+                    return;
+                }
+
+                const filteredData = allData.filter(item =>
+                    Object.values(item).some(value =>
+                        String(value).toLowerCase().includes(query)
+                    )
+                );
+
+                populateTable(filteredData);
+            });
+
+            function populateTable(filteredData) {
+                assetsTableBody.innerHTML = '';
+
+                if (filteredData.length === 0) {
+                    assetsTableBody.innerHTML = `<tr><td colspan="4">No results found</td></tr>`;
+                    return;
+                }
+
+                filteredData.forEach(item => {
+                    const row = document.createElement('tr');
+
+                    if (item.type === 'Asset') {
+                        row.className = 'type-asset';
+                        row.innerHTML = `
+                            <td>${item.description || ''}</td>
+                            <td>${item.manufacturer || ''}</td>
+                            <td>${item.assetNumber || ''}</td>
+                            <td>${item.serialNumber || ''}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/Assets/EditAsset/${item.assetID}`;
+                        });
+                    } else if (item.type === 'Office') {
+                        row.className = 'type-office';
+                        row.innerHTML = `
+                            <td>${item.officeName || ''}</td>
+                            <td>${item.location || ''}</td>
+                            <td></td>
+                            <td></td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/Offices/EditOffice/${item.officeID}`;
+                        });
+                    } else if (item.type === 'User') {
+                        row.className = 'type-user';
+                        row.innerHTML = `
+                            <td>${item.fullName || ''}</td>
+                            <td>${item.email || ''}</td>
+                            <td></td>
+                            <td></td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/Users/EditUser/${item.userID}`;
+                        });
+                    }
+
+                    assetsTableBody.appendChild(row);
+                });
+
+                assetsTable.style.display = 'table';
+            }
         });
 
-        assetsTable.style.display = 'table'; // Show the table
-    }
+document.addEventListener("DOMContentLoaded", function () {
+    const collapsibles = document.querySelectorAll('.btn-toggle[data-bs-toggle="collapse"]');
+    const staticButtons = ['home-toggle', 'reports-toggle']; // IDs for static buttons
+
+    // Handle collapsible toggling
+    collapsibles.forEach(button => {
+        button.addEventListener('click', function () {
+            const target = document.querySelector(this.getAttribute('data-bs-target'));
+
+            // Toggle the clicked collapsible
+            const bootstrapCollapse = bootstrap.Collapse.getInstance(target) || new bootstrap.Collapse(target);
+
+            if (target.classList.contains('show')) {
+                bootstrapCollapse.hide(); // Close it if already open
+            } else {
+                // Close all other collapsibles
+                collapsibles.forEach(btn => {
+                    const otherTarget = document.querySelector(btn.getAttribute('data-bs-target'));
+                    if (otherTarget !== target && otherTarget.classList.contains('show')) {
+                        const otherCollapse = bootstrap.Collapse.getInstance(otherTarget);
+                        if (otherCollapse) {
+                            otherCollapse.hide();
+                        }
+                    }
+                });
+                bootstrapCollapse.show(); // Open the clicked one
+            }
+        });
+    });
+
+    // Handle Home and Reports buttons (exclude from collapsibles logic)
+    staticButtons.forEach(id => {
+        const button = document.getElementById(id);
+        if (button) {
+            button.addEventListener('click', function () {
+                // Simply navigate; do not modify collapsibles
+            });
+        }
+    });
 });
+
+
 
 
 
@@ -354,95 +371,33 @@ document.addEventListener('DOMContentLoaded', function () {
 </body>
 
 <style>
-/* Search Overlay Styles */
-.search-overlay {
-    display: none; /* Hidden by default */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-    z-index: 1000; /* Ensure it overlays other elements */
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 100px;
-}
-
-/* Search Bar Styling */
-.search-bar {
-    width: 60%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 10px;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #333;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Close Button Styling */
-#closeSearch {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: transparent;
-    border: none;
-    color: #fff;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-/* Search Results Container */
-.results-container {
-    display: none; /* Hidden until results are shown */
-    margin-top: 20px;
-    position: absolute;
-    width: 60%;
-    max-width: 500px;
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    max-height: 300px;
-    overflow-y: auto;
-    z-index: 2001; /* Ensure it's above the overlay */
-}
-
-/* Individual Result Item */
-.result-item {
-    padding: 10px;
-    font-size: 16px;
-    color: #333;
-    cursor: pointer;
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.3s ease;
-}
-
-.result-item:hover {
-    background-color: #f0f0f0;
-}
-/* Placeholder for "No Results" */
-.results-container p {
-    text-align: center;
-    font-size: 18px;
-    color: #666;
-    margin: 20px 0;
-}
 
 
-    
+    .sidenav-text-welcome-user{
+        font-size: 18px !important; /* Set to desired size with !important */
+                display: inline-flex;
 
-
-
-
-    .sidebar .btn-toggle i,
-    .sidebar .link-dark i,
-    .sidebar .fw-normal i {
-        font-size: 25px !important; /* Set to desired size with !important */
     }
+
+    .welcome-user {
+       
+        padding-bottom: 40px;
+        color: #fff; /* Text color for better contrast */
+        font-size: 30px !important; /* Set to desired size with !important */
+        border-top: 1px solid grey;
+    }
+
+
+    .bi {
+        padding-right:20px;
+       font-size: 25px !important; /* Set to desired size with !important */
+
+    }
+
+    .sidenav-text {
+        font-size: 16px !important; /* Targets only the text */
+    }
+
 
 
     .logo-bottom {
@@ -609,77 +564,104 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+    /* Search Overlay Styles */
+    #searchOverlay-page1 {
+        display: none; /* Hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+        z-index: 1000; /* Ensure it overlays other elements */
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 100px;
+    }
 
-/* Row coloring for different types */
-.type-asset {
-    background-color: #d9f7be; /* Light green for assets */
-}
+    /* Search Bar Styling */
+    #searchInput-page1 {
+        width: 60%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 10px;
+        font-size: 18px;
+        border: none;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #333;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
-.type-user {
-    background-color: #bae7ff; /* Light blue for users */
-}
+    /* Close Button Styling */
+    #closeSearch-page1 {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+    }
+    /* Target the specific table with the class or ID */
+    #assetsTable-page1.modern-table {
+        width: 90%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        table-layout: fixed; /* Ensure equal column widths */
+    }
 
-.type-office {
-    background-color: #ffe7ba; /* Light orange for offices */
-}
+        #assetsTable-page1.modern-table th,
+        #assetsTable-page1.modern-table td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            white-space: nowrap; /* Prevent excessive wrapping */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Add ellipsis for truncated text */
+            font-size: 14px;
+            border: none; /* Remove vertical lines */
+        }
 
+        #assetsTable-page1.modern-table th {
+            background-color: #f7f7f7;
+            color: #333;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
 
+        #assetsTable-page1.modern-table tr:hover {
+            background-color: #f1f1f1; /* Hover effect */
+            cursor: pointer; /* Indicate clickable row */
+            transition: background-color 0.2s ease;
+        }
 
-/* Target the specific table with the class or ID */
-#assetsTable.modern-table {
-    width: 90%;
-    margin: 20px auto;
-    border-collapse: collapse;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    table-layout: fixed; /* Ensure equal column widths */
-}
+    /* Row coloring for different types */
+    #assetsTable-page1 .type-asset {
+        background-color: #d9f7be; /* Light green for assets */
+    }
 
-#assetsTable.modern-table th,
-#assetsTable.modern-table td {
-    padding: 14px 20px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    word-wrap: break-word;
-    white-space: nowrap; /* Prevent excessive wrapping */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Add ellipsis for truncated text */
-    font-size: 14px;
-    border: none; /* Remove vertical lines */
+    #assetsTable-page1 .type-user {
+        background-color: #bae7ff; /* Light blue for users */
+    }
 
-}
+    #assetsTable-page1 .type-office {
+        background-color: #ffe7ba; /* Light orange for offices */
+    }
 
-#assetsTable.modern-table th {
-    background-color: #f7f7f7;
-    color: #333;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-}
-
-#assetsTable.modern-table tr:hover {
-    background-color: #f1f1f1; /* Hover effect */
-    cursor: pointer; /* Indicate clickable row */
-    transition: background-color 0.2s ease;
-}
-
-/* Row coloring for different types */
-#assetsTable.modern-table .type-asset {
-    background-color: #bae7ff; 
-}
-
-#assetsTable.modern-table .type-user {
-    background-color: #FFFFC5; 
-}
-
-#assetsTable.modern-table .type-office {
-    background-color: #FFB6C1 
-}
-
+    /* Remove table header when not needed */
+    #assetsTable-page1 thead {
+        display: none;
+    }
 
 
 

@@ -146,6 +146,21 @@ namespace AssetManager.Controllers
         }
 
 
+        [HttpPost("Disposals/DeleteDisposal/{assetDisposalID}")]
+        public IActionResult DeleteDisposal(int assetDisposalID)
+        {
+            var disposal = _context.AssetDisposals.Find(assetDisposalID);
+            if (disposal == null)
+            {
+                return NotFound();
+            }
+
+            _context.AssetDisposals.Remove(disposal);
+            _context.SaveChanges();
+
+            return Ok(); // Return success for AJAX
+        }
+
 
 
     }

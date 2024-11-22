@@ -139,6 +139,21 @@ namespace AssetManager.Controllers
         }
 
 
+        [HttpPost("Damages/DeleteDamage/{assetDamageID}")]
+        public IActionResult DeleteDamage(int assetDamageID)
+        {
+            var damage = _context.AssetDamages.Find(assetDamageID);
+            if (damage == null)
+            {
+                return NotFound(); // Return 404 if not found
+            }
+
+            _context.AssetDamages.Remove(damage);
+            _context.SaveChanges();
+
+            return Ok(); // Return success for AJAX
+        }
+
 
 
     }
