@@ -6,90 +6,73 @@
 
 <div class="container-wrapper">
     <div class="form-container">
+    <form method="post" action="@Url.Action("UpdateAsset", "Assets")">
+        <input type="hidden" name="AssetID" value="@Model.AssetID" />
+        <h4 class="text-center">Edit Asset Details</h4>
+        <hr class="section-divider">
+        <p class="text-muted mt-2" style="font-size: 0.875rem;">Edit Asset details - Make changes in boxes below then click Save Changes.</p>
 
+        <!-- Asset Fields -->
+        <div class="form-group">
+            <label for="Description">Description</label>
+            <input type="text" class="form-control" id="Description" name="Description" value="@Model.Description" placeholder="Enter asset description" />
+        </div>
 
-        <!-- Asset Update Form -->
-        <form method="post" action="@Url.Action("UpdateAsset", "Assets")">
-            <input type="hidden" name="AssetID" value="@Model.AssetID" />
-            <h4 class="text-center">Edit Asset Details</h4>
-            <hr class="section-divider">
-            <p class="text-muted mt-2" style="font-size: 0.875rem;">Edit Asset details - Make changes in boxes below then click Save Changes.</p>
+        <div class="form-group">
+            <label for="Manufacturer">Manufacturer</label>
+            <input type="text" class="form-control" id="Manufacturer" name="Manufacturer" value="@Model.Manufacturer" placeholder="Enter manufacturer" />
+        </div>
 
+        <div class="form-group">
+            <label for="EquipmentType">Equipment Type</label>
+            <select class="form-control" id="EquipmentType" name="EquipmentType">
+                <option value="">Select Type</option>
+                @foreach (var type in ViewBag.EquipmentTypes)
+                {
+                    <option value="@type" selected="@(Model.EquipmentType == type ? "selected" : null)">@type</option>
+                }
+            </select>
+        </div>
 
-            <!-- Asset Fields -->
-            <div class="form-group">
-                <label for="Description">Description</label>
-                <input type="text" class="form-control" id="Description" name="Description" value="@Model.Description" placeholder="Enter asset description" />
+        <div class="form-row">
+            <div class="form-group col-md-6 pr-md-3">
+                <label for="AssetNumber">Asset Number</label>
+                <input type="text" class="form-control" id="AssetNumber" name="AssetNumber" value="@Model.AssetNumber" placeholder="Enter asset number" />
             </div>
-
-            <div class="form-group">
-                <label for="Manufacturer">Manufacturer</label>
-                <input type="text" class="form-control" id="Manufacturer" name="Manufacturer" value="@Model.Manufacturer" placeholder="Enter manufacturer" />
+            <div class="form-group col-md-6 pl-md-3">
+                <label for="SerialNumber">Serial Number</label>
+                <input type="text" class="form-control" id="SerialNumber" name="SerialNumber" value="@Model.SerialNumber" placeholder="Enter serial number" />
             </div>
+        </div>
 
-            <div class="form-group">
-                <label for="EquipmentType">Equipment Type</label>
-                <select class="form-control" id="EquipmentType" name="EquipmentType">
-                    <option value="">Select Type</option>
-                    @foreach (var type in ViewBag.EquipmentTypes)
-                    {
-                        <option value="@type" selected="@(Model.EquipmentType == type ? "selected" : null)">@type</option>
-                    }
-                </select>
-            </div>
+        <div class="form-group">
+            <label for="OfficeID">Office</label>
+            <select class="form-control" id="OfficeID" name="OfficeID">
+                <option value="">Select Office</option>
+                @foreach (var officeItem in ViewBag.Offices)
+                {
+                    <option value="@officeItem.OfficeID" selected="@(Model.OfficeID == officeItem.OfficeID ? "selected" : null)">@officeItem.OfficeName - @officeItem.Location</option>
+                }
+            </select>
+        </div>
 
-        
-
-            <div class="form-row">
-                <div class="form-group col-md-6 pr-md-3">
-                    <label for="AssetNumber">Asset Number</label>
-                    <input type="text" class="form-control" id="AssetNumber" name="AssetNumber" value="@Model.AssetNumber" placeholder="Enter asset number" />
-                </div>
-                <div class="form-group col-md-6 pl-md-3">
-                    <label for="SerialNumber">Serial Number</label>
-                    <input type="text" class="form-control" id="SerialNumber" name="SerialNumber" value="@Model.SerialNumber" placeholder="Enter serial number" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="OfficeID">Office</label>
-                <select class="form-control" id="OfficeID" name="OfficeID">
-                    <option value="">Select Office</option>
-                    @foreach (var officeItem in ViewBag.Offices)
-                    {
-                        <option value="@officeItem.OfficeID" selected="@(Model.OfficeID == officeItem.OfficeID ? "selected" : null)">@officeItem.OfficeName - @officeItem.Location</option>
-                    }
-                </select>
-            </div>
-
-
-
-
-
-
-
-            </div>
-    </div>
-
-<!-- Save Changes Button (Triggers Save Modal) -->
-            <div class="form-group d-flex flex-wrap justify-content-center gap-3 mt-4">
-                <button type="button" class="btn btn-secondary" style="width: 150px;" onclick="document.getElementById('saveChangesModal').style.display = 'block'">
+<div class="button-group">
+    <!-- Save Changes Button -->
+    <button type="button" class="btn btn-primary" onclick="document.getElementById('saveChangesModal').style.display = 'block'">
         Save Changes
     </button>
+    </form>
 
-</form>
-
-<!-- Action Buttons Section -->
-    <!-- Back to List Button -->
-        <button type="button" class="btn btn-secondary" style="width: 150px;" onclick="window.location.href='@Url.Action("ViewAsset", "Assets", new { id = Model.AssetID })'">
+    <!-- Back Button -->
+    <a href="@Url.Action("ViewAsset", "Assets", new { id = Model.AssetID })" class="btn btn-secondary">
         Back
-    </button>
+    </a>
 
-    <!-- Delete Button (Triggers Delete Modal) -->
-    <button type="button" class="btn btn-secondary" style="width: 150px;" onclick="confirmDelete(@Model.AssetID, event)">
+    <!-- Delete Button -->
+    <button type="button" class="btn btn-danger" onclick="confirmDelete(@Model.AssetID, event)">
         Delete Asset
     </button>
-
+</div>
 
 <!-- Existing Delete Confirmation Modal -->
 <div id="deleteModal" class="modal">
@@ -224,6 +207,13 @@
         }
 
         <style>
+
+            
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
 
             .btn-1 {
                 position: relative;
@@ -414,32 +404,4 @@
                 border: none;
             }
 
-            .btn-secondary {
-                background-color: #6c757d;
-                color: #fff;
-                border: none;
-            }
-
-            .btn-primary {
-                background-color: #007bff;
-                color: #fff;
-                border: none;
-            }
-
-            .btn-danger {
-                background-color: #e81e1e;
-                color: #fff;
-                border: none;
-            }
-
-                .btn-success:hover, .btn-secondary:hover, .btn-primary:hover, .btn-danger:hover {
-                    opacity: 0.9;
-                }
-
-            .btn-custom {
-                width: 150px;
-                padding: 10px 0;
-                font-size: 1rem;
-                text-align: center;
-            }
         </style>

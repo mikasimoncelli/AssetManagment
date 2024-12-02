@@ -14,13 +14,13 @@
         <div class="form-container">
             <h3 class="mb-4" style="color: #343a40;">Download Reports</h3>
             <div class="mb-3">
-                <a href="@Url.Action("AssetsReport", "Home")" class="btn btn-primary btn-sm" role="button" style="width: 200px;">
+                <a href="@Url.Action("AssetsReport", "Home")" class="btn btn-success btn-sm" role="button" style="width: 200px;">
                     Assets Report
                 </a>
                 <p class="text-muted mt-2" style="font-size: 0.875rem;">View a report of all assets in the inventory.</p>
             </div>
             <div class="mb-3">
-                <a href="@Url.Action("LoanedAssetsReport", "Home")" class="btn btn-secondary btn-sm" role="button" style="width: 200px;">
+                <a href="@Url.Action("LoanedAssetsReport", "Home")" class="btn btn-success btn-sm" role="button" style="width: 200px;">
                     Loaned Assets Report
                 </a>
                 <p class="text-muted mt-2" style="font-size: 0.875rem;">View a report of all loans, past and current.</p>
@@ -36,6 +36,19 @@
 
 
     <style>
+        .btn-success {
+            background-color: #28a745 !important; /* Green background */
+            color: white !important; /* White text */
+            border: 2px solid #28a745 !important; /* Green border */
+        }
+
+            /* Hover state for btn-success */
+            .btn-success:hover {
+                background-color: white !important; /* White background on hover */
+                color: #28a745 !important; /* Green text on hover */
+                border: 2px solid #28a745 !important; /* Green border on hover */
+            }
+
         .container-wrapper {
             display: flex;
             justify-content: center;

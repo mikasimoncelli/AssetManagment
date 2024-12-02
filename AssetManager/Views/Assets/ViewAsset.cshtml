@@ -61,45 +61,47 @@
             </div>
 
 
-</div>
-</div>
 
 
 
-
-
+<br />
 
 <!-- Action Buttons Section -->
 <div class="form-group d-flex flex-wrap justify-content-center gap-3 mt-4">
     <!-- Back to List Button -->
 <!-- Back to List Button -->
-    <button type="button" class="btn btn-outline-secondary" style="width: 150px;" onclick="window.location.href='@Context.Request.Query["returnUrl"]'">
+    <button type="button" class="btn btn-secondary" style="width: 150px;" onclick="window.location.href='@Context.Request.Query["returnUrl"]'">
     Back to List
-</button>
+    </button>
 
     <!-- Delete Button (Triggers Delete Modal) -->
-    <button type="button" class="btn btn-outline-secondary" style="width: 150px;" onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = Model.AssetID })'">
+    <button type="button" class="btn btn-secondary" style="width: 150px;" onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = Model.AssetID })'">
         Edit Asset
     </button>
 
     <!-- Damage Form Button -->
-    <button type="button" class="btn btn-outline-secondary" style="width: 150px;" 
+    <button type="button" class="btn btn-primary" style="width: 150px;" 
             onclick="window.location.href='@Url.Action("AssetDamagesForm", "Damages", new { assetID = Model.AssetID })'">
         Damage Form
     </button>
 
     <!-- Disposal Form Button -->
-    <button type="button" class="btn btn-outline-secondary" style="width: 150px;" 
+    <button type="button" class="btn btn-primary" style="width: 150px;" 
             onclick="window.location.href='@Url.Action("AssetDisposalsForm", "Disposals", new { assetID = Model.AssetID })'">
         Disposal Form
     </button>
 
     <!-- Check Out Asset Button -->
-    <button type="button" class="btn btn-outline-secondary" style="width: 150px;" 
+    <button type="button" class="btn btn-primary" style="width: 150px;" 
             onclick="window.location.href='@Url.Action("AddNewCheckedOutAsset", "CheckedOutAssets", new { id = Model.AssetID })'">
         Check Out Asset
     </button>
 </div>
+
+
+</div>
+</div>
+
 
 <!-- Existing Delete Confirmation Modal -->
 <div id="deleteModal" class="modal">
@@ -436,44 +438,5 @@
                     padding: 12px;
                 }
 
-                .btn-success {
-                    background-color: #378b15;
-                    color: #fff;
-                    border: none;
-                }
 
-                .btn-secondary {
-                    background-color: #6c757d;
-                    color: #fff;
-                    border: none;
-                }
-
-                /* Hover effect for btn-secondary */
-.btn-secondary:hover {
-    background-color: #fff; /* Change background to secondary color */
-    color: #6c757d; /* Change text color to white on hover */
-}
-
-                .btn-primary {
-                    background-color: #007bff;
-                    color: #fff;
-                    border: none;
-                }
-
-                .btn-danger {
-                    background-color: #e81e1e;
-                    color: #fff;
-                    border: none;
-                }
-
-                    .btn-success:hover, .btn-secondary:hover, .btn-primary:hover, .btn-danger:hover {
-                        opacity: 0.9;
-                    }
-
-                .btn-custom {
-                    width: 150px;
-                    padding: 10px 0;
-                    font-size: 1rem;
-                    text-align: center;
-                }
             </style>
