@@ -60,9 +60,9 @@
         </button>
         <div class="collapse" id="loans-collapse">
             <ul class="list-unstyled fw-normal pt-2 ms-5">
-                <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">View All Loans</a></li>
+                <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">Current Loans</a></li>
                 <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">Create New Loan</a></li>
-                <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">View Returned Loans</a></li>
+                <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">Returned Loans</a></li>
             </ul>
         </div>
     </li>
@@ -124,7 +124,7 @@
 
 
 
-            <span class="welcome-user mt-auto">
+            <span class="list-unstyled welcome-user mt-auto mb-1 align-items-center rounded">
                 <i class="bi-welcome-user bi-person-circle me-3 ms-4"></i> <span class="sidenav-text-welcome-user">Welcome @@User</span>
             </span>
             
@@ -138,7 +138,8 @@
     </div>
 
 
-    <div class="search-overlay" id="searchOverlay-page1" style="overflow-x: auto">
+    <div class="search-overlay" id="searchOverlay-page1" style="overflow-x: auto; display: none;">
+        <!-- Hide initially -->
         <div style="position: relative; width: 100%; text-align: center; margin-bottom: 20px;">
             <input type="text"
                    id="searchInput-page1"
@@ -173,13 +174,11 @@
 
 
 
+
     <footer>
         <div class="social-icons">
-            <a href="https://facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
-            <a href="https://twitter.com" target="_blank"><i class="bi bi-twitter"></i></a>
-            <a href="https://linkedin.com" target="_blank"><i class="bi bi-linkedin"></i></a>
         </div>
-        <p>&copy; 2024 Your Company. All Rights Reserved.</p>
+        <p>&copy; 2024 Smithcorp. All Rights Reserved.</p>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -226,12 +225,13 @@
                 clearSearch();
             });
 
-            // Close when clicking outside
-            document.addEventListener('click', (event) => {
+            // Event listener to close the overlay when clicking outside the search bar or overlay
+            document.addEventListener('click', function (event) {
+                // Check if the clicked element is not the search input and not part of the overlay
                 if (
-                    searchOverlay.style.display === 'block' &&
-                    !searchOverlay.contains(event.target) &&
-                    event.target !== searchButton
+                    searchOverlay.style.display === 'block' && // Only trigger if the overlay is visible
+                    !searchInput.contains(event.target) && // Click is not on the input field
+                    !searchOverlay.contains(event.target) // Click is not on the overlay itself
                 ) {
                     clearSearch();
                 }
@@ -318,51 +318,82 @@
             }
         });
 
-document.addEventListener("DOMContentLoaded", function () {
-    const collapsibles = document.querySelectorAll('.btn-toggle[data-bs-toggle="collapse"]');
-    const staticButtons = ['home-toggle', 'reports-toggle']; // IDs for static buttons
 
-    // Handle collapsible toggling
-    collapsibles.forEach(button => {
-        button.addEventListener('click', function () {
-            const target = document.querySelector(this.getAttribute('data-bs-target'));
 
-            // Toggle the clicked collapsible
-            const bootstrapCollapse = bootstrap.Collapse.getInstance(target) || new bootstrap.Collapse(target);
+        document.addEventListener("DOMContentLoaded", function () {
+            const collapsibles = document.querySelectorAll('.btn-toggle[data-bs-toggle="collapse"]');
+            const staticButtons = ['home-toggle', 'reports-toggle']; // Static buttons that don't affect collapsibles
 
-            if (target.classList.contains('show')) {
-                bootstrapCollapse.hide(); // Close it if already open
-            } else {
-                // Close all other collapsibles
-                collapsibles.forEach(btn => {
-                    const otherTarget = document.querySelector(btn.getAttribute('data-bs-target'));
-                    if (otherTarget !== target && otherTarget.classList.contains('show')) {
-                        const otherCollapse = bootstrap.Collapse.getInstance(otherTarget);
-                        if (otherCollapse) {
-                            otherCollapse.hide();
+            // Function to handle collapsible toggling
+            function handleCollapsibleToggling(button) {
+                button.addEventListener('click', function () {
+                    const target = document.querySelector(this.getAttribute('data-bs-target'));
+                    const bootstrapCollapse = bootstrap.Collapse.getInstance(target) || new bootstrap.Collapse(target);
+
+                    // Toggle the clicked collapsible
+                    if (target.classList.contains('show')) {
+                        bootstrapCollapse.hide(); // Close it if already open
+                    } else {
+                        // Close all other collapsibles
+                        collapsibles.forEach(btn => {
+                            const otherTarget = document.querySelector(btn.getAttribute('data-bs-target'));
+                            const otherCollapse = bootstrap.Collapse.getInstance(otherTarget);
+                            if (otherTarget !== target && otherTarget.classList.contains('show')) {
+                                if (otherCollapse) {
+                                    otherCollapse.hide();
+                                }
+                            }
+                        });
+                        bootstrapCollapse.show(); // Open the clicked one
+                    }
+
+                    // Save the state in localStorage (true if expanded, false if collapsed)
+                    const isExpanded = target.classList.contains('show');
+                    localStorage.setItem(target.id, isExpanded ? 'true' : 'false');
+                });
+            }
+
+            // Function to restore the state of collapsibles
+            function restoreCollapsibleState() {
+                collapsibles.forEach(button => {
+                    const target = document.querySelector(button.getAttribute('data-bs-target'));
+                    const id = target?.getAttribute('id');
+
+                    if (id) {
+                        // Retrieve the saved state from localStorage
+                        const isExpanded = localStorage.getItem(id) === 'true';
+
+                        // Restore the UI state based on localStorage
+                        if (isExpanded) {
+                            target.classList.add('show'); // Bootstrap 'show' class
+                            button.setAttribute('aria-expanded', 'true');
+                        } else {
+                            target.classList.remove('show');
+                            button.setAttribute('aria-expanded', 'false');
                         }
                     }
                 });
-                bootstrapCollapse.show(); // Open the clicked one
             }
+
+            // Function to handle static buttons (home and reports)
+            function handleStaticButtons() {
+                staticButtons.forEach(id => {
+                    const button = document.getElementById(id);
+                    if (button) {
+                        button.addEventListener('click', function () {
+                            // Ensure static buttons do not affect collapsible state
+                            // Optionally clear all collapsible states when navigating
+                            // localStorage.clear(); // Uncomment if desired
+                        });
+                    }
+                });
+            }
+
+            // Initialize all collapsible buttons, restore their states, and handle static buttons
+            collapsibles.forEach(handleCollapsibleToggling);
+            restoreCollapsibleState();
+            handleStaticButtons();
         });
-    });
-
-    // Handle Home and Reports buttons (exclude from collapsibles logic)
-    staticButtons.forEach(id => {
-        const button = document.getElementById(id);
-        if (button) {
-            button.addEventListener('click', function () {
-                // Simply navigate; do not modify collapsibles
-            });
-        }
-    });
-});
-
-
-
-
-
 
 
     </script>
@@ -375,13 +406,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     .sidenav-text-welcome-user{
         font-size: 18px !important; /* Set to desired size with !important */
-                display: inline-flex;
+                
 
     }
 
     .welcome-user {
        
         padding-bottom: 40px;
+        padding-top: 20px;
         color: #fff; /* Text color for better contrast */
         font-size: 30px !important; /* Set to desired size with !important */
         border-top: 1px solid grey;
@@ -389,7 +421,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     .bi {
-        padding-right:20px;
+        padding-right:10px;
        font-size: 25px !important; /* Set to desired size with !important */
 
     }
@@ -412,7 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
     .btn-toggle i {
-        font-size: 16px; /* Adjust icon size */
+        font-size: 10px; /* Adjust icon size */
         color: white; /* Set icon color */
     }
 
@@ -518,8 +550,10 @@ document.addEventListener("DOMContentLoaded", function () {
         background-color: #f8f9fa;
         padding: 10px;
         text-align: center;
-        width: 100%;
-        margin-top: auto;
+        position: absolute;
+        bottom: 0;
+        width: 87%; /* Subtract sidebar width from the total width */
+        margin-left: 320px; /* Ensure the footer aligns with the content area (next to the sidebar) */
     }
 
     .social-icons a {
@@ -665,6 +699,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+    .btn-primary {
+        background-color: #0b3d91; /* Set the background color to #0b3d91 */
+        color: #fff; /* Text color should remain white */
+        border: 2px solid #0b3d91; /* Set the border color to match the background */
+    }
 
+    h3 {
+        font-weight: 400; /* Makes the font very thin */
+    }
+
+    h4 {
+        font-weight: 400; /* Makes the font very thin */
+    }
 </style>
 </html>

@@ -4,16 +4,10 @@
 }
 <div class="container-wrapper">
     <div class="form-container">
-        <h3 class="text-center mb-4 display-4">Report New Damage</h3>
-        <p class="text-center">Use the search bar to find an asset or filter by type and location to report damage.</p>
+        <h3 class="text-center mb-4">Report New Damage</h3>
+        <p class="text-muted mt-2 text-center" style="font-size: 0.875rem;">Use the search bar to find an asset or filter by type and location to report damage.</p>
 
-        <!-- Search Bar (above filters) -->
-        <div class="row justify-content-center mb-3">
-            <div class="col-md-6">
-                <label for="searchBar" class="form-label">Search All Columns:</label>
-                <input type="text" id="searchBar" class="form-control mb-3" onkeyup="applyFilters()" placeholder="Search by any column">
-            </div>
-        </div>
+
 
         <!-- Filters for Asset Type and Office -->
         <div class="row justify-content-center mb-3">
@@ -40,7 +34,16 @@
                     }
                 </select>
             </div>
+            <div class="row justify-content-center mb-3">
+                <div class="col-md-8">
+                    <label for="searchBar" class="form-label">Search All Columns:</label>
+                    <input type="text" id="searchBar" class="form-control mb-3" onkeyup="applyFilters()" placeholder="Search by any column">
+                </div>
+            </div>
         </div>
+
+        <!-- Search Bar (above filters) -->
+
 
         <div id="noResultsMessage" class="text-center mt-4" style="display: none;">
             <p>Sorry, no results.</p>

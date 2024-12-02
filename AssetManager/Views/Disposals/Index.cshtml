@@ -7,7 +7,8 @@
         <div class="logo-top-right">
             <img src="~/images/Favicon.jpg" alt="Company Logo" class="img-fluid">
         </div>
-        <h3 class="text-center mt-4 mb-4 display-4 pb-3">All Disposed Assets</h3>
+        <h3 class="text-center mt-4 mb-4 pb-3">All Disposed Assets</h3>
+        <p class="text-muted mt-2 text-center" style="font-size: 0.875rem;">View all disposed assets and pending disposals below. Select a row to open and update the disposal report.</p>
 
         <div class="row justify-content-center mb-3">
             <div class="col-md-10">
@@ -31,13 +32,13 @@
             <div class="col-md-10">
                 <h4>Pending Disposals</h4>
                 <!-- Edit button, initially hidden -->
-                <button id="editButton" class="btn btn-primary mb-3" style="display: none;" onclick="openEditModal(false)">Edit Selected</button>
+                <button id="editButton" class="btn btn-primary mb-3" style="display: none;" onclick="openEditModal(false)">Edit</button>
 
                 <div class="table-responsive">
                     <div class="equipment-type-section">
                         <table class="table table-bordered text-center table-sm asset-table" id="pending-table">
                             <thead>
-                                <tr style="background-color: #1768ad; color: #fff;">
+                                <tr style="background-color: #0b3d91; color: #fff;">
                                     <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()" /></th>
                                     <th>Disposal Reason</th>
                                     <th>Asset Type</th>
@@ -74,7 +75,7 @@
             <div class="col-md-10">
                 <h4>Disposed Assets</h4>
                 <!-- Edit button for Disposed Assets, initially hidden -->
-                <button id="editDisposedButton" class="btn btn-primary mb-3" style="display: none;" onclick="openEditModal(true)">Edit Selected</button>
+                <p id="editDisposedButton" class="btn btn-primary mb-3" style="display: none;" onclick="openEditModal(true)">Edit</p>
 
                 <div class="table-responsive">
                     <div class="equipment-type-section">

@@ -7,7 +7,9 @@
         <div class="logo-top-right">
             <img src="~/images/Favicon.jpg" alt="Company Logo" class="img-fluid">
         </div>
-        <h3 class="text-center mt-4 mb-4 display-4 pb-3">All Damaged Assets</h3>
+        <h3 class="text-center mt-4 mb-4 pb-3">All Damaged Assets</h3>
+        <p class="text-muted mt-2 text-center" style="font-size: 0.875rem;">View all reported damages below. Click on a row to view and make changes to the damage report.</p>
+
 
         <!-- Filter and search inputs -->
         <div class="row justify-content-center mb-3">
@@ -35,7 +37,7 @@
                 <div class="table-responsive">
                     <table class="table table-bordered text-center table-sm asset-table" id="pending-table">
                         <thead>
-                            <tr style="background-color: #aaa2dd; color: #fff;">
+                            <tr style="background-color: #0b3d91; color: #fff;">
                                 <th><input type="checkbox" id="selectAllPending" onclick="toggleSelectAll('pending')" /></th>
                                 <th>Damage Type</th>
                                 <th>Damage Description</th>
@@ -76,7 +78,7 @@
                 <div class="table-responsive">
                     <table class="table table-bordered text-center table-sm asset-table" id="inprogress-table">
                         <thead>
-                            <tr style="background-color: #1768ad; color: #fff;">
+                            <tr style="background-color: #0b3d91; color: #fff;">
                                 <th><input type="checkbox" id="selectAllInprogress" onclick="toggleSelectAll('inprogress')" /></th>
                                 <th>Damage Type</th>
                                 <th>Damage Description</th>

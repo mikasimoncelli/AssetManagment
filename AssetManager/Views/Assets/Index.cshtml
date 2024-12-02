@@ -21,12 +21,14 @@
 
             <!-- Centered Title Column -->
             <div class="col-md-auto text-center">
-                <h2 class="display-4 mx-auto" style="width: fit-content;">View All Assets</h2>
+                <h3 class="mx-auto" style="width: fit-content;">View All Assets</h3>
+                <p class="text-muted mt-2 text-center pb-3" style="font-size: 0.875rem;">View all assets in inventory below. Use filter and search to refine your results.</p>
+
             </div>
+
             <div class="col"></div>
 
         </div>
-        <p class="text-center pb-3">View all assets in inventory below. Use filter and search to refine your results.</p>
 
         <div class="row justify-content-center mb-3">
             <div class="col-md-4">
@@ -73,7 +75,7 @@
 
                             <!-- Asset type name centered -->
                             <div class="text-center" style="flex: 2;">
-                                <h4 class="mt-4 mb-3 display-6">@($"{group.Key}s")</h4>
+                                <h5 class="mt-4 mb-3">@($"{group.Key}s")</h5>
                             </div>
 
                             <!-- Empty div to balance the layout on the right -->
@@ -152,7 +154,8 @@
                                 <tbody>
                                     @foreach (var asset in group)
                                     {
-                                        <tr onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = asset.AssetID })'">
+                                        <tr onclick="window.location.href='@Url.Action("ViewAsset", "Assets", new { id = asset.AssetID })' + '?returnUrl=' + encodeURIComponent(window.location.href)">
+                                            <td>@asset.AssetID</td>
                                             <td>@asset.AssetID</td>
                                             <td>@asset.Description</td>
                                             <td>@asset.Manufacturer</td>

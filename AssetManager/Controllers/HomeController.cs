@@ -154,7 +154,7 @@ namespace AssetManager.Controllers
                 document.Add(new Paragraph($"Total Asset Count: {totalAssets}").SetFontSize(8).SetBold().SetMarginTop(10));
                 foreach (var office in officeAssetCounts)
                 {
-                    document.Add(new Paragraph($"{office.OfficeName}: {office.OfficeCount}").SetFontSize(8).SetMarginLeft(0));
+                    document.Add(new Paragraph($"{office.OfficeName}: {office.OfficeCount}").SetFontSize(8).SetMarginLeft(0).SetBold());
                 }
 
                 // Add a line separator before the table

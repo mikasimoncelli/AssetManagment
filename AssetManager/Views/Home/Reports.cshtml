@@ -10,14 +10,27 @@
 }
 <body>
 
-    <div class="container-wrapper">
+    <div class="container-wrapper" style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
         <div class="form-container">
-            <h1 class="display-4">Download Reports</h1>
-            <ul>
-                <li><a href="@Url.Action("AssetsReport", "Home")">Assets Report</a></li>
-                <li><a href="@Url.Action("LoanedAssetsReport", "Home")">Loaned Assets Report</a></li>
-                <li><a href="@Url.Action("UsersReport", "Home")">Users Report</a></li>
-            </ul>
+            <h3 class="mb-4" style="color: #343a40;">Download Reports</h3>
+            <div class="mb-3">
+                <a href="@Url.Action("AssetsReport", "Home")" class="btn btn-primary btn-sm" role="button" style="width: 200px;">
+                    Assets Report
+                </a>
+                <p class="text-muted mt-2" style="font-size: 0.875rem;">View a report of all assets in the inventory.</p>
+            </div>
+            <div class="mb-3">
+                <a href="@Url.Action("LoanedAssetsReport", "Home")" class="btn btn-secondary btn-sm" role="button" style="width: 200px;">
+                    Loaned Assets Report
+                </a>
+                <p class="text-muted mt-2" style="font-size: 0.875rem;">View a report of all loans, past and current.</p>
+            </div>
+            <div>
+                <a href="@Url.Action("UsersReport", "Home")" class="btn btn-success btn-sm" role="button" style="width: 200px;">
+                    Users Report
+                </a>
+                <p class="text-muted mt-2" style="font-size: 0.875rem;">View a report of all users.</p>
+            </div>
         </div>
     </div>
 
@@ -44,7 +57,6 @@
 
             .form-container h1 {
                 margin-bottom: 40px;
-                border-bottom: 2px solid;
                 color: #333;
             }
 
@@ -58,19 +70,7 @@
                 margin: 15px 0;
             }
 
-            .form-container a {
-                display: block;
-                padding: 15px;
-                background-color: #007bff;
-                color: #fff;
-                border-radius: 5px;
-                text-decoration: none;
-                font-size: 1.1em;
-                font-weight: 500;
-                transition: background-color 0.3s ease;
-                box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-            }
-
+          
                 .form-container a:hover {
                     background-color: #0056b3;
                     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);

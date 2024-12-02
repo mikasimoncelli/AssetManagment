@@ -6,12 +6,11 @@
 
     <div class="container-wrapper">
         <div class="form-container">
-            <h3 class="text-center mt-4 mb-4 display-4">@ViewBag.Office.OfficeName Assets</h3>
-    <h5 class="text-center display-6">@ViewBag.Office.Location</h5>
-
+            <h3 class="text-center mt-4 mb-4">@ViewBag.Office.OfficeName, @ViewBag.Office.Location</h3>
+            <p class="text-muted mt-2 text-center" style="font-size: 0.875rem;">View all the assets for @ViewBag.Office.OfficeName below</p>
     <div class="row justify-content-center mb-3">
         <div class="col-md-10">
-                                    <button type="button" style="width: 150px;" onclick="window.location.href='@Url.Action("Index", "Offices")'" class="btn btn-secondary">Back to Offices</button>
+                                    <button type="button" style="width: 150px;" onclick="window.location.href='@Url.Action("Index", "Offices")'" class="btn btn-primary" >Back</button>
                                     <br />
 <br />
             <h6 class="form-label">Filter by Asset Type:</h6>
@@ -42,7 +41,7 @@
 
                             <table class="table table-bordered text-center table-sm asset-table">
                                 <thead>
-                                    <tr style="background-color: #0d6efd; color: #fff;">
+                                            <tr style="background-color: #0b3d91; color: #fff;">
                                         <th>Asset ID</th>
                                         <th>Asset Type</th>
                                         <th>Description</th>
@@ -53,8 +52,8 @@
                                 <tbody>
                                     @foreach (var asset in equipmentGroup)
                                     {
-                                        <tr onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = asset.AssetID })'">
-                                            <td>@asset.AssetID</td>
+                                                <tr onclick="window.location.href='@Url.Action("ViewAsset", "Assets", new { id = asset.AssetID })' + '?returnUrl=' + encodeURIComponent(window.location.href)">
+                                                    <td>@asset.AssetID</td>
                                             <td>@asset.EquipmentType</td>
                                             <td>@asset.Description</td>
                                             <td>@asset.AssetNumber</td>

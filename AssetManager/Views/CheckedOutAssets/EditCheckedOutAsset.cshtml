@@ -8,10 +8,9 @@
         <input type="hidden" name="CheckedOutID" value="@Model.CheckedOutID" />
 
         <div class="form-container">
-            <h1 class="text-center display-4">Update Loan Details</h1>
-            <h5 class="text-center">@Model.Asset.Manufacturer - @Model.Asset.Description</h5>
+            <h3 class="text-center">Update Loan</h3>
             <!-- Staff Section -->
-            <h6 class="section-title">Staff:</h6>
+            <h5 class="section-title">Staff:</h5>
             <div class="form-group row">
                 <div class="col-md-4">
                     <label>User Name:</label>
@@ -27,7 +26,7 @@
                 </div>
             </div>
             <!-- Loan Details Section -->
-            <h6 class="section-title">Loan Details:</h6>
+            <h5 class="section-title">Loan Details:</h5>
             <div class="form-group row">
                 <div class="col-md-4">
                     <label>Asset Description:</label>
@@ -56,7 +55,7 @@
             </div>
 
             <!-- Update Details Section -->
-            <h6 class="section-title">Update Details</h6>
+            <h5 class="section-title">Update Details</h5>
             <div class="form-group row">
 
                 <div class="col-md-4">
@@ -75,15 +74,15 @@
                     <textarea class="form-control" id="Notes" name="Notes" rows="4" placeholder="Enter any additional notes here...">@Model.Notes</textarea>
                 </div>
             </div>
-            <h6 class="section-title">Return Loan</h6>
-            <p>Enter Date Returned to set this loan as returned:</p>
+            <h5 class="section-title">Return Loan</h5>
+            <p class="text-muted mt-2" style="font-size: 0.875rem;">Enter Date Returned to set this loan as returned:</p>
             <div class="col-md-4">
                 <label for="DateReturned">Date Returned:</label>
                 <input type="date" class="form-control" id="DateReturned" name="DateReturned" value="@Model.DateReturned?.ToString("yyyy-MM-dd")" />
             </div>
 
 
-            <p>Please review all details before making changes.</p>
+            <p class="text-muted mt-2" style="font-size: 0.875rem;">Please review all details before making changes.</p>
 
             <!-- Buttons -->
             <div class="button-group">

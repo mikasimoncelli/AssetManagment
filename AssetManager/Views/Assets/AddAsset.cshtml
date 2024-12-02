@@ -7,10 +7,11 @@
 
     <div class="form-container">
         
-        <h2 class="text-center display-4">Add New Asset</h2>
+        <h3 class="text-center">Add New Asset</h3>
+        <p class="text-muted mt-2 text-center" style="font-size: 0.875rem;">Please enter the new asset details below. Once complete, press the button below to save the new assets.</p>
         <form asp-action="AddAsset" method="post" class="mt-4">
             <div class="form-group">
-                <label for="equipmentType">Equipment Type</label>
+                <label for="equipmentType">Equipment Type:</label>
                 <select id="equipmentTypeDropdown" class="form-control" name="EquipmentType" required>
                     <option selected disabled value="">Select Equipment Type...</option>
                     @if (ViewBag.EquipmentTypes != null)
@@ -26,28 +27,28 @@
             </div>
 
             <div class="form-group">
-                <label for="manufacturer">Manufacturer</label>
+                <label for="manufacturer">Manufacturer:</label>
                 <input type="text" class="form-control" id="manufacturer" name="Manufacturer" placeholder="Enter manufacturer" required>
             </div>
 
             <div class="form-group">
-                <label for="assetDescription">Asset Description</label>
+                <label for="assetDescription">Asset Description:</label>
                 <input type="text" class="form-control" id="assetDescription" name="Description" placeholder="Enter asset description" required>
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-6 pr-md-3"> 
-                    <label for="assetNumber">Asset Number</label>
+                    <label for="assetNumber">Asset Number:</label>
                     <input type="text" class="form-control" id="assetNumber" name="AssetNumber" placeholder="Enter asset number" required>
                 </div>
                 <div class="form-group col-md-6 pl-md-3"> 
-                    <label for="serialNumber">Serial Number</label>
+                    <label for="serialNumber">Serial Number:</label>
                     <input type="text" class="form-control" id="serialNumber" name="SerialNumber" placeholder="Enter serial number" required>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="office">Office</label>
+                <label for="office">Office:</label>
                 <select id="office" name="OfficeID" class="form-control" required>
                     <option selected disabled value="">Select Office...</option>
                     @foreach (var office in ViewBag.Offices)
@@ -102,7 +103,7 @@
     }
 
     .form-group label {
-        font-weight: bold;
+        font-weight: 500;
         color: #333;
     }
 
@@ -125,6 +126,11 @@
     .btn-primary:hover {
         background-color: #0056b3;
     }
+
+    h3 {
+        font-weight: 400; /* Makes the font very thin */
+    }
+
 
 </style>
 

@@ -45,6 +45,7 @@ namespace AssetManager.Controllers
                 .OrderBy(c => c.DateLentOut)
                 .ToList();
 
+            ViewBag.ReturnedLoansCount = returnedCheckedOutAssets.Count();
             ViewBag.returnedCheckedOutAssets = returnedCheckedOutAssets;
 
             return View();

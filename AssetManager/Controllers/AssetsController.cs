@@ -82,6 +82,25 @@ public class AssetsController : Controller
     }
 
 
+    [HttpGet("Assets/ViewAsset/{id}")]
+    public IActionResult ViewAsset(int id)
+    {
+        var asset = _context.Assets
+            .Include(a => a.Office)
+            .FirstOrDefault(a => a.AssetID == id);
+
+        if (asset == null)
+        {
+            return NotFound();
+        }
+
+        ViewBag.Offices = _context.Offices.ToList();
+        ViewBag.EquipmentTypes = _context.Assets.Select(a => a.EquipmentType).Distinct().ToList();
+
+        return View(asset);
+    }
+
+
     [HttpPost]
     public IActionResult UpdateAsset(Asset asset)
     {
