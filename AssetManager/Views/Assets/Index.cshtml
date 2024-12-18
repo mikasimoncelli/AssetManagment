@@ -155,8 +155,9 @@
                                     @foreach (var asset in group)
                                     {
                                         <tr onclick="window.location.href='@Url.Action("ViewAsset", "Assets", new { id = asset.AssetID })' + '?returnUrl=' + encodeURIComponent(window.location.href)">
-                                            <td>@asset.AssetID</td>
-                                            <td>@asset.AssetID</td>
+                                            <!-- Table row content -->
+                                  
+                                    <td>@asset.AssetID</td>
                                             <td>@asset.Description</td>
                                             <td>@asset.Manufacturer</td>
                                             <td>@asset.AssetNumber</td>

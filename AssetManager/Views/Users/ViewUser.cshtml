@@ -45,7 +45,7 @@
             <tbody>
                 @foreach (var loan in currentLoans)
                 {
-                    <tr onclick="location.href='@Url.Action("EditCheckedOutAsset", new { checkedoutid = loan.CheckedOutID })';">
+                    <tr onclick="location.href='@Url.Action("EditCheckedOutAsset", "CheckedOutAssets", new { checkedoutid = loan.CheckedOutID })';">
                         <td>@loan.Asset.Description</td>
                         <td>@loan.DateLentOut.ToString("dd-MM-yyyy")</td>
                     </tr>
@@ -72,7 +72,7 @@
             <tbody>
                 @foreach (var loan in previousLoans)
                 {
-                    <tr onclick="location.href='@Url.Action("EditCheckedOutAsset", new { checkedoutid = loan.CheckedOutID })';">
+                    <tr onclick="location.href='@Url.Action("EditCheckedOutAsset", "CheckedOutAssets", new { checkedoutid = loan.CheckedOutID })';">
                         <td>@loan.Asset.Description</td>
                         <td>@loan.DateLentOut.ToString("dd-MM-yyyy")</td>
                         <td>@loan.DateReturned?.ToString("dd-MM-yyyy")</td>

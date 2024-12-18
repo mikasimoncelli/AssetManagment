@@ -7,11 +7,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css" integrity="sha384-Qas6B3lNjWxC/Z+z69Jp3Byc9LvAedS2C8A11yI+/jRj9+vN7y+vn1ddvCk4E+i3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
-
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-
     <link rel="icon" type="image/x-icon" href="~/images/favicon-32x32.png" />
-
 </head>
 
 <body>
@@ -20,114 +17,87 @@
             <a href="@Url.Action("Index", "Home")"
                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
                 <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-                <span class="display-5 text-white">Asset Manager</span>
+                <span class="sidenav-title text-white">Asset Manager</span>
+
             </a>
             <hr>
 
-<ul class="list-unstyled">
-    <!-- Home Button -->
-    <li class="mb-1">
-        <button id="home-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Index", "Home")'">
-            <span><i class="bi bi-house-door-fill me-3 ms-4"></i> <span class="sidenav-text">Home</span></span>
-        </button>
-    </li>
-
-    <!-- Search Button -->
-    <li class="mb-1">
-        <button id="search-toggle" class="btn btn-toggle align-items-center rounded">
-            <span><i class="bi bi-search me-3 ms-4"></i> <span class="sidenav-text">Search</span></span>
-        </button>
-    </li>
-
-    <!-- Assets Menu -->
-    <li class="mb-1">
-        <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false">
-            <span><i class="bi bi-grid-3x3-gap-fill me-3 ms-4"></i><span class="sidenav-text">Assets</span></span>
-        </button>
-        <div class="collapse" id="assets-collapse">
-            <ul class="list-unstyled fw-normal pt-2 ms-5">
-                <li><a asp-controller="Assets" asp-action="Index" class="link-dark rounded">View All Assets</a></li>
-                <li><a asp-controller="Assets" asp-action="AddAsset" class="link-dark rounded">Add New Asset</a></li>
-                <li><a asp-controller="Offices" asp-action="Index" class="link-dark rounded">Offices</a></li>
+            <ul class="list-unstyled" id="menu-accordion">
+                <li class="mb-1">
+                    <button id="home-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Index", "Home")'">
+                        <span><i class="bi bi-house-door-fill me-3 ms-4"></i> <span class="sidenav-text">Home</span></span>
+                    </button>
+                </li>
+                <li class="mb-1">
+                    <button id="search-toggle" class="btn btn-toggle align-items-center rounded">
+                        <span><i class="bi bi-search me-3 ms-4"></i> <span class="sidenav-text">Search</span></span>
+                    </button>
+                </li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded arrow-item" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false" onclick="toggleCollapseState('assets-collapse')">
+                        <span><i class="bi bi-grid-3x3-gap-fill me-3 ms-4"></i><span class="sidenav-text">Assets</span></span>
+                    </button>
+                    <div class="collapse" id="assets-collapse" data-bs-parent="#menu-accordion">
+                        <div class="submenu-items">
+                            <ul class="list-unstyled fw-normal pt-2 ms-4">
+                                <li><a href="@Url.Action("Index", "Assets")" class="link-dark rounded">View All Assets</a></li>
+                                <li><a href="@Url.Action("AddAsset", "Assets")" class="link-dark rounded">Add New Asset</a></li>
+                                <li><a href="@Url.Action("Index", "Offices")" class="link-dark rounded">Offices</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded arrow-item" data-bs-toggle="collapse" data-bs-target="#loans-collapse" aria-expanded="false" onclick="toggleCollapseState('loans-collapse')">
+                        <span><i class="bi bi-laptop-fill me-3 ms-4"></i><span class="sidenav-text">Loans</span></span>
+                    </button>
+                    <div class="collapse" id="loans-collapse" data-bs-parent="#menu-accordion">
+                        <div class="submenu-items">
+                            <ul class="list-unstyled fw-normal pt-2 ms-4">
+                                <li><a href="@Url.Action("Index", "CheckedOutAssets")" class="link-dark rounded">Current Loans</a></li>
+                                <li><a href="@Url.Action("ViewAvailableAssets", "CheckedOutAssets")" class="link-dark rounded">Create New Loan</a></li>
+                                <li><a href="@Url.Action("ReturnedAssets", "CheckedOutAssets")" class="link-dark rounded">Returned Loans</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded arrow-item" data-bs-toggle="collapse" data-bs-target="#damages-collapse" aria-expanded="false" onclick="toggleCollapseState('damages-collapse')">
+                        <span><i class="bi bi-exclamation-triangle-fill me-3 ms-4"></i><span class="sidenav-text">Damages</span></span>
+                    </button>
+                    <div class="collapse" id="damages-collapse" data-bs-parent="#menu-accordion">
+                        <div class="submenu-items">
+                            <ul class="list-unstyled fw-normal pt-2 ms-4">
+                                <li><a href="@Url.Action("Index", "Damages")" class="link-dark rounded">View All Damages</a></li>
+                                <li><a href="@Url.Action("ReportNewDamage", "Damages")" class="link-dark rounded">Report New Damage</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded arrow-item" data-bs-toggle="collapse" data-bs-target="#disposals-collapse" aria-expanded="false" onclick="toggleCollapseState('disposals-collapse')">
+                        <span><i class="bi bi-trash-fill me-3 ms-4"></i><span class="sidenav-text">Disposals</span></span>
+                    </button>
+                    <div class="collapse" id="disposals-collapse" data-bs-parent="#menu-accordion">
+                        <div class="submenu-items">
+                            <ul class="list-unstyled fw-normal pt-2 ms-4">
+                                <li><a href="@Url.Action("Index", "Disposals")" class="link-dark rounded">View All Disposals</a></li>
+                                <li><a href="@Url.Action("AddDisposal", "Disposals")" class="link-dark rounded">Add New Disposal</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="mb-1">
+                    <button id="reports-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Reports", "Home")'">
+                        <i class="bi bi-file-earmark-pdf-fill me-3 ms-4"></i><span class="sidenav-text">Reports</span>
+                    </button>
+                </li>
             </ul>
-        </div>
-    </li>
-
-    <!-- Loans Menu -->
-    <li class="mb-1">
-        <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#loans-collapse" aria-expanded="false">
-            <span><i class="bi bi-laptop-fill me-3 ms-4"></i><span class="sidenav-text">Loans</span></span>
-        </button>
-        <div class="collapse" id="loans-collapse">
-            <ul class="list-unstyled fw-normal pt-2 ms-5">
-                <li><a asp-controller="CheckedOutAssets" asp-action="Index" class="link-dark rounded">Current Loans</a></li>
-                <li><a asp-controller="CheckedOutAssets" asp-action="ViewAvailableAssets" class="link-dark rounded">Create New Loan</a></li>
-                <li><a asp-controller="CheckedOutAssets" asp-action="ReturnedAssets" class="link-dark rounded">Returned Loans</a></li>
-            </ul>
-        </div>
-    </li>
-
-    <!-- Damages Menu -->
-    <li class="mb-1">
-        <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#damages-collapse" aria-expanded="false">
-            <span><i class="bi bi-exclamation-triangle-fill me-3 ms-4"></i><span class="sidenav-text">Damages</span></span>
-        </button>
-        <div class="collapse" id="damages-collapse">
-            <ul class="list-unstyled fw-normal pt-2 ms-5">
-                <li><a asp-controller="Damages" asp-action="Index" class="link-dark rounded">View All Damages</a></li>
-                <li><a asp-controller="Damages" asp-action="ReportNewDamage" class="link-dark rounded">Report New Damage</a></li>
-            </ul>
-        </div>
-    </li>
-
-    <!-- Disposals Menu -->
-    <li class="mb-1">
-        <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#disposals-collapse" aria-expanded="false">
-            <span><i class="bi bi-trash-fill me-3 ms-4"></i><span class="sidenav-text">Disposals</span></span>
-        </button>
-        <div class="collapse" id="disposals-collapse">
-            <ul class="list-unstyled fw-normal pt-2 ms-5">
-                <li><a asp-controller="Disposals" asp-action="Index" class="link-dark rounded">View All Disposals</a></li>
-                <li><a asp-controller="Disposals" asp-action="ReportNewDisposal" class="link-dark rounded">Report New Disposal</a></li>
-            </ul>
-        </div>
-    </li>
-
-    <!-- Users Menu -->
-    <li class="mb-1">
-        <button class="btn btn-toggle align-items-center rounded collapsed arrow-item" data-bs-toggle="collapse" data-bs-target="#users-collapse" aria-expanded="false">
-            <span><i class="bi bi-people-fill me-3 ms-4"></i><span class="sidenav-text">Manage Users</span></span>
-        </button>
-        <div class="collapse" id="users-collapse">
-            <ul class="list-unstyled fw-normal pt-2 ms-5">
-                <li><a asp-controller="Users" asp-action="Index" class="link-dark rounded">View All Users</a></li>
-                <li><a asp-controller="Users" asp-action="AddUser" class="link-dark rounded">Add New User</a></li>
-            </ul>
-        </div>
-    </li>
-
-    <!-- Reports Button -->
-    <li class="mb-1">
-        <button id="reports-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Reports", "Home")'">
-            <i class="bi bi-file-earmark-pdf-fill me-3 ms-4"></i><span class="sidenav-text">Reports</span>
-        </button>
-    </li>
-</ul>
-
-
-
-
-
-
-
-
-
-
 
             <span class="list-unstyled welcome-user mt-auto mb-1 align-items-center rounded">
-                <i class="bi-welcome-user bi-person-circle me-3 ms-4"></i> <span class="sidenav-text-welcome-user">Welcome @@User</span>
+                <i class="bi-welcome-user bi-person-circle me-3 ms-4"></i> <span class="sidenav-text-welcome-user">@@User</span>
             </span>
-            
+
         </div>
 
         <div class="container-fluid">
@@ -137,9 +107,7 @@
         </div>
     </div>
 
-
     <div class="search-overlay" id="searchOverlay-page1" style="overflow-x: auto; display: none;">
-        <!-- Hide initially -->
         <div style="position: relative; width: 100%; text-align: center; margin-bottom: 20px;">
             <input type="text"
                    id="searchInput-page1"
@@ -163,17 +131,10 @@
                     </tr>
                 </thead>
                 <tbody id="assetsTableBody-page1">
-                    <!-- Rows will be dynamically added -->
                 </tbody>
             </table>
         </div>
     </div>
-
-
-
-
-
-
 
     <footer>
         <div class="social-icons">
@@ -181,13 +142,13 @@
         <p>&copy; 2024 Smithcorp. All Rights Reserved.</p>
     </footer>
 
+    @RenderSection("Scripts", required: false) <!-- Ensure this line exists in your layout -->
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-
-
         document.addEventListener('DOMContentLoaded', function () {
-            // Use unique selectors
             const searchButton = document.getElementById('search-toggle');
             const closeButton = document.getElementById('closeSearch-page1');
             const searchOverlay = document.getElementById('searchOverlay-page1');
@@ -195,9 +156,8 @@
             const assetsTable = document.getElementById('assetsTable-page1');
             const assetsTableBody = document.getElementById('assetsTableBody-page1');
 
-            let allData = []; // To store fetched data (assets, users, and offices)
+            let allData = [];
 
-            // Open search overlay and fetch data
             searchButton?.addEventListener('click', (event) => {
                 event.stopPropagation();
                 searchOverlay.style.display = 'block';
@@ -225,13 +185,11 @@
                 clearSearch();
             });
 
-            // Event listener to close the overlay when clicking outside the search bar or overlay
             document.addEventListener('click', function (event) {
-                // Check if the clicked element is not the search input and not part of the overlay
                 if (
-                    searchOverlay.style.display === 'block' && // Only trigger if the overlay is visible
-                    !searchInput.contains(event.target) && // Click is not on the input field
-                    !searchOverlay.contains(event.target) // Click is not on the overlay itself
+                    searchOverlay.style.display === 'block' &&
+                    !searchInput.contains(event.target) &&
+                    !searchOverlay.contains(event.target)
                 ) {
                     clearSearch();
                 }
@@ -279,35 +237,25 @@
                     if (item.type === 'Asset') {
                         row.className = 'type-asset';
                         row.innerHTML = `
-                            <td>${item.description || ''}</td>
-                            <td>${item.manufacturer || ''}</td>
-                            <td>${item.assetNumber || ''}</td>
-                            <td>${item.serialNumber || ''}</td>
-                        `;
+                                        <td>${item.description || ''}</td>
+                                        <td>${item.manufacturer || ''}</td>
+                                        <td>${item.assetNumber || ''}</td>
+                                        <td>${item.serialNumber || ''}</td>
+                                    `;
                         row.addEventListener('click', () => {
-                            window.location.href = `/Assets/EditAsset/${item.assetID}`;
+                            const returnUrl = encodeURIComponent(window.location.href);
+                            window.location.href = `/Assets/ViewAsset/${item.assetID}?returnUrl=${returnUrl}`;
                         });
+
                     } else if (item.type === 'Office') {
                         row.className = 'type-office';
                         row.innerHTML = `
-                            <td>${item.officeName || ''}</td>
-                            <td>${item.location || ''}</td>
-                            <td></td>
-                            <td></td>
-                        `;
+                                        <td>${item.officeName || ''}</td>
+                                        <td>${item.officeLocation || ''}</td>
+                                    `;
                         row.addEventListener('click', () => {
-                            window.location.href = `/Offices/EditOffice/${item.officeID}`;
-                        });
-                    } else if (item.type === 'User') {
-                        row.className = 'type-user';
-                        row.innerHTML = `
-                            <td>${item.fullName || ''}</td>
-                            <td>${item.email || ''}</td>
-                            <td></td>
-                            <td></td>
-                        `;
-                        row.addEventListener('click', () => {
-                            window.location.href = `/Users/EditUser/${item.userID}`;
+                            const returnUrl = encodeURIComponent(window.location.href);
+                            window.location.href = `/Offices/ViewOffice/${item.officeID}?returnUrl=${returnUrl}`;
                         });
                     }
 
@@ -316,146 +264,163 @@
 
                 assetsTable.style.display = 'table';
             }
-        });
 
 
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const collapsibles = document.querySelectorAll('.btn-toggle[data-bs-toggle="collapse"]');
-            const staticButtons = ['home-toggle', 'reports-toggle']; // Static buttons that don't affect collapsibles
-
-            // Function to handle collapsible toggling
-            function handleCollapsibleToggling(button) {
-                button.addEventListener('click', function () {
-                    const target = document.querySelector(this.getAttribute('data-bs-target'));
-                    const bootstrapCollapse = bootstrap.Collapse.getInstance(target) || new bootstrap.Collapse(target);
-
-                    // Toggle the clicked collapsible
-                    if (target.classList.contains('show')) {
-                        bootstrapCollapse.hide(); // Close it if already open
-                    } else {
-                        // Close all other collapsibles
-                        collapsibles.forEach(btn => {
-                            const otherTarget = document.querySelector(btn.getAttribute('data-bs-target'));
-                            const otherCollapse = bootstrap.Collapse.getInstance(otherTarget);
-                            if (otherTarget !== target && otherTarget.classList.contains('show')) {
-                                if (otherCollapse) {
-                                    otherCollapse.hide();
-                                }
-                            }
-                        });
-                        bootstrapCollapse.show(); // Open the clicked one
-                    }
-
-                    // Save the state in localStorage (true if expanded, false if collapsed)
-                    const isExpanded = target.classList.contains('show');
-                    localStorage.setItem(target.id, isExpanded ? 'true' : 'false');
-                });
-            }
-
-            // Function to restore the state of collapsibles
-            function restoreCollapsibleState() {
-                collapsibles.forEach(button => {
-                    const target = document.querySelector(button.getAttribute('data-bs-target'));
-                    const id = target?.getAttribute('id');
-
-                    if (id) {
-                        // Retrieve the saved state from localStorage
-                        const isExpanded = localStorage.getItem(id) === 'true';
-
-                        // Restore the UI state based on localStorage
-                        if (isExpanded) {
-                            target.classList.add('show'); // Bootstrap 'show' class
-                            button.setAttribute('aria-expanded', 'true');
-                        } else {
-                            target.classList.remove('show');
-                            button.setAttribute('aria-expanded', 'false');
-                        }
-                    }
-                });
-            }
-
-            // Function to handle static buttons (home and reports)
-            function handleStaticButtons() {
-                staticButtons.forEach(id => {
-                    const button = document.getElementById(id);
-                    if (button) {
-                        button.addEventListener('click', function () {
-                            // Ensure static buttons do not affect collapsible state
-                            // Optionally clear all collapsible states when navigating
-                            // localStorage.clear(); // Uncomment if desired
-                        });
-                    }
-                });
-            }
-
-            // Initialize all collapsible buttons, restore their states, and handle static buttons
-            collapsibles.forEach(handleCollapsibleToggling);
-            restoreCollapsibleState();
-            handleStaticButtons();
-        });
 
 
     </script>
 
-    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const collapsibleMenuIds = ['assets-collapse', 'loans-collapse', 'damages-collapse', 'disposals-collapse'];
+
+            // Function to save menu state to localStorage
+            function saveMenuState(id, isOpen) {
+                localStorage.setItem(id, isOpen ? 'true' : 'false');
+            }
+
+            // Function to restore menu state
+            function restoreMenuState() {
+                collapsibleMenuIds.forEach(id => {
+                    const state = localStorage.getItem(id); // Get state from localStorage
+                    const collapseElement = document.getElementById(id);
+
+                    if (state === 'true') {
+                        // Manually open the collapsible menu
+                        collapseElement.classList.add('show');
+                        collapseElement.previousElementSibling.setAttribute('aria-expanded', 'true');
+                    } else {
+                        collapseElement.classList.remove('show');
+                        collapseElement.previousElementSibling.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            // Add event listeners to all collapsible buttons to save their state on toggle
+            collapsibleMenuIds.forEach(id => {
+                const button = document.querySelector(`[data-bs-target="#${id}"]`);
+                const collapseElement = document.getElementById(id);
+
+                collapseElement.addEventListener('shown.bs.collapse', () => {
+                    saveMenuState(id, true); // Menu is open
+                });
+
+                collapseElement.addEventListener('hidden.bs.collapse', () => {
+                    saveMenuState(id, false); // Menu is closed
+                });
+            });
+
+            // Restore the saved state on page load
+            restoreMenuState();
+        });
+    </script>
+
 </body>
+</html>
+
 
 <style>
+    .container-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 20px;
+    }
 
+    .form-container {
+        width: 2100px;
+        padding: 20px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
 
-    .sidenav-text-welcome-user{
-        font-size: 18px !important; /* Set to desired size with !important */
-                
+    .form-container-small {
+        width: 1200px;
+        padding: 50px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        margin-top: 20px;
+    }
 
+    #phoneChart, #laptopChart {
+        width: 350px !important;
+        height: 350px !important;
+    }
+
+    .asset-distribution{
+        height:500px;
+    }
+
+    .asset-title {
+        font-size: 120px;
+    }
+
+    table tr {
+        font-size: 14px; 
+    }
+
+    .submenu-items a {
+        font-size: 16px !important; 
+    }
+
+    .sidenav-title{ 
+        font-size: 40px;
+    }
+
+    .sidenav-text-welcome-user {
+        font-size: 18px !important; 
     }
 
     .welcome-user {
-       
         padding-bottom: 40px;
         padding-top: 20px;
-        color: #fff; /* Text color for better contrast */
-        font-size: 30px !important; /* Set to desired size with !important */
+        color: #fff; 
+        font-size: 18px !important;
         border-top: 1px solid grey;
     }
 
 
     .bi {
-        padding-right:10px;
-       font-size: 25px !important; /* Set to desired size with !important */
-
+        padding-right: 10px;
+        font-size: 25px !important; 
     }
 
     .sidenav-text {
-        font-size: 16px !important; /* Targets only the text */
+        font-size: 18px !important;
     }
 
 
 
     .logo-bottom {
         width: 100%;
-        text-align: center; /* Center-align the image */
+        text-align: center; 
     }
 
         .logo-bottom img {
-            width: 100%; /* Make the image fill the container width */
-            height: auto; /* Maintain the aspect ratio */
-            object-fit: cover; /* Ensure it covers the full area without distortion */
+            width: 100%;
+            height: auto; 
+            object-fit: cover; 
         }
 
     .btn-toggle i {
-        font-size: 10px; /* Adjust icon size */
-        color: white; /* Set icon color */
+        font-size: 10px;
+        color: white;
     }
 
+
     .link-dark i {
-        font-size: 14px; /* Adjust nested icon size */
-        color: #007bff; /* Set icon color for nested items */
+        font-size: 14px; 
+        color: #007bff; 
     }
 
 
     .list-unstyled .link-dark {
-        font-size: 18px; 
+        font-size: 18px;
         font-weight: normal;
         color: white;
         text-decoration: none;
@@ -469,7 +434,7 @@
     .btn-toggle {
         display: flex;
         align-items: center;
-        justify-content: flex-start; /* Aligns items to the left */
+        justify-content: flex-start;
         background-color: transparent;
         border: none;
         font-size: 18px;
@@ -483,67 +448,65 @@
 
         .btn-toggle span {
             display: flex;
-            align-items: center; /* Keeps icon and text aligned */
+            align-items: center; 
         }
 
-    /* Only add the arrow to items with the 'arrow-item' class */
     .arrow-item::after {
-        content: "\1F896"; /* Right arrow character */
+        content: "\1F896"; 
         font-size: 20px;
         color: white;
-        margin-left: auto; /* Pushes arrow to the right */
+        margin-left: auto; 
         transition: transform 0.3s;
     }
 
     .arrow-item[aria-expanded="true"]::after {
-        content: "\1F897"; /* Change to desired expanded arrow */
+        content: "\1F897"; 
     }
 
 
 
 
 
-        .btn-toggle:focus {
-            outline: none;
-            box-shadow: none;
-        }
+    .btn-toggle:focus {
+        outline: none;
+        box-shadow: none;
+    }
 
-        .btn-toggle:hover {
-            background-color: #007bff;
+    .btn-toggle:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+        .btn-toggle:hover::before {
             color: white;
         }
-
-            .btn-toggle:hover::before {
-                color: white;
-            }
 
     #home-toggle.btn-toggle::before {
         content: "";
     }
 
     .sidebar {
-        position: fixed; 
+        position: fixed;
         top: 0;
         left: 0;
-        height: 100vh; 
-        width: 320px; 
-        background-color: white; 
+        height: 100vh;
+        width: 320px;
+        background-color: white;
         color: white;
         flex-shrink: 0;
     }
 
     .container-fluid {
-        margin-left: 320px; 
+        margin-left: 320px;
         background-color: #fdfdfd;
     }
 
 
     .list-unstyled.fw-normal.pt-2 li a {
         padding: 5px 15px;
-        font-size: 16px; 
+        font-size: 16px;
         display: block;
         text-decoration: none;
-
     }
 
     footer {
@@ -552,8 +515,8 @@
         text-align: center;
         position: absolute;
         bottom: 0;
-        width: 87%; /* Subtract sidebar width from the total width */
-        margin-left: 320px; /* Ensure the footer aligns with the content area (next to the sidebar) */
+        width: 87%;
+        margin-left: 320px;
     }
 
     .social-icons a {
@@ -567,14 +530,14 @@
         }
 
     .list-unstyled > .mb-1 {
-        border-bottom: 1px solid grey; 
+        border-bottom: 1px solid grey;
         padding-bottom: 10px;
         margin-bottom: 10px;
     }
 
 
     .list-unstyled > li {
-        padding-bottom: 10px; 
+        padding-bottom: 10px;
         margin-bottom: 10px;
     }
 
@@ -584,36 +547,34 @@
     }
 
         .list-unstyled.fw-normal.pt-2 li:last-child {
-            border-bottom: none; 
-            margin-bottom: 0; 
+            border-bottom: none;
+            margin-bottom: 0;
         }
 
         .list-unstyled.fw-normal.pt-2 li:first-child {
         }
 
 
-        #assetsTable thead {
-    display: none;
-}
+    #assetsTable thead {
+        display: none;
+    }
 
 
 
-    /* Search Overlay Styles */
     #searchOverlay-page1 {
-        display: none; /* Hidden by default */
+        display: none; 
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-        z-index: 1000; /* Ensure it overlays other elements */
+        background: rgba(0, 0, 0, 0.7); 
+        z-index: 1000; 
         justify-content: center;
         align-items: flex-start;
         padding-top: 100px;
     }
 
-    /* Search Bar Styling */
     #searchInput-page1 {
         width: 60%;
         max-width: 800px;
@@ -627,7 +588,6 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
-    /* Close Button Styling */
     #closeSearch-page1 {
         position: absolute;
         top: 20px;
@@ -638,7 +598,6 @@
         font-size: 18px;
         cursor: pointer;
     }
-    /* Target the specific table with the class or ID */
     #assetsTable-page1.modern-table {
         width: 90%;
         margin: 20px auto;
@@ -648,7 +607,7 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
         overflow: hidden;
-        table-layout: fixed; /* Ensure equal column widths */
+        table-layout: fixed; 
     }
 
         #assetsTable-page1.modern-table th,
@@ -657,11 +616,11 @@
             text-align: left;
             border-bottom: 1px solid #ddd;
             word-wrap: break-word;
-            white-space: nowrap; /* Prevent excessive wrapping */
+            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; /* Add ellipsis for truncated text */
+            text-overflow: ellipsis; 
             font-size: 14px;
-            border: none; /* Remove vertical lines */
+            border: none; 
         }
 
         #assetsTable-page1.modern-table th {
@@ -674,117 +633,186 @@
         }
 
         #assetsTable-page1.modern-table tr:hover {
-            background-color: #f1f1f1; /* Hover effect */
-            cursor: pointer; /* Indicate clickable row */
+            background-color: #f1f1f1; 
+            cursor: pointer; 
             transition: background-color 0.2s ease;
         }
 
-    /* Row coloring for different types */
     #assetsTable-page1 .type-asset {
-        background-color: #d9f7be; /* Light green for assets */
+        background-color: #d9f7be; 
     }
 
     #assetsTable-page1 .type-user {
-        background-color: #bae7ff; /* Light blue for users */
+        background-color: #bae7ff; 
     }
 
     #assetsTable-page1 .type-office {
-        background-color: #ffe7ba; /* Light orange for offices */
+        background-color: #ffe7ba; 
     }
 
-    /* Remove table header when not needed */
     #assetsTable-page1 thead {
         display: none;
     }
 
 
     .btn-primary {
-        background-color: #0b3d91 !important; /* Blue background by default */
-        color: white !important; /* White text by default */
-        width: 120px; /* Fixed width */
-        height: 35px; /* Fixed height */
-        border: 2px solid #0b3d91 !important; /* Blue border */
-        padding: 0 !important; /* No extra padding for consistency */
-        font-size: 14px !important; /* Slightly smaller text for a sleek appearance */
-        border-radius: 4px !important; /* Keep border radius subtle */
+        background-color: #0b3d91 !important;
+        color: white !important; 
+        width: 120px; 
+        height: 35px; 
+        border: 2px solid #0b3d91 !important; 
+        padding: 0 !important; 
+        font-size: 14px !important;
+        border-radius: 4px !important;
         display: flex;
         align-items: center;
         justify-content: center;
-        text-align: center; /* Ensures text is horizontally aligned */
+        text-align: center;
     }
 
         .btn-primary:hover, .btn-primary:focus {
-            background-color: white !important; /* White background on hover/focus */
-            color: #0b3d91 !important; /* Blue text on hover/focus */
-            border: 2px solid #0b3d91 !important; /* Blue border remains */
+            background-color: white !important;
+            color: #0b3d91 !important; 
+            border: 2px solid #0b3d91 !important; 
         }
 
 
     .btn-secondary {
-        background-color: #6c757d !important; /* Gray background by default */
-        color: white !important; /* White text by default */
-        width: 120px; /* Fixed width */
-        height: 35px; /* Fixed height */
-        border: 2px solid #6c757d !important; /* Gray border */
-        padding: 0 !important; /* No extra padding for consistency */
-        font-size: 14px !important; /* Slightly smaller text for a sleek appearance */
-        border-radius: 4px !important; /* Keep border radius subtle */
+        background-color: #6c757d !important;
+        color: white !important; 
+        width: 120px; 
+        height: 35px; 
+        border: 2px solid #6c757d !important; 
+        padding: 0 !important;
+        font-size: 14px !important; 
+        border-radius: 4px !important; 
         display: flex;
         align-items: center;
         justify-content: center;
-        text-align: center; /* Ensures text is horizontally aligned */
+        text-align: center; 
     }
 
         .btn-secondary:hover, .btn-secondary:focus {
-            background-color: white !important; /* White background on hover/focus */
-            color: #6c757d !important; /* Gray text on hover/focus */
-            border: 2px solid #6c757d !important; /* Gray border remains */
+            background-color: white !important;
+            color: #6c757d !important;
+            border: 2px solid #6c757d !important;
         }
 
-
     .btn-danger {
-        background-color: #dc3545 !important; /* Red background by default */
-        color: white !important; /* White text by default */
-        width: 120px; /* Fixed width */
-        height: 35px; /* Fixed height */
-        border: 2px solid #dc3545 !important; /* Red border */
-        padding: 0 !important; /* No extra padding for consistency */
-        font-size: 14px !important; /* Slightly smaller text for a sleek appearance */
-        border-radius: 4px !important; /* Keep border radius subtle */
+        background-color: #dc3545 !important;
+        color: white !important;
+        width: 120px;
+        height: 35px;
+        border: 2px solid #dc3545 !important;
+        padding: 0 !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
         display: flex;
         align-items: center;
         justify-content: center;
-        text-align: center; /* Ensures text is horizontally aligned */
+        text-align: center;
     }
 
         .btn-danger:hover, .btn-danger:focus {
-            background-color: white !important; /* White background on hover/focus */
-            color: #dc3545 !important; /* Red text on hover/focus */
-            border: 2px solid #dc3545 !important; /* Red border remains */
+            background-color: white !important;
+            color: #dc3545 !important;
+            border: 2px solid #dc3545 !important;
         }
 
-
-    /* Normal state for btn-success */
     .btn-success {
-        background-color: #28a745; /* Green background */
-        color: white; /* White text */
-        border: 2px solid #28a745; /* Green border */
+        background-color: #28a745;
+        color: white;
+        border: 2px solid #28a745;
     }
 
-        /* Hover state for btn-success */
         .btn-success:hover {
-            background-color: white; /* White background on hover */
-            color: #28a745; /* Green text on hover */
-            border: 2px solid #28a745; /* Green border on hover */
+            background-color: white;
+            color: #28a745;
+            border: 2px solid #28a745;
         }
 
-
     h3 {
-        font-weight: 400; /* Makes the font very thin */
+        font-weight: 400;
     }
 
     h4 {
-        font-weight: 400; /* Makes the font very thin */
+        font-weight: 400;
     }
+
+    @@media (min-width: 1920px) and (max-width: 2543px) {
+        .form-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        .container-fluid {
+            margin-left: 250px;
+        }
+
+        .logo-top-right img {
+            width: 70px;
+            height: auto;
+        }
+
+        .sidebar {
+            max-width: 250px;
+            width: 250px;
+        }
+
+        .sidenav-text-welcome-user {
+            font-size: 15px !important;
+        }
+
+        .welcome-user {
+            font-size: 20px !important;
+        }
+
+        .bi {
+            padding-right: 10px;
+            font-size: 20px !important;
+        }
+
+        .sidenav-text {
+            font-size: 17px !important;
+        }
+
+        .sidenav-title {
+            font-size: 40px;
+        }
+
+        #phoneChart, #laptopChart {
+            width: 250px !important;
+            height: 250px !important;
+        }
+
+        .asset-title {
+            font-size: 80px;
+        }
+
+        table tr {
+            font-size: 14px;
+        }
+
+        .submenu-items a {
+            font-size: 16px !important;
+        }
+
+        .asset-distribution {
+            width: 100%;
+            height: 300px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+    }
+
+
 </style>
-</html>

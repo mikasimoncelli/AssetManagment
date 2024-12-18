@@ -79,7 +79,8 @@ namespace AssetManager.Controllers
         public IActionResult EditDisposal(int id)
         {
             var assetDisposal = _context.AssetDisposals
-                .Include(ad => ad.Asset) // Include the Asset details
+                .Include(ad => ad.Asset) 
+                .Include(a => a.Asset.Office)
                 .FirstOrDefault(ad => ad.AssetDisposalID == id);
 
             if (assetDisposal == null)

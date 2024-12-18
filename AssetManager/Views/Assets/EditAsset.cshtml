@@ -1,407 +1,370 @@
-﻿﻿<br />
+﻿﻿
+<br />
 <br />
 @{
     ViewData["Title"] = "Edit Asset";
 }
 
+@* Edit Asset *@
 <div class="container-wrapper">
-    <div class="form-container">
-    <form method="post" action="@Url.Action("UpdateAsset", "Assets")">
-        <input type="hidden" name="AssetID" value="@Model.AssetID" />
-        <h4 class="text-center">Edit Asset Details</h4>
-        <hr class="section-divider">
-        <p class="text-muted mt-2" style="font-size: 0.875rem;">Edit Asset details - Make changes in boxes below then click Save Changes.</p>
-
-        <!-- Asset Fields -->
-        <div class="form-group">
-            <label for="Description">Description</label>
-            <input type="text" class="form-control" id="Description" name="Description" value="@Model.Description" placeholder="Enter asset description" />
-        </div>
-
-        <div class="form-group">
-            <label for="Manufacturer">Manufacturer</label>
-            <input type="text" class="form-control" id="Manufacturer" name="Manufacturer" value="@Model.Manufacturer" placeholder="Enter manufacturer" />
-        </div>
-
-        <div class="form-group">
-            <label for="EquipmentType">Equipment Type</label>
-            <select class="form-control" id="EquipmentType" name="EquipmentType">
-                <option value="">Select Type</option>
-                @foreach (var type in ViewBag.EquipmentTypes)
-                {
-                    <option value="@type" selected="@(Model.EquipmentType == type ? "selected" : null)">@type</option>
-                }
-            </select>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group col-md-6 pr-md-3">
-                <label for="AssetNumber">Asset Number</label>
-                <input type="text" class="form-control" id="AssetNumber" name="AssetNumber" value="@Model.AssetNumber" placeholder="Enter asset number" />
+    <div class="form-container-small">
+        <form method="post" action="@Url.Action("UpdateAsset", "Assets")">
+            <input type="hidden" name="AssetID" value="@Model.AssetID" />
+            <h4 class="text-center">Edit Asset Details</h4>
+            <hr class="section-divider">
+            <p class="text-muted mt-2" style="font-size: 0.875rem;">Edit Asset details - Make changes in boxes below then click Save Changes.</p>
+            <div class="form-group">
+                <label for="Description">Description</label>
+                <input type="text" class="form-control" id="Description" name="Description" value="@Model.Description" placeholder="Enter asset description" />
             </div>
-            <div class="form-group col-md-6 pl-md-3">
-                <label for="SerialNumber">Serial Number</label>
-                <input type="text" class="form-control" id="SerialNumber" name="SerialNumber" value="@Model.SerialNumber" placeholder="Enter serial number" />
+            <div class="form-group">
+                <label for="Manufacturer">Manufacturer</label>
+                <input type="text" class="form-control" id="Manufacturer" name="Manufacturer" value="@Model.Manufacturer" placeholder="Enter manufacturer" />
+            </div>
+            <div class="form-group">
+                <label for="EquipmentType">Equipment Type</label>
+                <select class="form-control" id="EquipmentType" name="EquipmentType">
+                    <option value="">Select Type</option>
+                    @foreach (var type in ViewBag.EquipmentTypes)
+                    {
+                        <option value="@type" selected="@(Model.EquipmentType == type ? "selected" : null)">@type</option>
+                    }
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6 pr-md-3">
+                    <label for="AssetNumber">Asset Number</label>
+                    <input type="text" class="form-control" id="AssetNumber" name="AssetNumber" value="@Model.AssetNumber" placeholder="Enter asset number" />
+                </div>
+                <div class="form-group col-md-6 pl-md-3">
+                    <label for="SerialNumber">Serial Number</label>
+                    <input type="text" class="form-control" id="SerialNumber" name="SerialNumber" value="@Model.SerialNumber" placeholder="Enter serial number" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="OfficeID">Office</label>
+                <select class="form-control" id="OfficeID" name="OfficeID">
+                    <option value="">Select Office</option>
+                    @foreach (var officeItem in ViewBag.Offices)
+                    {
+                        <option value="@officeItem.OfficeID" selected="@(Model.OfficeID == officeItem.OfficeID ? "selected" : null)">@officeItem.OfficeName - @officeItem.Location</option>
+                    }
+                </select>
+            </div>
+
+            @* Buttons *@
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" style="width: 150px;" onclick="window.location.href='@Url.Action("ViewAsset", "Assets", new { id = Model.AssetID, returnUrl = Url.Action("Index", "Assets") })'">
+                    Back
+                </button>
+                <button type="button" class="btn btn-primary" onclick="handleSaveChanges()">
+                    Save Changes
+                </button>
+        </form>
+        <button type="button" class="btn btn-danger" onclick="confirmDelete(@Model.AssetID, event)">
+            Delete Asset
+        </button>
+    </div>
+
+    @* Delete Asset Confirmation *@
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div id="deleteMessage">Are you sure you want to delete this asset?</div>
+            <div style="margin-top: 15px;">
+                <input type="checkbox" id="confirmDeleteCheckbox" onclick="toggleConfirmButton()">
+                <label for="confirmDeleteCheckbox">I am sure I want to delete this asset</label>
+            </div>
+            <div class="button-group">
+                <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+
+                <button id="confirmDeleteButton" class="btn btn-danger" onclick="executeDelete()" disabled>Confirm</button>
             </div>
         </div>
-
-        <div class="form-group">
-            <label for="OfficeID">Office</label>
-            <select class="form-control" id="OfficeID" name="OfficeID">
-                <option value="">Select Office</option>
-                @foreach (var officeItem in ViewBag.Offices)
-                {
-                    <option value="@officeItem.OfficeID" selected="@(Model.OfficeID == officeItem.OfficeID ? "selected" : null)">@officeItem.OfficeName - @officeItem.Location</option>
-                }
-            </select>
-        </div>
-
-<div class="button-group">
-    <!-- Save Changes Button -->
-    <button type="button" class="btn btn-primary" onclick="document.getElementById('saveChangesModal').style.display = 'block'">
-        Save Changes
-    </button>
-    </form>
-
-    <!-- Back Button -->
-    <a href="@Url.Action("ViewAsset", "Assets", new { id = Model.AssetID })" class="btn btn-secondary">
-        Back
-    </a>
-
-    <!-- Delete Button -->
-    <button type="button" class="btn btn-danger" onclick="confirmDelete(@Model.AssetID, event)">
-        Delete Asset
-    </button>
-</div>
-
-<!-- Existing Delete Confirmation Modal -->
-<div id="deleteModal" class="modal">
-    <div class="modal-content">
-        <div id="deleteMessage">Are you sure you want to delete this asset?</div>
-        <div style="margin-top: 15px;">
-            <input type="checkbox" id="confirmDeleteCheckbox" onclick="toggleConfirmButton()">
-            <label for="confirmDeleteCheckbox">I am sure I want to delete this asset</label>
-        </div>
-        <button id="confirmDeleteButton" class="btn btn-danger" onclick="executeDelete()" disabled>Confirm</button>
-        <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
     </div>
-</div>
 
-<!-- Existing Save Changes Confirmation Modal -->
-<div id="saveChangesModal" class="modal">
-    <div class="modal-content">
-        <div id="saveChangesMessage">Are you sure you want to save changes?</div>
-        <div id="updateDetails" style="margin-top: 15px;"></div> <!-- Place to show changes -->
-        <button id="confirmSaveButton" class="btn btn-success" onclick="submitForm()">Confirm</button>
-        <button onclick="closeSaveModal()" class="btn btn-secondary">Cancel</button>
+    @* Save Asset Confirmation *@
+    <div id="saveChangesModal" class="modal">
+        <div class="modal-content">
+            <div id="saveChangesMessage">Are you sure you want to save changes?</div>
+            <div id="updateDetails" style="margin-top: 15px;"></div>
+            <div class="button-group">
+                <button onclick="closeSaveModal()" class="btn btn-secondary">Cancel</button>
+                <button id="confirmSaveButton" class="btn btn-primary" onclick="submitForm()">Confirm</button>
+            </div>
+        </div>
     </div>
-</div>
 
-
-
-        @section Scripts {
-            <script>
-                        function confirmDelete(assetID, event) {
-                            if (event) event.preventDefault();
+    @section Scripts {
+        <script>
+            // Delete Confirmation Modal
+            function confirmDelete(assetID, event) {
+                if (event) event.preventDefault();
                 fetch(`/Assets/CheckReferences?assetID=${assetID}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    const deleteMessage = document.getElementById("deleteMessage");
-                                        if (data.hasReferences) {
-                                            // If references exist, show detailed message with link
-                                            deleteMessage.innerHTML = `
-                                                        <p>This asset has a checked-out record associated with it:</p>
-                                                        <ul>
-                                                            <li><strong>User:</strong> ${data.userName}</li>
-                                                            <li><strong>Checked Out Date:</strong> ${data.checkedOutDate}</li>
-                                                        </ul>
-                                                        <p>Do you want to delete this asset along with its associated record?</p>
-                                                        <a href="/CheckedOutAssets/EditCheckedOutAsset?checkedoutid=${data.checkedOutID}" target="_blank">View Checked Out Record</a>
-                                                    `;
-                                        } else {
-                                            // If no references, show simple confirmation message
-                                        deleteMessage.textContent = "Are you sure you want to delete this asset?";
-                                    }
-                                    document.getElementById("confirmDeleteButton").setAttribute("onclick", `executeDelete(${assetID})`);
-                                    document.getElementById("deleteModal").style.display = "block";
-                                    })
-                                .catch(error => console.error('Error:', error));
+                    .then(response => response.json())
+                    .then(data => {
+                        const deleteMessage = document.getElementById("deleteMessage");
+                        if (data.hasReferences) {
+                            deleteMessage.innerHTML = `
+                            <p>This asset has a checked-out record associated with it:</p>
+                            <ul>
+                                <li><strong>User:</strong> ${data.userName}</li>
+                                <li><strong>Checked Out Date:</strong> ${data.checkedOutDate}</li>
+                            </ul>
+                            <p>Do you want to delete this asset along with its associated record?</p>
+                            <a
+                                href="/CheckedOutAssets/EditCheckedOutAsset?checkedoutid=${data.checkedOutID}&returnUrl="
+                                onclick="this.href += encodeURIComponent(window.location.href)"
+                                target="_blank">
+                                View Checked Out Record
+                            </a>`;
+                        } else {
+                            deleteMessage.textContent = "Are you sure you want to delete this asset?";
                         }
 
-                                function executeDelete(assetID) {
-                                    fetch(`/Assets/DeleteAsset?assetID=${assetID}`, { method: "DELETE" })
-                                        .then(response => {
-                                            if (response.ok) {
-                                                alert("Asset deleted successfully.");
-                                                window.location.href = '/Assets';
-                                            } else {
-                                                alert("Failed to delete asset.");
-                                            }
-                                            closeModal();
-                                        })
-                                        .catch(error => console.error('Error:', error));
-                                }
+                        document.getElementById("confirmDeleteButton").setAttribute("onclick", `executeDelete(${assetID})`);
+                        document.getElementById("deleteModal").style.display = "block";
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
 
-                                function closeModal() {
-                                    document.getElementById("deleteModal").style.display = "none";
-                                }
+            // Delete Asset
+            function executeDelete(assetID) {
+                fetch(`/Assets/DeleteAsset?assetID=${assetID}`, { method: "DELETE" })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Asset deleted successfully.");
+                            window.location.href = '/Assets';
+                        } else {
+                            alert("Failed to delete asset.");
+                        }
+                        closeModal();
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
 
-                                function toggleConfirmButton() {
-                                    const checkbox = document.getElementById("confirmDeleteCheckbox");
-                                    const confirmButton = document.getElementById("confirmDeleteButton");
+            // Close Modal
+            function closeModal() {
+                document.getElementById("deleteModal").style.display = "none";
+            }
 
-                                    // Enable Confirm button if checkbox is checked
-                                    confirmButton.disabled = !checkbox.checked;
-                                }
+            // Confirmation Button
+            function toggleConfirmButton() {
+                const checkbox = document.getElementById("confirmDeleteCheckbox");
+                const confirmButton = document.getElementById("confirmDeleteButton");
+                confirmButton.disabled = !checkbox.checked;
+            }
 
+            let formChanged = false;
+            const originalValues = {};
 
+            // Capture initial values
+            document.querySelectorAll('.form-control').forEach(input => {
+                originalValues[input.id] = input.value;
 
+                input.addEventListener('input', () => {
+                    formChanged = true;
+                });
+            });
 
+            // Handle Save Changes button click
+            function handleSaveChanges() {
+                if (formChanged) {
+                    // Gather changed fields
+                    const changes = [];
+                    document.querySelectorAll('.form-control').forEach(input => {
+                        if (input.value !== originalValues[input.id]) {
+                            changes.push(`<p><strong>${input.previousElementSibling.innerText}:</strong> ${originalValues[input.id]} → ${input.value}</p>`);
+                        }
+                    });
 
-                                let formChanged = false;
-                                const originalValues = {};
+                    // Display changes in modal
+                    document.getElementById("updateDetails").innerHTML = changes.join("");
+                    document.getElementById("saveChangesModal").style.display = "block";
+                } else {
+                    // Redirect to ViewAsset if no changes
+                    window.location.href = '@Url.Action("ViewAsset", "Assets", new { id = Model.AssetID, returnUrl = Url.Action("Index", "Assets") })'
+                }
+            }
 
-                                // Capture initial values
-                                document.querySelectorAll('.form-control').forEach(input => {
-                                    originalValues[input.id] = input.value;
+            // Submit the form after confirmation
+            function submitForm() {
+                document.querySelector('form').submit();
+            }
 
-                                    input.addEventListener('input', () => {
-                                        formChanged = true;
-                                    });
-                                });
-
-                                // Show confirmation modal with details of changes
-                                document.querySelector('.btn-success').addEventListener('click', function (event) {
-                                    if (formChanged) {
-                                        event.preventDefault();
-
-                                        // Gather changed fields
-                                        const changes = [];
-                                        document.querySelectorAll('.form-control').forEach(input => {
-                                            if (input.value !== originalValues[input.id]) {
-                                                changes.push(`<p><strong>${input.previousElementSibling.innerText}:</strong> ${originalValues[input.id]} → ${input.value}</p>`);
-                                            }
-                                        });
-
-                                        // Display changes in modal
-                                        document.getElementById("updateDetails").innerHTML = changes.join("");
-                                        document.getElementById("saveChangesModal").style.display = "block";
-                                    }
-                                });
-
-                                // Submit the form after confirmation
-                                function submitForm() {
-                                    document.querySelector('form').submit();
-                                }
-
-                                // Close the Save Changes Modal
-                                function closeSaveModal() {
-                                    document.getElementById("saveChangesModal").style.display = "none";
-                                }
-
-
-
-
-
-            </script>
-        }
-
-        <style>
-
-            
-    .button-group {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 30px;
+            // Close the Save Changes Modal
+            function closeSaveModal() {
+                document.getElementById("saveChangesModal").style.display = "none";
+            }
+        </script>
     }
 
-            .btn-1 {
-                position: relative;
-                display: inline-block;
-                padding: 10px 20px;
+    <style>
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn-1 {
+            position: relative;
+            display: inline-block;
+            padding: 10px 20px;
+            color: #ffffff;
+            background-color: #3498db;
+            overflow: hidden;
+            transition: color 0.3s ease;
+            text-decoration: none;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+            .btn-1:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -50px;
+                bottom: 0;
+                width: 200%;
+                background-color: rgba(40, 116, 166, 0.8);
+                border-right: 50px solid transparent;
+                border-bottom: 50px solid rgba(40, 116, 166, 0.8);
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: -1;
+            }
+
+            .btn-1:hover {
                 color: #ffffff;
-                background-color: #3498db;
-                overflow: hidden;
-                transition: color 0.3s ease;
-                text-decoration: none;
+            }
+
+                .btn-1:hover:before {
+                    transform: translateX(0);
+                }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            position: relative;
+            left: 42%;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 600px;
+            text-align: center;
+            font-size: 1.0em;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        #deleteMessage {
+            font-size: 1.0em;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-content ul {
+            list-style-type: none;
+            padding: 0;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .modal-content li {
+            margin-bottom: 10px;
+        }
+
+        .modal-content a {
+            color: #007bff;
+            text-decoration: underline;
+            font-weight: bold;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            position: relative;
+            top: 15%;
+            right: 30%;
+            transform: translateX(10%);
+            padding: 20px;
+            border: 1px solid #888;
+            width: 600px;
+            text-align: center;
+        }
+
+        .container-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .form-container {
+            width: 1000px;
+            padding: 50px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .section-divider {
+            border: 0;
+            height: 1px;
+            background-color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
                 font-weight: bold;
-                z-index: 1;
-            }
-
-                .btn-1:before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: -50px;
-                    bottom: 0;
-                    width: 200%;
-                    background-color: rgba(40, 116, 166, 0.8); /* Darker shade of blue with transparency */
-                    border-right: 50px solid transparent;
-                    border-bottom: 50px solid rgba(40, 116, 166, 0.8); /* Adjust to match button height */
-                    transform: translateX(-100%);
-                    transition: transform 0.3s ease;
-                    z-index: -1; /* Ensures overlay is behind the text */
-                }
-
-                .btn-1:hover {
-                    color: #ffffff; /* Keep text white on hover */
-                }
-
-                    .btn-1:hover:before {
-                        transform: translateX(0);
-                    }
-
-
-
-
-
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1000;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.7); /* Darker overlay for better readability */
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .modal-content {
-                background-color: #fff;
-                position: relative;
-                left: 42%; /* Start positioning from the center of the screen */
-                padding: 20px;
-                border: 1px solid #888;
-                width: 600px;
-                text-align: center;
-                font-size: 1.0em; /* Larger font size for readability */
                 color: #333;
-                margin-bottom: 20px; /* Spacing below message */
-                line-height: 1.6; /* Line height for better readability */
             }
 
-            /* Modal Message */
-            #deleteMessage {
-                font-size: 1.0em; /* Larger font size for readability */
-                color: #333;
-                margin-bottom: 20px; /* Spacing below message */
-                line-height: 1.6; /* Line height for better readability */
-            }
-
-            /* List Styling inside Modal */
-            .modal-content ul {
-                list-style-type: none;
-                padding: 0;
-                font-size: 1.1em;
-                color: #555;
-            }
-
-            .modal-content li {
-                margin-bottom: 10px;
-            }
-
-            /* Link Styling inside Modal */
-            .modal-content a {
-                color: #007bff;
-                text-decoration: underline;
-                font-weight: bold;
-                margin-top: 15px;
-                display: inline-block;
-            }
-
-            /* Button Styling inside Modal */
-            .modal-content button {
-                margin-top: 20px;
-                width: 100px;
-                padding: 10px;
-                font-size: 1em;
-            }
-
-
-
-            .modal {
-                display: none; /* Hidden by default */
-                position: fixed;
-                z-index: 1000;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0,0,0,0.5); /* Black background with opacity */
-            }
-
-            .modal-content {
-                background-color: #fff;
-                position: relative;
-                top: 15%; /* Distance from the top */
-                right: 30%; /* Shift modal more to the right of the viewport */
-                transform: translateX(10%); /* Additional shift for fine-tuning */
-                padding: 20px;
-                border: 1px solid #888;
-                width: 600px;
-                text-align: center;
-            }
-
-
-
-
-            .container-wrapper {
-                display: flex;
-                justify-content: center;
-                width: 100%;
-                padding: 20px;
-            }
-
-            .form-container {
-                width: 1000px;
-                padding: 50px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                background-color: #fdfdfd;
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-            }
-
-            .section-title {
-                font-size: 1.25rem;
-                font-weight: 600;
-                color: #333;
-                margin-bottom: 10px;
-            }
-
-            .section-divider {
-                border: 0;
-                height: 1px;
-                background-color: #ddd;
-                margin-bottom: 20px;
-            }
-
-            .form-row {
-                display: flex;
-                gap: 15px;
-            }
-
-            .form-group {
-                margin-bottom: 20px;
-            }
-
-                .form-group label {
-                    font-weight: bold;
-                    color: #333;
-                }
-
-            .form-control {
-                border-radius: 4px;
-                padding: 12px;
-            }
-
-            .btn-success {
-                background-color: #378b15;
-                color: #fff;
-                border: none;
-            }
-
-        </style>
+        .form-control {
+            border-radius: 4px;
+            padding: 12px;
+        }
+    </style>

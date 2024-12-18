@@ -121,7 +121,6 @@ namespace AssetManager.Controllers
                 .Include(c=>c.Asset.Office)
            .FirstOrDefault(c => c.CheckedOutID == checkedoutid);
 
-            Console.WriteLine($"Found CheckedOutAsset: {asset.CheckedOutID}");
             return View(asset);
 
         }

@@ -1,37 +1,27 @@
-﻿<br />
-<br />
-@{
+﻿@{
     ViewData["Title"] = "View Asset";
 }
 
+
+
 <div class="container-wrapper">
-    <div class="form-container">
-
-
-        <!-- Asset Update Form -->
+    <div class="form-container-small">
             <input type="hidden" name="AssetID" value="@Model.AssetID" />
             <h4 class="text-center">View Asset Details</h4>
             <hr class="section-divider">
             <p></p>
-
-            <!-- Asset Fields -->
             <div class="form-group">
                 <label for="Description">Description</label>
                 <input type="text" class="form-control" id="Description" name="Description" value="@Model.Description" placeholder="Enter asset description" readonly />
             </div>
-
             <div class="form-group">
                 <label for="Manufacturer">Manufacturer</label>
                 <input type="text" class="form-control" id="Manufacturer" name="Manufacturer" value="@Model.Manufacturer" placeholder="Enter manufacturer" readonly />
             </div>
-<div class="form-group">
-    <label for="EquipmentType">Equipment Type</label>
-    <input type="text" class="form-control" id="EquipmentType" name="EquipmentType" value="@Model.EquipmentType" placeholder="Equipment type" readonly />
-</div>
-
-
-        
-
+            <div class="form-group">
+                <label for="EquipmentType">Equipment Type</label>
+                <input type="text" class="form-control" id="EquipmentType" name="EquipmentType" value="@Model.EquipmentType" placeholder="Equipment type" readonly />
+            </div>
             <div class="form-row">
                 <div class="form-group col-md-6 pr-md-3">
                     <label for="AssetNumber">Asset Number</label>
@@ -42,56 +32,42 @@
                     <input type="text" class="form-control" id="SerialNumber" name="SerialNumber" value="@Model.SerialNumber" placeholder="Enter serial number" readonly/>
                 </div>
             </div>
-
             <div class="form-group">
                     <label for="OfficeID">Office</label>
-
                      <input type="text" class="form-control" id="OfficeID" name="OfficeID" value="@Model.Office.OfficeName" readonly/>
             </div>
-                        <div class="form-group">
+             <div class="form-group">
                     <label for="OfficeID">Location</label>
-
-                     <input type="text" class="form-control" id="OfficeID" name="OfficeID" value="@Model.Office.Location" readonly/>
+                    <input type="text" class="form-control" id="OfficeID" name="OfficeID" value="@Model.Office.Location" readonly/>
             </div>
-
             <div class="form-group">
                 <label for="DateAdded">Date Added</label>
                 <input type="text" class="form-control" id="DateAdded" name="DateAdded"
-                       value="@Model.DateAdded.ToString("dd-MM-yyyy")" placeholder="Enter date added" readonly />
+                 value="@Model.DateAdded.ToString("dd-MM-yyyy")" placeholder="Enter date added" readonly />
             </div>
+            <br />
 
 
-
-
-
-<br />
-
-<!-- Action Buttons Section -->
+@* Buttons *@
 <div class="form-group d-flex flex-wrap justify-content-center gap-3 mt-4">
-    <!-- Back to List Button -->
-<!-- Back to List Button -->
     <button type="button" class="btn btn-secondary" style="width: 150px;" onclick="window.location.href='@Context.Request.Query["returnUrl"]'">
-    Back to List
+    Back
     </button>
 
-    <!-- Delete Button (Triggers Delete Modal) -->
     <button type="button" class="btn btn-secondary" style="width: 150px;" onclick="window.location.href='@Url.Action("EditAsset", "Assets", new { id = Model.AssetID })'">
         Edit Asset
     </button>
 
-    <!-- Damage Form Button -->
     <button type="button" class="btn btn-primary" style="width: 150px;" 
             onclick="window.location.href='@Url.Action("AssetDamagesForm", "Damages", new { assetID = Model.AssetID })'">
         Damage Form
     </button>
 
-    <!-- Disposal Form Button -->
     <button type="button" class="btn btn-primary" style="width: 150px;" 
             onclick="window.location.href='@Url.Action("AssetDisposalsForm", "Disposals", new { assetID = Model.AssetID })'">
         Disposal Form
     </button>
 
-    <!-- Check Out Asset Button -->
     <button type="button" class="btn btn-primary" style="width: 150px;" 
             onclick="window.location.href='@Url.Action("AddNewCheckedOutAsset", "CheckedOutAssets", new { id = Model.AssetID })'">
         Check Out Asset
@@ -103,28 +79,6 @@
 </div>
 
 
-<!-- Existing Delete Confirmation Modal -->
-<div id="deleteModal" class="modal">
-    <div class="modal-content">
-        <div id="deleteMessage">Are you sure you want to delete this asset?</div>
-        <div style="margin-top: 15px;">
-            <input type="checkbox" id="confirmDeleteCheckbox" onclick="toggleConfirmButton()">
-            <label for="confirmDeleteCheckbox">I am sure I want to delete this asset</label>
-        </div>
-        <button id="confirmDeleteButton" class="btn btn-danger" onclick="executeDelete()" disabled>Confirm</button>
-        <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
-    </div>
-</div>
-
-<!-- Existing Save Changes Confirmation Modal -->
-<div id="saveChangesModal" class="modal">
-    <div class="modal-content">
-        <div id="saveChangesMessage">Are you sure you want to save changes?</div>
-        <div id="updateDetails" style="margin-top: 15px;"></div> <!-- Place to show changes -->
-        <button id="confirmSaveButton" class="btn btn-success" onclick="submitForm()">Confirm</button>
-        <button onclick="closeSaveModal()" class="btn btn-secondary">Cancel</button>
-    </div>
-</div>
 
 
             @section Scripts {
@@ -237,18 +191,33 @@
                     }
 
 
-    const returnUrl = params.get('returnUrl');
-    const backButton = document.getElementById('backButton');
+        document.addEventListener('DOMContentLoaded', function () {
+            // Select the back button by ID
+            const backButton = document.getElementById('backButton');
 
-    if (returnUrl) {
-        backButton.onclick = function() {
-            window.location.href = returnUrl; // Navigate to the original page
-        };
-    } else {
-        backButton.onclick = function() {
-            window.location.href = '@Url.Action("Index", "Assets")'; // Fallback to Index page
-        };
-    }
+            if (!backButton) {
+                console.error('Back button not found.');
+                return;
+            }
+
+            // Get the return URL from the query string
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('returnUrl') ? urlParams.get('returnUrl').toLowerCase() : '';
+
+            backButton.onclick = function () {
+                if (returnUrl) {
+                    // Redirect to the return URL if it exists
+                    window.location.href = returnUrl;
+                } else {
+                    // Default behavior: Go back to the referring page or the previous history state
+                    window.history.back();
+                }
+            };
+        });
+
+
+
+
 
                 </script>
             }

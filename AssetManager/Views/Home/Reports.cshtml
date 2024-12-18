@@ -1,18 +1,19 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-</head>
-@{
+    @{
     ViewData["Title"] = "Reports";
 }
+
+    <title>Reports</title>
+    
+</head>
 <body>
 
-    <div class="container-wrapper" style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
-        <div class="form-container">
+    <div class="container-wrapper" style="padding: 20px; border-radius: 8px;">
+        <div class="form-container-small text-center">
             <h3 class="mb-4" style="color: #343a40;">Download Reports</h3>
+
             <div class="mb-3">
                 <a href="@Url.Action("AssetsReport", "Home")" class="btn btn-success btn-sm" role="button" style="width: 200px;">
                     Assets Report
@@ -25,70 +26,34 @@
                 </a>
                 <p class="text-muted mt-2" style="font-size: 0.875rem;">View a report of all loans, past and current.</p>
             </div>
+
+            <div>
+                <a href="@Url.Action("DamagesReport", "Home")" class="btn btn-success btn-sm" role="button" style="width: 200px;">
+                    Damages Report
+                </a>
+                <p class="text-muted mt-2" style="font-size: 0.875rem;">View a report of all damaged assets.</p>
+            </div>
+
+            <div>
+                <a href="@Url.Action("DisposalsReport", "Home")" class="btn btn-success btn-sm" role="button" style="width: 200px;">
+                    Disposals Report
+                </a>
+                <p class="text-muted mt-2" style="font-size: 0.875rem;">View a report of all disposed of assets.</p>
+            </div>
+
             <div>
                 <a href="@Url.Action("UsersReport", "Home")" class="btn btn-success btn-sm" role="button" style="width: 200px;">
                     Users Report
                 </a>
                 <p class="text-muted mt-2" style="font-size: 0.875rem;">View a report of all users.</p>
             </div>
+
         </div>
     </div>
-
-
-    <style>
-        .btn-success {
-            background-color: #28a745 !important; /* Green background */
-            color: white !important; /* White text */
-            border: 2px solid #28a745 !important; /* Green border */
-        }
-
-            /* Hover state for btn-success */
-            .btn-success:hover {
-                background-color: white !important; /* White background on hover */
-                color: #28a745 !important; /* Green text on hover */
-                border: 2px solid #28a745 !important; /* Green border on hover */
-            }
-
-        .container-wrapper {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            padding: 20px;
-            height: 500px;
-        }
-
-        .form-container {
-            width: 1000px;
-            padding: 40px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fdfdfd;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-            margin-top: 20px;
-            text-align: center;
-        }
-
-            .form-container h1 {
-                margin-bottom: 40px;
-                color: #333;
-            }
-
-            .form-container ul {
-                list-style-type: none;
-                padding: 0;
-                margin: 0;
-            }
-
-            .form-container li {
-                margin: 15px 0;
-            }
-
-          
-                .form-container a:hover {
-                    background-color: #0056b3;
-                    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-                }
-    </style>
-
-</body>
+    </body>
 </html>
+
+<style>
+
+
+</style>

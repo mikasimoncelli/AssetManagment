@@ -1,7 +1,6 @@
 using AssetManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
@@ -26,12 +25,14 @@ namespace AssetManager.Controllers
 
         public IActionResult Index()
         {
+            //Used to Calculate the phone and laptop availability
             var currentlyCheckedOutAssetIds = _context.CheckedOutAssets
                 .GroupBy(c => c.AssetID)
                 .Where(g => g.OrderByDescending(c => c.DateLentOut).FirstOrDefault().DateReturned == null)
                 .Select(g => g.Key)
                 .ToList();
 
+            //Total Asset Count
             var assetCount = _context.Assets
                 .Include(a => a.Office)
                 .GroupBy(a => a.Office.OfficeID)
@@ -43,7 +44,7 @@ namespace AssetManager.Controllers
                 })
                 .ToList();
 
-            // Separate overdue and upcoming returns
+            //Calculate Overdue Loans
             var overdueReturns = _context.CheckedOutAssets
                 .Where(c => c.DateReturned == null && c.DueDate < DateTime.Now)
                 .OrderBy(c => c.DueDate)
@@ -57,12 +58,13 @@ namespace AssetManager.Controllers
                 })
                 .ToList();
 
+            //Calulcate Upcoming Loan Returns
             var upcomingReturns = _context.CheckedOutAssets
                 .Where(c => c.DateReturned == null && c.DueDate >= DateTime.Now && c.DueDate <= DateTime.Now.AddDays(7))
                 .OrderBy(c => c.DueDate)
                 .Select(c => new
                 {
-                    CheckedOutID = c.CheckedOutID, // Include CheckedOutID
+                    CheckedOutID = c.CheckedOutID, 
                     AssetName = c.Asset.Description,
                     AssetType = c.Asset.EquipmentType,
                     DueDate = c.DueDate,
@@ -70,7 +72,6 @@ namespace AssetManager.Controllers
                 })
                 .ToList();
 
-            // Pass the lists to the view
             ViewBag.OverdueReturns = overdueReturns;
             ViewBag.UpcomingReturns = upcomingReturns;
 
@@ -82,6 +83,8 @@ namespace AssetManager.Controllers
             return View();
         }
 
+
+        //Calculates the percentage of Laptops and Phones
         private double CalculateAvailabilityPercentage(string equipmentType, List<int> checkedOutAssetIds)
         {
             int totalAssets = _context.Assets.Count(a => a.EquipmentType == equipmentType);
@@ -89,16 +92,20 @@ namespace AssetManager.Controllers
                 .Where(a => a.EquipmentType == equipmentType && !checkedOutAssetIds.Contains(a.AssetID))
                 .Count();
 
-            return totalAssets > 0 ? (availableAssets / (double)totalAssets) * 100 : 0;
+            double percentage = totalAssets > 0 ? (availableAssets / (double)totalAssets) * 100 : 0;
+            return Math.Round(percentage, 2); // Rounds to 2 decimal places
         }
 
+
+
+        //Reports page
         public IActionResult Reports()
         {
             return View();
         }
 
 
-
+        //Download Assets Report
         [HttpGet]
         public IActionResult AssetsReport()
         {
@@ -353,6 +360,149 @@ namespace AssetManager.Controllers
                 return File(stream.ToArray(), "application/pdf", "UsersReport.pdf");
             }
         }
+
+        public IActionResult DamagesReport()
+        {
+            using (var stream = new MemoryStream())
+            {
+                var writer = new PdfWriter(stream);
+                var pdf = new PdfDocument(writer);
+                var document = new Document(pdf, PageSize.A4);
+                document.SetMargins(20, 20, 20, 20);
+
+                // Add Logo
+                var logoPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/logo.jpg");
+                var imageData = ImageDataFactory.Create(logoPath);
+                var logo = new iText.Layout.Element.Image(imageData).ScaleToFit(100, 100);
+                document.Add(logo);
+
+                // Add Title and Date
+                document.Add(new Paragraph("Damages Report").SetFontSize(18).SetBold().SetTextAlignment(TextAlignment.CENTER));
+                string currentDate = DateTime.Now.ToString("dddd, dd MMMM yyyy");
+                document.Add(new Paragraph($"Date: {currentDate}").SetFontSize(12).SetTextAlignment(TextAlignment.RIGHT));
+
+                // Add Introductory Message
+                string message = "This report provides details of all recorded damages for assets. Reports are generated based on the latest data available in the system.";
+                document.Add(new Paragraph(message).SetFontSize(10).SetTextAlignment(TextAlignment.JUSTIFIED).SetMarginTop(10));
+
+                // Fetch Data for Asset Damages
+                var damages = _context.AssetDamages.Include(d => d.Asset).ToList();
+                int totalDamages = damages.Count;
+
+                // Display Total Damages
+                document.Add(new Paragraph($"Total Damages: {totalDamages}").SetFontSize(12).SetBold());
+
+                // Add a line separator
+                document.Add(new LineSeparator(new SolidLine()).SetMarginTop(10).SetMarginBottom(10));
+
+                // Create and style the table
+                var table = new Table(UnitValue.CreatePercentArray(new float[] { 1,1,1,1,1,1 })).UseAllAvailableWidth();
+                table.SetMarginTop(10);
+
+                var headerCellStyle = new Style()
+                    .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(10)
+                    .SetBold();
+
+                // Add Table Headers
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Damage ID")).AddStyle(headerCellStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Asset Name")).AddStyle(headerCellStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Asset Number")).AddStyle(headerCellStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Damage Description")).AddStyle(headerCellStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Damage Type")).AddStyle(headerCellStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Repair Status")).AddStyle(headerCellStyle));
+
+                // Populate the table with damage data
+                foreach (var damage in damages)
+                {
+                    table.AddCell(new Cell().Add(new Paragraph(damage.AssetDamageID.ToString())).SetFontSize(8));
+                    table.AddCell(new Cell().Add(new Paragraph(damage.Asset.Description.ToString())).SetFontSize(8));
+                    table.AddCell(new Cell().Add(new Paragraph(damage.Asset.AssetNumber.ToString())).SetFontSize(8));
+                    table.AddCell(new Cell().Add(new Paragraph(damage.DamageDescription ?? "N/A")).SetFontSize(8));
+                    table.AddCell(new Cell().Add(new Paragraph(damage.DamageType ?? "N/A")).SetFontSize(8));
+                    table.AddCell(new Cell().Add(new Paragraph(string.IsNullOrEmpty(damage.RepairStatus) ? ("Empty") : damage.RepairStatus)).SetFontSize(8));
+                }
+
+                document.Add(table);
+                document.Close(); // Finalize the document
+
+                return File(stream.ToArray(), "application/pdf", "DamagesReport.pdf");
+            }
+        }
+
+
+        public IActionResult DisposalsReport()
+        {
+            using (var stream = new MemoryStream())
+            {
+                var writer = new PdfWriter(stream);
+                var pdf = new PdfDocument(writer);
+                var document = new Document(pdf, PageSize.A4);
+                document.SetMargins(20, 20, 20, 20);
+
+                // Add Logo
+                var logoPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/logo.jpg");
+                var imageData = ImageDataFactory.Create(logoPath);
+                var logo = new iText.Layout.Element.Image(imageData).ScaleToFit(100, 100);
+                document.Add(logo);
+
+                // Add Title and Date
+                document.Add(new Paragraph("Disposals Report").SetFontSize(18).SetBold().SetTextAlignment(TextAlignment.CENTER));
+                string currentDate = DateTime.Now.ToString("dddd, dd MMMM yyyy");
+                document.Add(new Paragraph($"Date: {currentDate}").SetFontSize(12).SetTextAlignment(TextAlignment.RIGHT));
+
+                // Add Introductory Message
+                string message = "This report provides details of all disposed assets. Reports are generated based on the latest data available in the system.";
+                document.Add(new Paragraph(message).SetFontSize(10).SetTextAlignment(TextAlignment.JUSTIFIED).SetMarginTop(10));
+
+                // Fetch Data for Asset Disposals
+                var disposals = _context.AssetDisposals.Include(d => d.Asset).ToList();
+                int totalDisposals = disposals.Count;
+
+                // Display Total Disposals
+                document.Add(new Paragraph($"Total Disposals: {totalDisposals}").SetFontSize(12).SetBold());
+
+                // Add a line separator
+                document.Add(new LineSeparator(new SolidLine()).SetMarginTop(10).SetMarginBottom(10));
+
+                // Create and style the table
+                var table = new Table(UnitValue.CreatePercentArray(new float[] { 2, 2, 2, 2, 2, 2 })).UseAllAvailableWidth();
+                table.SetMarginTop(10);
+
+                var headerCellStyle = new Style()
+                    .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(10)
+                    .SetBold();
+
+                // Add Table Headers
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Disposal ID")).AddStyle(headerCellStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Asset Name")).AddStyle(headerCellStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Disposal Description")).AddStyle(headerCellStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Disposal Reason")).AddStyle(headerCellStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Disposal Status")).AddStyle(headerCellStyle));
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Date Disposed")).AddStyle(headerCellStyle));
+
+                // Populate the table with disposal data
+                foreach (var disposal in disposals)
+                {
+                    table.AddCell(new Cell().Add(new Paragraph(disposal.AssetDisposalID.ToString())).SetFontSize(8));
+                    table.AddCell(new Cell().Add(new Paragraph(disposal.Asset.Description.ToString())).SetFontSize(8));
+                    table.AddCell(new Cell().Add(new Paragraph(disposal.DisposalDescription ?? "N/A")).SetFontSize(8));
+                    table.AddCell(new Cell().Add(new Paragraph(disposal.DisposalReason ?? "N/A")).SetFontSize(8));
+                    table.AddCell(new Cell().Add(new Paragraph(disposal.DisposalStatus ?? "N/A")).SetFontSize(8));
+                    table.AddCell(new Cell().Add(new Paragraph(disposal.DateDisposed?.ToShortDateString() ?? "N/A")).SetFontSize(8));
+                }
+
+                document.Add(table);
+                document.Close(); // Finalize the document
+
+                return File(stream.ToArray(), "application/pdf", "DisposalsReport.pdf");
+            }
+        }
+
+
 
         public IActionResult GetAllData()
         {

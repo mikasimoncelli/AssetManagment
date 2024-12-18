@@ -7,7 +7,7 @@
     <form asp-action="EditCheckedOutAsset" method="post">
         <input type="hidden" name="CheckedOutID" value="@Model.CheckedOutID" />
 
-        <div class="form-container">
+        <div class="form-container-small">
             <h3 class="text-center">Update Loan</h3>
             <!-- Staff Section -->
             <h5 class="section-title">Staff:</h5>
@@ -86,12 +86,38 @@
 
             <!-- Buttons -->
             <div class="button-group">
+                <button type="button"
+                        id="backButton"
+                        class="btn btn-secondary"
+                        style="width: 150px;">
+                    Back
+                </button>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a asp-action="AllCheckedOutAssets" class="btn btn-secondary">Back to List</a>
             </div>
         </div>
     </form>
 </div>
+
+
+<script>
+    // Get the returnUrl from the query string
+        const params = new URLSearchParams(window.location.search);
+
+    const returnUrl = params.get('returnUrl');
+    const backButton = document.getElementById('backButton');
+
+    if (returnUrl) {
+        // Navigate to the returnUrl if it exists
+        backButton.onclick = function() {
+            window.location.href = returnUrl;
+        };
+    } else {
+        // Fallback to the "AllCheckedOutAssets" action if no returnUrl
+        backButton.onclick = function() {
+            window.location.href = '@Url.Action("Index", "CheckedOutAssets")';
+        };
+    }
+</script>
 
 
 <style>
