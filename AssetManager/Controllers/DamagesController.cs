@@ -11,7 +11,10 @@ namespace AssetManager.Controllers
 
         public IActionResult Index()
         {
-            var damagedAssets = _context.AssetDamages.Include(ad => ad.Asset).ToList();
+            var damagedAssets = _context.AssetDamages
+                                        .Include(ad => ad.Asset)
+                                        .Where(ad => ad.Asset != null)
+                                        .ToList(); 
             return View(damagedAssets);
         }
 
@@ -70,6 +73,23 @@ namespace AssetManager.Controllers
 
 
 
+
+
+        // add new damage report
+        [HttpGet]
+        public IActionResult ReportNewDamage()
+        {
+            var assets = _context.Assets.Include(a => a.Office).ToList();
+            var equipmentTypes = assets.Select(a => a.EquipmentType).Distinct().ToList();
+            var offices = assets.Select(a => a.Office.OfficeName).Distinct().ToList();
+
+            ViewBag.EquipmentTypes = equipmentTypes;
+            ViewBag.Offices = offices;
+
+            return View(assets);
+        }
+
+
         // edit
         [HttpPost]
         public IActionResult EditAssetDamage(AssetDamage model)
@@ -91,21 +111,6 @@ namespace AssetManager.Controllers
         }
 
 
-        // add new damage report
-        [HttpGet]
-        public IActionResult ReportNewDamage()
-        {
-            var assets = _context.Assets.Include(a => a.Office).ToList();
-            var equipmentTypes = assets.Select(a => a.EquipmentType).Distinct().ToList();
-            var offices = assets.Select(a => a.Office.OfficeName).Distinct().ToList();
-
-            ViewBag.EquipmentTypes = equipmentTypes;
-            ViewBag.Offices = offices;
-
-            return View(assets);
-        }
-
-
         [HttpPost]
         public IActionResult BulkUpdate([FromBody] BulkUpdateModel model)
         {
@@ -120,9 +125,22 @@ namespace AssetManager.Controllers
                 var assetDamage = _context.AssetDamages.Find(id);
                 if (assetDamage != null)
                 {
-                    assetDamage.RepairStatus = model.Status;
-                    assetDamage.RepairDate = model.DateRepaired;
-                    assetDamage.Notes = model.Notes;
+                    // Only update fields if provided in the request
+                    if (!string.IsNullOrEmpty(model.Status))
+                    {
+                        assetDamage.RepairStatus = model.Status;
+                    }
+
+                    if (model.DateRepaired.HasValue)
+                    {
+                        assetDamage.RepairDate = model.DateRepaired;
+                    }
+
+                    // Append new notes only if provided, using the same logic as in Disposals
+                    if (!string.IsNullOrEmpty(model.Notes))
+                    {
+                        assetDamage.Notes += $"\n{model.Notes}";
+                    }
                 }
             }
 
@@ -130,6 +148,9 @@ namespace AssetManager.Controllers
 
             return Ok("Damages updated successfully.");
         }
+
+
+
         public class BulkUpdateModel
         {
             public List<int> Ids { get; set; }

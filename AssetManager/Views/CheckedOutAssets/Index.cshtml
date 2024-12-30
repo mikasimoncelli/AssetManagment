@@ -62,29 +62,31 @@
                     {
                         <!-- Individual Table for Each Equipment Type -->
                         <div class="equipment-type-section" data-type="@equipmentGroup.Key">
-                            <h4 class="text-center mt-4 mb-3 display-6" style="color: #343a40; padding-bottom: 5px;">@($"{equipmentGroup.Key}")s</h4>
+                            <h5 class="text-center mt-4 mb-3" style="color: #343a40; padding-bottom: 5px;">@($"{equipmentGroup.Key}")</h5>
 
                             <table class="table table-bordered text-center table-sm asset-table">
                                 <thead>
                                         <tr style="background-color: #0b3d91; color: #fff;">
+                                            <th>User First Name</th>
+                                            <th>User Last Name</th>
                                         <th>Date Lent Out</th>
                                         <th>Checked Out ID</th>
                                         <th>Equipment Type</th>
                                         <th>Description</th>
-                                        <th>User First Name</th>
-                                        <th>User Last Name</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var asset in equipmentGroup)
                                     {
                                         <tr onclick="window.location.href='@Url.Action("EditCheckedOutAsset", "CheckedOutAssets", new { checkedoutid = asset.CheckedOutID })'">
+                                                <td>@(asset.User != null ? asset.User.FirstName : "Unknown User")</td>
+                                                <td>@(asset.User != null ? asset.User.LastName : "Unknown User")</td>
                                             <td>@asset.DateLentOut.ToString("yyyy-MM-dd")</td>
                                             <td>@asset.CheckedOutID</td>
                                             <td>@asset.Asset.EquipmentType</td>
                                             <td>@(asset.Asset != null ? asset.Asset.Description : "Unknown Asset")</td>
-                                            <td>@(asset.User != null ? asset.User.FirstName : "Unknown User")</td>
-                                            <td>@(asset.User != null ? asset.User.LastName : "Unknown User")</td>
+
                                         </tr>
                                     }
                                 </tbody>
@@ -139,6 +141,23 @@
                 section.querySelectorAll("tbody tr").forEach(row => row.style.display = "");
             });
         }
+
+        // Function to prefill the dropdown
+        function prefillDropdown() {
+            const params = new URLSearchParams(window.location.search); // Get query parameters
+            const assetType = params.get('assetType'); // Extract 'assetType'
+
+            if (assetType) {
+                const dropdown = document.getElementById('assetTypeDropdown');
+                dropdown.value = assetType; // Set the dropdown value
+
+                // Optionally trigger the onchange event if it needs to apply filters immediately
+                dropdown.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Call the function on page load
+        document.addEventListener('DOMContentLoaded', prefillDropdown);
 </script>
 
 <style>

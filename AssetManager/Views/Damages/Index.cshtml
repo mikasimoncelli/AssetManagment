@@ -32,7 +32,7 @@
         <!-- Pending Repairs Table -->
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <h4>Pending Repairs</h4>
+                <h5>Pending Repairs</h5>
                 <button id="editPendingButton" class="btn btn-primary mb-3" style="display: none;" onclick="openEditModal('pending')">Edit Selected</button>
                 <div class="table-responsive">
                     <table class="table table-bordered text-center table-sm asset-table" id="pending-table">
@@ -73,7 +73,7 @@
         <!-- In-Progress Repairs Table -->
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <h4>In-Progress Repairs</h4>
+                <h5>In-Progress Repairs</h5>
                 <button id="editInprogressButton" class="btn btn-primary mb-3" style="display: none;" onclick="openEditModal('inprogress')">Edit Selected</button>
                 <div class="table-responsive">
                     <table class="table table-bordered text-center table-sm asset-table" id="inprogress-table">
@@ -116,7 +116,7 @@
         <!-- Resolved Repairs Table -->
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <h4>Resolved Repairs</h4>
+                <h5>Resolved Repairs</h5>
                 <button id="editResolvedButton" class="btn btn-primary mb-3" style="display: none;" onclick="openEditModal('resolved')">Edit Selected</button>
                 <div class="table-responsive">
                     <table class="table table-bordered text-center table-sm asset-table" id="resolved-table">
@@ -155,20 +155,19 @@
         </div>
 
         <!-- Edit Modal -->
-        <div id="editModal" class="modal" tabindex="-1" role="dialog">
+        <div id="editModal" class="modal">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Edit Selected Damages</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+
                     </div>
                     <div class="modal-body">
                         <form id="editForm">
                             <div class="form-group">
                                 <label for="newStatus">Status:</label>
                                 <select id="newStatus" class="form-control">
+                                    <option value="">Select Status</option>
                                     <option value="Pending">Pending</option>
                                     <option value="In-Progress">In-Progress</option>
                                     <option value="Resolved">Resolved</option>
@@ -184,9 +183,10 @@
                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="submitEditForm()">Save changes</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+
+                        <button type="button" id="saveButton" class="btn btn-primary" onclick="submitEditForm()" disabled>Save changes</button>
                     </div>
                 </div>
             </div>
@@ -195,6 +195,44 @@
 </div>
 
 <script>
+
+    function closeModal() {
+        // Hide the modal using Bootstrap's modal method
+        $('#editModal').modal('hide');
+
+        // Reset modal dataset status
+        document.getElementById('editModal').dataset.status = '';
+
+        // Uncheck all individual checkboxes
+        ['pending', 'inprogress', 'resolved'].forEach(status => {
+            document.querySelectorAll(`.select-row-${status}`).forEach(checkbox => checkbox.checked = false);
+            const selectAllCheckbox = document.getElementById(`selectAll${capitalizeFirstLetter(status)}`);
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+            }
+        });
+
+        // Hide all Edit Selected buttons
+        ['editPendingButton', 'editInprogressButton', 'editResolvedButton'].forEach(buttonId => {
+            document.getElementById(buttonId).style.display = 'none';
+        });
+
+        // Reset modal fields to their defaults
+        const statusField = document.getElementById('newStatus');
+        const dateField = document.getElementById('newDateRepaired');
+        const notesField = document.getElementById('newNotes');
+
+        statusField.value = ''; // Reset dropdown to default
+        dateField.value = '';   // Clear the date input
+        notesField.value = '';  // Clear the textarea input
+
+        // Disable the Save button again
+        const saveButton = document.getElementById('saveButton');
+        saveButton.disabled = true;
+    }
+
+
+
     function filterAssetType() {
         const selectedType = document.getElementById("assetTypeDropdown").value.toLowerCase();
         ['pending-table', 'in-progress-table', 'resolved-table'].forEach(tableId => {
@@ -245,39 +283,46 @@
         $('#editModal').modal('show');
     }
 
-    function submitEditForm() {
-        const status = document.getElementById('editModal').dataset.status;
-        const selectedClass = `.select-row-${status}`;
-        const selectedIds = Array.from(document.querySelectorAll(`${selectedClass}:checked`)).map(cb => cb.getAttribute('data-id'));
-        const newStatus = document.getElementById('newStatus').value;
-        const newDateRepaired = document.getElementById('newDateRepaired').value;
-        const newNotes = document.getElementById('newNotes').value;
 
-        fetch('/Damages/BulkUpdate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                ids: selectedIds,
-                status: newStatus,
-                dateRepaired: newDateRepaired || null,
-                notes: newNotes || null
-            })
-        }).then(response => {
-            if (response.ok) {
-                location.reload(); // Reload the page to reflect changes
-            } else {
-                alert("Failed to update damages.");
-                console.error("Server response:", response);
-            }
-        }).catch(error => {
+function submitEditForm() {
+    const status = document.getElementById('editModal').dataset.status;
+    const selectedClass = `.select-row-${status}`;
+    const selectedIds = Array.from(document.querySelectorAll(`${selectedClass}:checked`)).map(cb => cb.getAttribute('data-id'));
+    const newStatus = document.getElementById('newStatus').value;
+    const newDateRepaired = document.getElementById('newDateRepaired').value;
+    const newNotes = document.getElementById('newNotes').value;
+
+    const requestData = {
+        ids: selectedIds,
+        status: newStatus || undefined,  // Only send if newStatus is provided
+        dateRepaired: newDateRepaired ? new Date(newDateRepaired) : undefined, // Only send if newDateRepaired is valid
+        notes: newNotes || undefined  // Only send if newNotes is provided
+    };
+
+    // Remove any keys with undefined values from the requestData object
+    Object.keys(requestData).forEach(key => requestData[key] === undefined && delete requestData[key]);
+
+    fetch('/Damages/BulkUpdate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    }).then(response => {
+        if (response.ok) {
+            location.reload(); // Reload the page to reflect changes
+        } else {
             alert("Failed to update damages.");
-            console.error("Fetch error:", error);
-        });
+            console.error("Server response:", response);
+        }
+    }).catch(error => {
+        alert("Failed to update damages.");
+        console.error("Fetch error:", error);
+    });
 
-        $('#editModal').modal('hide');
-    }
+    $('#editModal').modal('hide');
+}
+
 
 
     function capitalizeFirstLetter(string) {
@@ -288,31 +333,58 @@
         event.stopPropagation();
     }
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const saveButton = document.getElementById("saveButton");
+        const statusField = document.getElementById("newStatus");
+        const dateField = document.getElementById("newDateRepaired");
+        const notesField = document.getElementById("newNotes");
+
+        function validateFields() {
+            const isStatusSelected = statusField.value !== ""; // Check if a status is selected
+            const isDateFilled = dateField.value.trim() !== ""; // Check if a date is entered
+            const isNotesFilled = notesField.value.trim() !== ""; // Check if notes are entered
+
+            // Enable the Save button if any field is filled
+            saveButton.disabled = !(isStatusSelected || isDateFilled || isNotesFilled);
+        }
+
+        // Attach event listeners to fields
+        statusField.addEventListener("change", validateFields);
+        dateField.addEventListener("input", validateFields);
+        notesField.addEventListener("input", validateFields);
+    });
+
 
 </script>
 
 <style>
 
-            .container-wrapper {
-                display: flex;
-                justify-content: center;
-                width: 100%;
-                padding: 20px;
-                min-height: 100vh;
-            }
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
 
-            .form-container {
-                width: 2100px;
-                padding: 20px;
-                border: 2px solid #ddd;
-                border-radius: 8px;
-                background-color: #fdfdfd;
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-            }
+    .container-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 20px;
+        min-height: 100vh;
+    }
 
-            .container-fluid {
-                background-color: #f8f9fa;
-            }
+    .form-container {
+        width: 2100px;
+        padding: 20px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .container-fluid {
+        background-color: #f8f9fa;
+    }
 
     .asset-table {
         width: 100%;
@@ -345,8 +417,22 @@
         right: 90px; /* Adjust as needed */
     }
 
-        .logo-top-right img {
-            max-width: 100px; /* Adjust the size as needed */
-            height: auto;
-        }
+    .logo-top-right img {
+        max-width: 100px; /* Adjust the size as needed */
+        height: auto;
+    }
+
+    .modal {
+        position: absolute; 
+        top: 50%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+        top: calc(50% + 200px); 
+        left: calc(50% + 50px);
+    }
+
+
+    .modal-content {
+        padding: 20px;
+    }
 </style>

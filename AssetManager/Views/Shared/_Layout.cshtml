@@ -29,9 +29,9 @@
                     </button>
                 </li>
                 <li class="mb-1">
-                    <button id="search-toggle" class="btn btn-toggle align-items-center rounded">
-                        <span><i class="bi bi-search me-3 ms-4"></i> <span class="sidenav-text">Search</span></span>
-                    </button>
+<button id="search-toggle" class="btn btn-toggle align-items-center rounded">
+    <span><i class="bi bi-search me-3 ms-4"></i> Search</span>
+</button>
                 </li>
                 <li class="mb-1">
                     <button class="btn btn-toggle align-items-center rounded arrow-item" data-bs-toggle="collapse" data-bs-target="#assets-collapse" aria-expanded="false" onclick="toggleCollapseState('assets-collapse')">
@@ -82,11 +82,26 @@
                         <div class="submenu-items">
                             <ul class="list-unstyled fw-normal pt-2 ms-4">
                                 <li><a href="@Url.Action("Index", "Disposals")" class="link-dark rounded">View All Disposals</a></li>
-                                <li><a href="@Url.Action("AddDisposal", "Disposals")" class="link-dark rounded">Add New Disposal</a></li>
+                                <li><a href="@Url.Action("ReportNewDisposal", "Disposals")" class="link-dark rounded">Add New Disposal</a></li>
                             </ul>
                         </div>
                     </div>
                 </li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded arrow-item" data-bs-toggle="collapse" data-bs-target="#users-collapse" aria-expanded="false" onclick="toggleCollapseState('users-collapse')">
+                        <span><i class="bi bi-people-fill me-3 ms-4"></i><span class="sidenav-text">Manage Users</span></span>
+                    </button>
+                    <div class="collapse" id="users-collapse" data-bs-parent="#menu-accordion">
+                        <div class="submenu-items">
+                            <ul class="list-unstyled fw-normal pt-2 ms-4">
+                                <li><a href="@Url.Action("Index", "Users")" class="link-dark rounded">View All Users</a></li>
+                                <li><a href="@Url.Action("AddUser", "Users")" class="link-dark rounded">Add New User</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+
                 <li class="mb-1">
                     <button id="reports-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("Reports", "Home")'">
                         <i class="bi bi-file-earmark-pdf-fill me-3 ms-4"></i><span class="sidenav-text">Reports</span>
@@ -94,9 +109,16 @@
                 </li>
             </ul>
 
-            <span class="list-unstyled welcome-user mt-auto mb-1 align-items-center rounded">
-                <i class="bi-welcome-user bi-person-circle me-3 ms-4"></i> <span class="sidenav-text-welcome-user">@@User</span>
-            </span>
+            <li class="list-unstyled welcome-user mt-auto align-items-center rounded">
+                <a href="/Home/Account" class="welcome-user-btn d-flex align-items-center">
+                    <i class="bi bi-person-circle me-3 ms-3"></i>
+                    <span class="sidenav-text-welcome-user">Mika Simoncelli</span>
+                </a>
+            </li>
+
+
+
+
 
         </div>
 
@@ -147,133 +169,158 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchButton = document.getElementById('search-toggle');
-            const closeButton = document.getElementById('closeSearch-page1');
-            const searchOverlay = document.getElementById('searchOverlay-page1');
-            const searchInput = document.getElementById('searchInput-page1');
-            const assetsTable = document.getElementById('assetsTable-page1');
-            const assetsTableBody = document.getElementById('assetsTableBody-page1');
 
-            let allData = [];
 
-            searchButton?.addEventListener('click', (event) => {
-                event.stopPropagation();
-                searchOverlay.style.display = 'block';
-                searchInput.focus();
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const searchButton = document.getElementById('search-toggle');
+    const closeButton = document.getElementById('closeSearch-page1');
+    const searchOverlay = document.getElementById('searchOverlay-page1');
+    const searchInput = document.getElementById('searchInput-page1');
+    const assetsTable = document.getElementById('assetsTable-page1');
+    const assetsTableBody = document.getElementById('assetsTableBody-page1');
 
-                if (allData.length === 0) {
-                    fetch('/Home/GetAllData')
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Error fetching data');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            allData = data;
-                        })
-                        .catch(error => {
-                            console.error('Error fetching data:', error);
-                        });
-                }
-            });
+    let allData = []; // To store fetched data (assets, users, and offices)
 
-            // Close search overlay
-            closeButton?.addEventListener('click', () => {
-                clearSearch();
-            });
+    // Open search overlay and fetch data
+    searchButton.addEventListener('click', () => {
+        searchOverlay.style.display = 'block'; // Show the overlay
+        searchInput.focus(); // Focus the search bar
 
-            document.addEventListener('click', function (event) {
-                if (
-                    searchOverlay.style.display === 'block' &&
-                    !searchInput.contains(event.target) &&
-                    !searchOverlay.contains(event.target)
-                ) {
-                    clearSearch();
-                }
-            });
-
-            searchOverlay.addEventListener('click', (event) => {
-                event.stopPropagation();
-            });
-
-            function clearSearch() {
-                searchOverlay.style.display = 'none';
-                searchInput.value = '';
-                assetsTable.style.display = 'none';
-                assetsTableBody.innerHTML = '';
-            }
-
-            searchInput?.addEventListener('input', () => {
-                const query = searchInput.value.toLowerCase().trim();
-
-                if (!query) {
-                    assetsTable.style.display = 'none';
-                    return;
-                }
-
-                const filteredData = allData.filter(item =>
-                    Object.values(item).some(value =>
-                        String(value).toLowerCase().includes(query)
-                    )
-                );
-
-                populateTable(filteredData);
-            });
-
-            function populateTable(filteredData) {
-                assetsTableBody.innerHTML = '';
-
-                if (filteredData.length === 0) {
-                    assetsTableBody.innerHTML = `<tr><td colspan="4">No results found</td></tr>`;
-                    return;
-                }
-
-                filteredData.forEach(item => {
-                    const row = document.createElement('tr');
-
-                    if (item.type === 'Asset') {
-                        row.className = 'type-asset';
-                        row.innerHTML = `
-                                        <td>${item.description || ''}</td>
-                                        <td>${item.manufacturer || ''}</td>
-                                        <td>${item.assetNumber || ''}</td>
-                                        <td>${item.serialNumber || ''}</td>
-                                    `;
-                        row.addEventListener('click', () => {
-                            const returnUrl = encodeURIComponent(window.location.href);
-                            window.location.href = `/Assets/ViewAsset/${item.assetID}?returnUrl=${returnUrl}`;
-                        });
-
-                    } else if (item.type === 'Office') {
-                        row.className = 'type-office';
-                        row.innerHTML = `
-                                        <td>${item.officeName || ''}</td>
-                                        <td>${item.officeLocation || ''}</td>
-                                    `;
-                        row.addEventListener('click', () => {
-                            const returnUrl = encodeURIComponent(window.location.href);
-                            window.location.href = `/Offices/ViewOffice/${item.officeID}?returnUrl=${returnUrl}`;
-                        });
+        if (allData.length === 0) {
+            fetch('/Home/GetAllData')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error fetching data');
                     }
-
-                    assetsTableBody.appendChild(row);
+                    return response.json();
+                })
+                .then(data => {
+                    allData = data; // Store fetched data
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
                 });
+        }
+    });
 
-                assetsTable.style.display = 'table';
+    // Close search overlay when clicking the close button
+    closeButton.addEventListener('click', () => {
+        clearSearch(); // Clear and close the search
+    });
+
+    // Close search overlay when clicking outside of the search area
+    document.addEventListener('click', (event) => {
+        if (
+            !searchOverlay.contains(event.target) && // If click is outside the overlay
+            event.target !== searchButton // And not on the search button
+        ) {
+            clearSearch(); // Close the overlay
+        }
+    });
+
+    // Prevent clicks inside the overlay from closing it
+    searchOverlay.addEventListener('click', (event) => {
+        event.stopPropagation(); // Stop the click from bubbling up
+    });
+
+    // Clear search bar and table content
+    function clearSearch() {
+        searchOverlay.style.display = 'none'; // Hide the overlay
+        searchInput.value = ''; // Clear search input
+        assetsTable.style.display = 'none'; // Hide the table
+        assetsTableBody.innerHTML = ''; // Clear table content
+    }
+
+    // Filter data based on search query
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+
+        if (!query) {
+            assetsTable.style.display = 'none'; // Hide the table if no query
+            return;
+        }
+
+        const filteredData = allData.filter(item =>
+            Object.values(item).some(value =>
+                String(value).toLowerCase().includes(query)
+            )
+        );
+
+        populateTable(filteredData); // Populate the table with filtered results
+    });
+
+    // Populate the table with data
+    function populateTable(filteredData) {
+        assetsTableBody.innerHTML = ''; // Clear table content
+
+        if (filteredData.length === 0) {
+            assetsTableBody.innerHTML = `<tr><td colspan="4">No results found</td></tr>`;
+            return;
+        }
+
+        filteredData.forEach(item => {
+            const row = document.createElement('tr');
+
+            // Assign row class for coloring
+            if (item.type === 'Asset') {
+                row.className = 'type-asset';
+                row.innerHTML = `
+                    <td>${item.description || ''}</td>
+                    <td>${item.manufacturer || ''}</td>
+                    <td>${item.assetNumber || ''}</td>
+                    <td>${item.serialNumber || ''}</td>
+                `;
+
+                // Add click event for Asset rows
+                row.addEventListener('click', () => {
+                    window.location.href = `/Assets/EditAsset/${item.assetID}`;
+                });
+            } else if (item.type === 'Office') {
+                row.className = 'type-office';
+                row.innerHTML = `
+                    <td>${item.officeName || ''}</td>
+                    <td>${item.location || ''}</td>
+                    <td></td>
+                    <td></td>
+                `;
+
+                // Add click event for Office rows
+                row.addEventListener('click', () => {
+                    window.location.href = `/Offices/EditOffice/${item.officeID}`;
+                });
+            } else if (item.type === 'User') {
+                row.className = 'type-user';
+                row.innerHTML = `
+                    <td>${item.fullName || ''}</td>
+                    <td>${item.email || ''}</td>
+                    <td></td>
+                    <td></td>
+                `;
+
+                // Add click event for User rows
+                row.addEventListener('click', () => {
+                    window.location.href = `/Users/EditUser/${item.userID}`;
+                });
             }
 
+            // Append the row to the table body
+            assetsTableBody.appendChild(row);
+        });
+
+        assetsTable.style.display = 'table'; // Show the table
+    }
+});
+
+</script>
 
 
 
 
-    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const collapsibleMenuIds = ['assets-collapse', 'loans-collapse', 'damages-collapse', 'disposals-collapse'];
+            const collapsibleMenuIds = ['assets-collapse', 'loans-collapse', 'damages-collapse', 'disposals-collapse', 'users-collapse'];
 
             // Function to save menu state to localStorage
             function saveMenuState(id, isOpen) {
@@ -314,13 +361,43 @@
             // Restore the saved state on page load
             restoreMenuState();
         });
+
+
     </script>
+
+
 
 </body>
 </html>
 
 
 <style>
+
+/* Hover effect for the button, text and icon */
+.welcome-user-btn:hover {
+    color: #007bff; /* Change text color to blue */
+    background-color: transparent; /* Ensure background is transparent */
+}
+
+/* Change the icon color on hover */
+.welcome-user-btn:hover i {
+    color: #007bff; /* Icon color matches text */
+}
+
+/* Prevent unwanted background styles */
+.welcome-user-btn {
+    background-color: transparent; /* Ensure background is transparent by default */
+    color: white; /* Default text color */
+    border: none; /* No border by default */
+}
+
+.welcome-user-btn:focus {
+    outline: none; /* Remove focus outline if present */
+}
+
+
+
+
     .container-wrapper {
         display: flex;
         justify-content: center;

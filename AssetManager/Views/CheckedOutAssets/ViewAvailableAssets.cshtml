@@ -125,6 +125,23 @@
         document.getElementById("assetsSection").style.display = hasResults ? "block" : "none";
         document.getElementById("noResultsMessage").style.display = hasResults ? "none" : "block";
     }
+
+           // Function to prefill the dropdown
+        function prefillDropdown() {
+            const params = new URLSearchParams(window.location.search); // Get query parameters
+            const assetType = params.get('assetType'); // Extract 'assetType'
+
+            if (assetType) {
+                const dropdown = document.getElementById('assetTypeDropdown');
+                dropdown.value = assetType; // Set the dropdown value
+
+                // Optionally trigger the onchange event if it needs to apply filters immediately
+                dropdown.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Call the function on page load
+        document.addEventListener('DOMContentLoaded', prefillDropdown);
 </script>
 
 <style>

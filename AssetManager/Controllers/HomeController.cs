@@ -104,6 +104,10 @@ namespace AssetManager.Controllers
             return View();
         }
 
+        public IActionResult Account()
+        {
+            return View();
+        }
 
         //Download Assets Report
         [HttpGet]

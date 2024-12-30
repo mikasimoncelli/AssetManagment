@@ -14,6 +14,7 @@ namespace AssetManager.Controllers
         {
             _context = context;
         }
+
         public IActionResult Index()
         {
             var disposals = _context.AssetDisposals.Include(a => a.Asset).ToList();
@@ -91,7 +92,6 @@ namespace AssetManager.Controllers
             return View(assetDisposal);
         }
 
-        // POST Edit Disposal
         [HttpPost]
         public IActionResult EditDisposal(AssetDisposal model)
         {
@@ -101,14 +101,36 @@ namespace AssetManager.Controllers
                 return NotFound();
             }
 
-            assetDisposal.DisposalStatus = model.DisposalStatus;
-            assetDisposal.DateDisposed = model.DateDisposed;
-            assetDisposal.DisposalDescription = model.DisposalDescription;
-            assetDisposal.Notes = model.Notes;
+            // Update the fields only if they are not null/empty
+            if (!string.IsNullOrEmpty(model.DisposalStatus))
+            {
+                assetDisposal.DisposalStatus = model.DisposalStatus;
+            }
+
+            // Only update DateDisposed if it's provided
+            if (model.DateDisposed.HasValue)
+            {
+                assetDisposal.DateDisposed = model.DateDisposed;
+            }
+
+            // Update DisposalDescription if provided
+            if (!string.IsNullOrEmpty(model.DisposalDescription))
+            {
+                assetDisposal.DisposalDescription = model.DisposalDescription;
+            }
+
+            // Update Notes only if provided
+            if (!string.IsNullOrEmpty(model.Notes))
+            {
+                assetDisposal.Notes = model.Notes;
+            }
 
             _context.SaveChanges();
-            return RedirectToAction("Index"); // Redirect to an appropriate action
+            return RedirectToAction("Index");
         }
+
+
+
 
 
 
@@ -127,15 +149,30 @@ namespace AssetManager.Controllers
 
             foreach (var disposal in disposalsToUpdate)
             {
-                disposal.DisposalStatus = model.Status;
-                disposal.DateDisposed = model.DateDisposed ?? disposal.DateDisposed;
-                disposal.Notes += $"\n{model.AdditionalNotes}";
+                // Update status only if provided
+                if (!string.IsNullOrEmpty(model.Status))
+                {
+                    disposal.DisposalStatus = model.Status;
+                }
+
+                // Update DateDisposed only if provided
+                if (model.DateDisposed.HasValue)
+                {
+                    disposal.DateDisposed = model.DateDisposed;
+                }
+
+                // Append notes only if provided
+                if (!string.IsNullOrEmpty(model.AdditionalNotes))
+                {
+                    disposal.Notes += $"\n{model.AdditionalNotes}";
+                }
             }
 
             _context.SaveChanges();
 
             return Ok();
         }
+
 
         // Nested class specific to DisposalsController
         public class BulkUpdateRequest

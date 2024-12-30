@@ -9,7 +9,7 @@ namespace AssetManager.Models
         public int AssetID { get; set; }
         public string? DamageDescription { get; set; }
         public string? Notes { get; set; }
-        public string RepairStatus { get; set; }
+        public string? RepairStatus { get; set; }
         public DateTime DateReported { get; set; } = DateTime.Now;
 
         public DateTime? RepairDate { get; set; }
