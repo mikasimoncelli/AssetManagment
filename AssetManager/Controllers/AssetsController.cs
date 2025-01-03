@@ -1,13 +1,18 @@
 ﻿using AssetManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AssetManager.Helpers;
+
 public class AssetsController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly ActivityLogger _activityLoggerService; // Define a private field for the logger
 
-    public AssetsController(ApplicationDbContext context)
+
+    public AssetsController(ApplicationDbContext context, ActivityLogger activityLoggerService)
     {
         _context = context;
+        _activityLoggerService = activityLoggerService;  // Assign to the private variable
     }
 
 
@@ -27,6 +32,7 @@ public class AssetsController : Controller
     {
         return View();
     }
+
 
 
     [HttpGet]
@@ -56,8 +62,23 @@ public class AssetsController : Controller
             asset.EquipmentType = newType; 
         }
 
+        var now = System.DateTime.Now;
+        Console.WriteLine(now);
+        asset.DateAdded = System.DateTime.Now;
+
         _context.Assets.Add(asset);
         _context.SaveChanges();
+
+        // Log the activity
+        _activityLoggerService.LogActivity(
+            userId: GetCurrentUserId(),
+            activityType: ActivityType.CreateAsset,
+            description: $"Created a new asset with ID: {asset.AssetID}",
+            createdAt: now // Pass current date and time explicitly
+
+        );
+
+       
 
         return RedirectToAction("Index");
     }
@@ -119,6 +140,15 @@ public class AssetsController : Controller
 
         _context.SaveChanges();
 
+        // Log the activity
+        _activityLoggerService.LogActivity(
+            userId: GetCurrentUserId(),
+            activityType: ActivityType.EditAsset,
+            description: $"Updated the asset with ID: {asset.AssetID}",
+            createdAt: System.DateTime.Now // Pass current date and time explicitly
+
+        );
+
         return RedirectToAction("Index");
     }
 
@@ -171,6 +201,26 @@ public class AssetsController : Controller
         return View(assetsByType); 
     }
 
+
+
+    public int GetCurrentUserId()
+    {
+        var userEmail = HttpContext.Session.GetString("UserEmail");
+
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return 0;
+        }
+
+        var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+        if (user != null)
+        {
+            return user.UserID;
+        }
+
+        return 0;
+    }
 
 
 

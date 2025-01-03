@@ -1,0 +1,57 @@
+﻿@model AssetManager.Models.User
+<br>
+<br />
+@{
+    ViewData["Title"] = "Login";
+}
+<div class="container-wrapper">
+
+    <div class="form-container-small">
+        <h3 class="text-center">Login</h3>
+        <form asp-action="Login" method="post" class="mt-4">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input class="form-control" id="email" name="Email" placeholder="Enter email address" required>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="Password" placeholder="Enter password" required>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+    <style>
+        .form-container-small {
+            margin: 0 auto;
+            padding: 30px;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</div>

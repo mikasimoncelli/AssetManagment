@@ -10,6 +10,7 @@ using iText.Commons.Actions.Contexts;
 using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf.Canvas.Draw;
+using Org.BouncyCastle.Crypto.Generators;
 
 namespace AssetManager.Controllers
 {
@@ -72,6 +73,15 @@ namespace AssetManager.Controllers
                 })
                 .ToList();
 
+            // Fetch recent activities
+            var recentActivities = _context.ActivityLogs
+                .Include(a=>a.User)
+                .OrderByDescending(log => log.CreatedAt)
+                .Take(5) 
+                .ToList();
+
+            ViewBag.RecentActivities = recentActivities;
+
             ViewBag.OverdueReturns = overdueReturns;
             ViewBag.UpcomingReturns = upcomingReturns;
 
@@ -101,6 +111,10 @@ namespace AssetManager.Controllers
         //Reports page
         public IActionResult Reports()
         {
+            string password = "pw";
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+            Console.WriteLine($"Hashed Password: {hashedPassword}");
             return View();
         }
 
@@ -108,6 +122,53 @@ namespace AssetManager.Controllers
         {
             return View();
         }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult Login(string email, string password)
+        {
+            // Retrieve the user by email
+            var user = _context.Users.FirstOrDefault(u => u.Email == email);
+
+            if (user == null)
+            {
+                // If user is not found, return an error
+                ModelState.AddModelError(string.Empty, "Invalid login credentials.");
+                return View();
+            }
+
+            // Verify the password
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
+
+            Console.WriteLine(user.Password);
+
+            if (!isPasswordValid)
+            {
+                // If password is invalid, return an error
+                ModelState.AddModelError(string.Empty, "Invalid login credentials.");
+                return View();
+            }
+
+            // If successful, redirect to a secure area or dashboard
+            // Example: store user information in session
+            HttpContext.Session.SetString("UserEmail", user.Email);
+            return RedirectToAction("Account");
+        }
+
+        public IActionResult Logout()
+        {
+            // Clear the session
+            HttpContext.Session.Clear();
+
+            // Redirect to the Login page or Homepage
+            return RedirectToAction("Login", "Home");
+        }
+
 
         //Download Assets Report
         [HttpGet]
@@ -559,6 +620,14 @@ namespace AssetManager.Controllers
 
 
 
+        public IActionResult ActivityLog()
+        {
+            var logs = _context.ActivityLogs
+                        .Include(l => l.User) // Include User data for each log
+                        .OrderByDescending(l => l.CreatedAt)
+                        .ToList();
+            return View(logs);
+        }
 
 
 

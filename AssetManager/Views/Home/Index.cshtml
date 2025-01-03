@@ -135,13 +135,31 @@
                 </div>
                 <!-- New Card Underneath Loan Notifications -->
                 <div id="newCard" class="card">
-                    <div class="card-body" style="height: 250px;">
+                    <div class="card-body" style="height: 550px; overflow-y: auto;">
                         <h5 class="text-center">System Activity</h5>
-                        <p class="text-center">
-                            This is the content for the new card. You can add more details here, such as a list, a chart, or any other relevant information.
-                        </p>
+                        <ul class="list-group">
+                            @if (ViewBag.RecentActivities != null && ViewBag.RecentActivities.Count > 0)
+                            {
+                                foreach (var activity in ViewBag.RecentActivities)
+                                {
+                                    <li class="list-group-item">
+                                        <strong>@activity.ActivityType:</strong> @activity.Description
+                                        <br />
+                                        <small>By: @activity.User.Email on @activity.CreatedAt.ToString("g")</small>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li class="list-group-item text-center">No recent activity available.</li>
+                            }
+                        </ul>
                     </div>
                 </div>
+
+
+
+
             </div>
         </div>
 

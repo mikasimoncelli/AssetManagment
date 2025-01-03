@@ -1,6 +1,8 @@
-﻿using AssetManager.Models;
+﻿using AssetManager.Helpers;
+using AssetManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.ContentModel;
 
 namespace AssetManager.Controllers
 {
@@ -8,6 +10,13 @@ namespace AssetManager.Controllers
     {
 
         private readonly ApplicationDbContext _context;
+        private readonly ActivityLogger _activityLoggerService; // Define a private field for the logger
+
+        public DamagesController(ApplicationDbContext context, ActivityLogger activityLoggerService)
+        {
+            _context = context;
+            _activityLoggerService = activityLoggerService;  // Assign to the private variable
+        }
 
         public IActionResult Index()
         {
@@ -19,11 +28,7 @@ namespace AssetManager.Controllers
         }
 
 
-        public DamagesController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
+     
 
 
         // asset damage form focus on asset
@@ -40,7 +45,7 @@ namespace AssetManager.Controllers
 
 
 
-        // post for assetr damage form focus on asset
+        // post for asset damage form focus on asset
         [HttpPost]
         public IActionResult AssetDamagesForm(AssetDamage model)
         {
@@ -55,6 +60,16 @@ namespace AssetManager.Controllers
 
             _context.AssetDamages.Add(assetDamage);
             _context.SaveChanges();
+
+            // Log the activity
+            _activityLoggerService.LogActivity(
+                userId: GetCurrentUserId(),
+                activityType: ActivityType.CreateDamage,
+                description: $"Damage report created for AssetID: {model.AssetID} DamageID: {model.AssetDamageID}",
+                createdAt: System.DateTime.Now
+
+            );
+
 
             return RedirectToAction("Index");
         }
@@ -107,6 +122,16 @@ namespace AssetManager.Controllers
             assetDamage.DamageType = model.DamageType;
 
             _context.SaveChanges();
+
+            // Log the activity
+            _activityLoggerService.LogActivity(
+                userId: GetCurrentUserId(),
+                activityType: ActivityType.EditDamage,
+                description: $"Damage report updated for AssetID: {model.AssetID} DamageID: {model.AssetDamageID}",
+                createdAt: System.DateTime.Now
+
+            );
+
             return RedirectToAction("Index");
         }
 
@@ -175,7 +200,24 @@ namespace AssetManager.Controllers
             return Ok(); // Return success for AJAX
         }
 
+        public int GetCurrentUserId()
+        {
+            var userEmail = HttpContext.Session.GetString("UserEmail");
 
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return 0;
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+            if (user != null)
+            {
+                return user.UserID;
+            }
+
+            return 0;
+        }
 
     }
 }

@@ -107,14 +107,39 @@
                         <i class="bi bi-file-earmark-pdf-fill me-3 ms-4"></i><span class="sidenav-text">Reports</span>
                     </button>
                 </li>
+
+                <li class="mb-1">
+                    <button id="activity-log-toggle" class="btn btn-toggle align-items-center rounded" onclick="location.href='@Url.Action("ActivityLog", "Home")'">
+                        <i class="bi bi-journal-text me-3 ms-4"></i><span class="sidenav-text">Activity Log</span>
+                    </button>
+                </li>
             </ul>
 
-            <li class="list-unstyled welcome-user mt-auto align-items-center rounded">
-                <a href="/Home/Account" class="welcome-user-btn d-flex align-items-center">
-                    <i class="bi bi-person-circle me-3 ms-3"></i>
-                    <span class="sidenav-text-welcome-user">Mika Simoncelli</span>
-                </a>
+            <li class="list-unstyled welcome-user mt-auto align-items-center">
+                @if (!string.IsNullOrEmpty(ViewContext.HttpContext.Session.GetString("UserEmail")))
+                {
+                    <!-- Show 'Account' and 'Logout' if user is logged in -->
+                    <a href="/Home/Account" class="welcome-user-btn d-flex align-items-center">
+                        <i class="bi bi-person-circle me-3 ms-3"></i>
+                        <span class="sidenav-text-welcome-user">Account</span>
+                    </a>
+                    <a href="/Home/Logout" class="welcome-user-btn d-flex align-items-center mt-3">
+                        <i class="bi bi-box-arrow-right me-3 ms-3"></i>
+                        <span class="sidenav-text-welcome-user">Logout</span>
+                    </a>
+                }
+                else
+                {
+                    <!-- Show 'Login' if no user is logged in -->
+                    <a href="/Home/Login" class="welcome-user-btn d-flex align-items-center">
+                        <i class="bi bi-person-circle me-3 ms-3"></i>
+                        <span class="sidenav-text-welcome-user">Login</span>
+                    </a>
+                }
             </li>
+
+
+
 
 
 
@@ -372,6 +397,11 @@
 
 
 <style>
+
+    a {
+        text-decoration: none;
+    }
+
 
 /* Hover effect for the button, text and icon */
 .welcome-user-btn:hover {

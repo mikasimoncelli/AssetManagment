@@ -1,4 +1,5 @@
-﻿using AssetManager.Models;
+﻿using AssetManager.Helpers;
+using AssetManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -9,10 +10,11 @@ namespace AssetManager.Controllers
     public class DisposalsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public DisposalsController(ApplicationDbContext context)
+        private readonly ActivityLogger _activityLoggerService; // Define a private field for the logger
+        public DisposalsController(ApplicationDbContext context, ActivityLogger activityLoggerService)
         {
             _context = context;
+            _activityLoggerService = activityLoggerService;  // Assign to the private variable
         }
 
         public IActionResult Index()
@@ -66,10 +68,17 @@ namespace AssetManager.Controllers
 
             };
 
-         
-
             _context.AssetDisposals.Add(assetDisposal);
             _context.SaveChanges();
+
+            // Log the activity
+            _activityLoggerService.LogActivity(
+                userId: GetCurrentUserId(),
+                activityType: ActivityType.CreateDisposal,
+                description: $"Disposal report created for AssetID: {model.AssetID} DamageID: {model.AssetDisposalID}",
+                createdAt: System.DateTime.Now
+
+            );
 
             return RedirectToAction("Index");
 
@@ -124,6 +133,15 @@ namespace AssetManager.Controllers
             {
                 assetDisposal.Notes = model.Notes;
             }
+
+            // Log the activity
+            _activityLoggerService.LogActivity(
+                userId: GetCurrentUserId(),
+                activityType: ActivityType.EditDisposal,
+                description: $"Disposal report updated for AssetID: {model.AssetID} DamageID: {model.AssetDisposalID}",
+                createdAt: System.DateTime.Now
+
+            );
 
             _context.SaveChanges();
             return RedirectToAction("Index");
@@ -199,7 +217,24 @@ namespace AssetManager.Controllers
             return Ok(); // Return success for AJAX
         }
 
+        public int GetCurrentUserId()
+        {
+            var userEmail = HttpContext.Session.GetString("UserEmail");
 
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return 0;
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+            if (user != null)
+            {
+                return user.UserID;
+            }
+
+            return 0;
+        }
 
     }
 }

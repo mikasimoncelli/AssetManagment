@@ -1,0 +1,27 @@
+﻿<div class="container-wrapper" style="padding: 20px; border-radius: 8px;">
+    <div class="form-container-small text-center">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Activity Type</th>
+                    <th>Description</th>
+                    <th>User</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td>@log.ActivityType</td>
+                        <td>@log.Description</td>
+                        <td>@log.User.Email</td>
+                        <td>@log.CreatedAt.ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+</div>
+
+</div>

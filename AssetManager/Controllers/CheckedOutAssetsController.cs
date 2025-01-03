@@ -1,5 +1,6 @@
 ﻿
 
+using AssetManager.Helpers;
 using AssetManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,11 @@ namespace AssetManager.Controllers
     public class CheckedOutAssetsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public CheckedOutAssetsController(ApplicationDbContext context)
+        private readonly ActivityLogger _activityLoggerService; // Define a private field for the logger
+        public CheckedOutAssetsController(ApplicationDbContext context, ActivityLogger activityLoggerService)
         {
             _context = context;
+            _activityLoggerService = activityLoggerService;  // Assign to the private variable
         }
 
         public IActionResult Index()
@@ -99,13 +101,24 @@ namespace AssetManager.Controllers
                 UserID = user.UserID,
                 DateLentOut = System.DateTime.Now,
                 DateReturned = null,
-                DueDate = DueDate,
+                DueDate = DueDate == DateTime.MinValue ? (DateTime?)null : DueDate,
                 Notes = Notes
 
             };
 
+            Console.WriteLine(DueDate);
+
             _context.CheckedOutAssets.Add(checkedOutAsset);
             _context.SaveChanges();
+
+            // Log the activity
+            _activityLoggerService.LogActivity(
+                userId: GetCurrentUserId(),
+                activityType: ActivityType.CreateLoan,
+                description: $"Created new loan for AssetID: {asset.AssetID} LoanID: {checkedOutAsset.CheckedOutID}",
+                createdAt: System.DateTime.Now 
+
+            );
 
             return RedirectToAction("Index");
         }
@@ -137,23 +150,55 @@ namespace AssetManager.Controllers
                 asset.DueDate = DueDate;
 
             }
-            if(DateReturned.HasValue)
+            if (DateReturned.HasValue)
             {
                 asset.DateReturned = DateReturned;
+
+                _activityLoggerService.LogActivity(
+                    userId: GetCurrentUserId(),
+                    activityType: ActivityType.LoanReturned,
+                    description: $"Marked loan as returned for AssetID: {asset.AssetID}, LoanID: {CheckedOutID}",
+                    createdAt: System.DateTime.Now 
+                );
+            }
+            else
+            {
+                _activityLoggerService.LogActivity(
+                    userId: GetCurrentUserId(),
+                    activityType: ActivityType.EditLoan,
+                    description: $"Updated the loan for AssetID: {asset.AssetID}, LoanID: {CheckedOutID}",
+                    createdAt: System.DateTime.Now 
+                );
             }
 
-           
             asset.Notes = Notes;
-            
 
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+
         }
 
 
 
+        public int GetCurrentUserId()
+        {
+            var userEmail = HttpContext.Session.GetString("UserEmail");
 
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return 0;
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+            if (user != null)
+            {
+                return user.UserID;
+            }
+
+            return 0;
+        }
 
     }
 }

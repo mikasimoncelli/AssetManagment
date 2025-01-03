@@ -11,10 +11,8 @@ namespace AssetManager.Models
         public string EquipmentType { get; set; }
         public string Manufacturer { get; set; }
         public string Description { get; set; }
-
         public DateTime DateAdded { get; set; }
         public int OfficeID { get; set; }
-
         public Office Office { get; set; }
 
       
