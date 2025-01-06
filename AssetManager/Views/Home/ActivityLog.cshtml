@@ -1,5 +1,25 @@
 ﻿<div class="container-wrapper" style="padding: 20px; border-radius: 8px;">
     <div class="form-container-small text-center">
+        <h3>Activity Log</h3>
+        <br />
+        <!-- Timezone and Date Range Selection -->
+        <div class="filter-section">
+            <label for="timezone-select">Time:</label>
+            <select id="timezone-select" name="timezone" onchange="filterActivities()" class="custom-select">
+                <option value="last7days">Last 7 Days</option>
+                <option value="last30days">Last 30 Days</option>
+                <option value="last3months">Last 3 Months</option>
+                <option value="custom">Custom Range</option>
+            </select>
+
+            <div id="custom-date-range" class="custom-date-range" style="display: none;">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date" name="start-date" class="custom-date-picker">
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date" name="end-date" class="custom-date-picker">
+                <button onclick="filterActivities()" class="apply-btn">Apply</button>
+            </div>
+        </div>
         <table class="table">
             <thead>
                 <tr>
@@ -9,19 +29,138 @@
                     <th>Date</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="activity-log-body">
                 @foreach (var log in Model)
                 {
                     <tr>
                         <td>@log.ActivityType</td>
                         <td>@log.Description</td>
-                        <td>@log.User.Email</td>
-                        <td>@log.CreatedAt.ToString("g")</td>
+                        <td>@log.User.FirstName @log.User.LastName</td>
+                        <td>@log.CreatedAt.ToString("yyyy-MM-dd")</td> <!-- Ensure the date format is consistent -->
                     </tr>
                 }
             </tbody>
         </table>
-
+    </div>
 </div>
 
-</div>
+<style>
+    .table tbody tr:hover {
+        background-color: #f2f2f2;
+        cursor: pointer;
+    }
+
+    .filter-section {
+        margin-bottom: 20px;
+        font-family: 'Arial', sans-serif;
+    }
+
+        .filter-section label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .filter-section select, .filter-section input[type="date"], .filter-section button {
+            margin-left: 10px;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            transition: all 0.3s ease;
+        }
+
+    /* Styling for the dropdown select */
+    .custom-select {
+        width: 180px;
+        cursor: pointer;
+        background-color: #fff;
+        border-color: #ccc;
+    }
+
+        .custom-select:focus {
+            border-color: #5e9fff;
+            outline: none;
+        }
+
+    /* Styling for the custom date picker inputs */
+    .custom-date-picker {
+        padding: 8px 12px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+        .custom-date-picker:focus {
+            border-color: #5e9fff;
+            outline: none;
+        }
+
+    /* Styling for Apply button */
+    .apply-btn {
+        background-color: #5e9fff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .apply-btn:hover {
+            background-color: #4a8cd1;
+        }
+
+        .apply-btn:focus {
+            outline: none;
+        }
+
+    /* Custom Date Range Section */
+    .custom-date-range {
+        margin-top: 10px;
+    }
+</style>
+
+<script>
+    function filterActivities() {
+        var selectedRange = document.getElementById('timezone-select').value;
+        var customRangeSection = document.getElementById('custom-date-range');
+        var startDateInput = document.getElementById('start-date').value;
+        var endDateInput = document.getElementById('end-date').value;
+
+        // Show custom range inputs if 'custom' is selected
+        if (selectedRange === 'custom') {
+            customRangeSection.style.display = 'block';
+        } else {
+            customRangeSection.style.display = 'none';
+        }
+
+        // Parse dates for custom range
+        var startDate = new Date(startDateInput);
+        var endDate = new Date(endDateInput);
+
+        // Filter table rows
+        var rows = document.querySelectorAll('#activity-log-body tr');
+        rows.forEach(row => {
+            var dateCell = row.cells[3]; // Assuming the date is in the 4th cell (index 3)
+            var rowDate = new Date(dateCell.innerText);
+
+            if (selectedRange === 'custom') {
+                // Show row if within custom date range
+                if (startDateInput && endDateInput) {
+                    if (rowDate >= startDate && rowDate <= endDate) {
+                        row.style.display = ''; // Show
+                    } else {
+                        row.style.display = 'none'; // Hide
+                    }
+                } else {
+                    row.style.display = ''; // Show all if dates are not properly selected
+                }
+            } else {
+                // Implement predefined range logic as needed
+                row.style.display = ''; // For simplicity, show all if not custom
+            }
+        });
+    }
+</script>

@@ -73,7 +73,7 @@ public class AssetsController : Controller
         _activityLoggerService.LogActivity(
             userId: GetCurrentUserId(),
             activityType: ActivityType.CreateAsset,
-            description: $"Created a new asset with ID: {asset.AssetID}",
+            description: $"Created a new asset with AssetID: {asset.AssetID}",
             createdAt: now // Pass current date and time explicitly
 
         );
@@ -144,7 +144,7 @@ public class AssetsController : Controller
         _activityLoggerService.LogActivity(
             userId: GetCurrentUserId(),
             activityType: ActivityType.EditAsset,
-            description: $"Updated the asset with ID: {asset.AssetID}",
+            description: $"Updated the asset with AssetID: {asset.AssetID}",
             createdAt: System.DateTime.Now // Pass current date and time explicitly
 
         );

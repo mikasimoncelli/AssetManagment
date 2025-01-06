@@ -157,7 +157,7 @@ namespace AssetManager.Controllers
                 _activityLoggerService.LogActivity(
                     userId: GetCurrentUserId(),
                     activityType: ActivityType.LoanReturned,
-                    description: $"Marked loan as returned for AssetID: {asset.AssetID}, LoanID: {CheckedOutID}",
+                    description: $"Returned loan for AssetID: {asset.AssetID}, LoanID: {CheckedOutID}",
                     createdAt: System.DateTime.Now 
                 );
             }
@@ -166,7 +166,7 @@ namespace AssetManager.Controllers
                 _activityLoggerService.LogActivity(
                     userId: GetCurrentUserId(),
                     activityType: ActivityType.EditLoan,
-                    description: $"Updated the loan for AssetID: {asset.AssetID}, LoanID: {CheckedOutID}",
+                    description: $"Updated loan for AssetID: {asset.AssetID}, LoanID: {CheckedOutID}",
                     createdAt: System.DateTime.Now 
                 );
             }
