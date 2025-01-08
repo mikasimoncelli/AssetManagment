@@ -1,68 +1,201 @@
 ﻿@model AssetManager.Models.User
+
 <br>
 <br />
 @{
     ViewData["Title"] = "Account";
 }
 <div class="container-wrapper">
-
     <div class="form-container-small">
         <h3 class="text-center">Account</h3>
 
-            <div class="form-group">
-                <label for="userName">Name:</label>
-                <p id="userName" class="form-control-static">Mika Simoncelli</p>
-            </div>
-            <div class="form-group">
-                <label for="userEmail">Email:</label>
-                <p id="userEmail" class="form-control-static">mikasimoncelli@smithcorp.co.uk</p>
-            </div>
+        <!-- User Details Section -->
+        <div class="form-group">
+            <label for="userName">Name:</label>
+            <p id="userName" class="form-control-static">@Model.FirstName @Model.LastName</p>
+        </div>
+        <div class="form-group">
+            <label for="userEmail">Email:</label>
+            <p id="userEmail" class="form-control-static">@Model.Email</p>
+        </div>
+
+        <!-- Last Login Section -->
+        <div class="form-group">
+            <label>Last Login:</label>
+            <p>@(Model.ActivityLogs.Any() ? Model.ActivityLogs.OrderByDescending(log => log.CreatedAt).First().CreatedAt.ToString("MMMM dd, yyyy, hh:mm tt") : "No activity recorded")</p>
+        </div>
+
+        <!-- Recent Activity Section -->
         <div class="activity-section">
-            <ul class="list-unstyled">
-                <li class="activity-item">
-                    <strong>Last Login:</strong> December 18, 2024, 10:45 AM
-                </li>
-                <li class="activity-item">
-                    <strong>Recent Activty:</strong>
-                    <ul>
-     
-                    </ul>
-                </li>
+            <h4>Recent Activity</h4>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Activity Type</th>
+                        <th>Description</th>
+                        <th>User</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="activity-log-body">
+                    @foreach (var log in Model.ActivityLogs)
+                    {
+                        string url = ""; // Initialize url to avoid null reference issues
 
-            </ul>
-        </div>
-        </div>
+                        var descriptionParts = log.Description.Split(' ');
+                        var lastNumberString = descriptionParts.Length > 0 ? descriptionParts[descriptionParts.Length - 1] : string.Empty;
+                        if (int.TryParse(lastNumberString, out int id))
+                        {
+                            switch (log.ActivityType)
+                            {
+                                case "CreateAsset":
+                                case "EditAsset":
+                                    url = Url.Action("ViewAsset", "Assets", new { id = id });
+                                    break;
+                                case "CreateLoan":
+                                case "EditLoan":
+                                case "LoanReturned":
+                                    url = Url.Action("EditCheckedOutAsset", "CheckedOutAssets", new { checkedoutid = id });
+                                    break;
+                                case "EditDisposal":
+                                case "CreateDisposal":
+                                    url = Url.Action("EditDisposal", "Disposals", new { id = id });
+                                    break;
+                                case "CreateDamage":
+                                case "EditDamage":
+                                    url = Url.Action("EditAssetDamage", "Damages", new { id = id });
+                                    break;
+                            }
+                        }
 
+                        <tr onclick="location.href='@url'" class="clickable-row">
+                            <td>
+                                @{
+                                    var activityTypeDisplay = log.ActivityType switch
+                                    {
+                                        "CreateAsset" => "Created New Asset",
+                                        "EditAsset" => "Edited Asset",
+                                        "CreateLoan" => "Created New Loan",
+                                        "EditLoan" => "Edited Loan",
+                                        "LoanReturned" => "Loan Returned",
+                                        "EditDisposal" => "Edited Disposal Form",
+                                        "CreateDisposal" => "Created Disposal Form",
+                                        "CreateDamage" => "Created Damage Report",
+                                        "EditDamage" => "Edited Damage Report",
+                                        _ => log.ActivityType
+                                    };
+                                }
+                                @activityTypeDisplay
+                            </td>
+                            <td>@log.Description</td>
+                            <td>@log.User.FirstName @log.User.LastName</td>
+                            <td>@log.CreatedAt.ToString("yyyy-MM-dd")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Button to View All Activity -->
+            <div class="text-center">
+                <a href="@Url.Action("AllUserActivity", "Home")" class="btn btn-primary">View All Activity</a>
+            </div>
+        </div>
     </div>
+</div>
 
+<style>
+    .container-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px;
+    }
 
-    <style>
-        .form-container {
-            margin: 0 auto;
-            padding: 30px;
-            max-width: 1000px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    .form-container-small {
+        margin-top: 20px;
+        padding: 30px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h3, h4 {
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-control-static {
+        font-weight: 500;
+        color: #333;
+        padding: 5px;
+        display: inline-block;
+        font-size: 16px;
+    }
+
+    label {
+        font-weight: 600;
+        color: #444;
+    }
+
+    .activity-section {
+        margin-top: 40px;
+    }
+
+    .table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
         }
 
-        h3 {
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-control-static {
-            font-weight: bold;
+        .table th {
+            background-color: #f2f2f2;
             color: #333;
-            padding: 5px;
-            display: inline-block;
-        }
-
-        label {
             font-weight: 600;
         }
-    </style>
-</div>
+
+    .table-striped tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .table-bordered {
+        border: 1px solid #ddd;
+    }
+
+    .clickable-row {
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .clickable-row:hover {
+            background-color: #f1f1f1;
+        }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-top: 20px;
+    }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+    .text-center {
+        text-align: center;
+    }
+</style>

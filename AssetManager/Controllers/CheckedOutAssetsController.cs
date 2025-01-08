@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq;
+using YourProjectNamespace.Helpers;
 
 namespace AssetManager.Controllers
 {
@@ -77,6 +78,7 @@ namespace AssetManager.Controllers
 
 
         [HttpGet]
+        [SessionAuthorize]
         public IActionResult AddNewCheckedOutAsset(int id)
         {
             var asset = _context.Assets
@@ -90,6 +92,7 @@ namespace AssetManager.Controllers
 
 
         [HttpPost]
+        [SessionAuthorize]
         public IActionResult AddNewCheckedOutAsset(int assetID, int userID, DateTime DueDate, string Notes)
         {
             var asset = _context.Assets.Find(assetID);
@@ -126,6 +129,7 @@ namespace AssetManager.Controllers
 
 
         [HttpGet]
+        [SessionAuthorize]
         public IActionResult EditCheckedOutAsset(int checkedoutid)
         {
             var asset = _context.CheckedOutAssets
@@ -141,6 +145,7 @@ namespace AssetManager.Controllers
 
 
         [HttpPost]
+        [SessionAuthorize]
         public IActionResult EditCheckedOutAsset(int CheckedOutID, DateTime? DateReturned, DateTime? DueDate, string? Notes)
         {
             var asset = _context.CheckedOutAssets.FirstOrDefault(c => c.CheckedOutID == CheckedOutID);

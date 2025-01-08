@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AssetManager.Helpers;
+using YourProjectNamespace.Helpers;
 
 public class AssetsController : Controller
 {
@@ -28,14 +29,10 @@ public class AssetsController : Controller
     }
 
 
-    public IActionResult CheckoutAsset()
-    {
-        return View();
-    }
-
 
 
     [HttpGet]
+    [SessionAuthorize]
     public IActionResult AddAsset()
     {
         ViewBag.Offices = _context.Offices.ToList();
@@ -48,6 +45,7 @@ public class AssetsController : Controller
 
 
     [HttpPost]
+    [SessionAuthorize]
     public IActionResult AddAsset(Asset asset)
     {
         if (int.TryParse(Request.Form["OfficeID"], out int officeId))
@@ -85,6 +83,7 @@ public class AssetsController : Controller
 
 
     [HttpGet("Assets/EditAsset/{id}")]
+    [SessionAuthorize]
     public IActionResult EditAsset(int id)
     {
         var asset = _context.Assets
@@ -123,6 +122,7 @@ public class AssetsController : Controller
 
 
     [HttpPost]
+    [SessionAuthorize]
     public IActionResult UpdateAsset(Asset asset)
     {
         var existingAsset = _context.Assets.Find(asset.AssetID);
@@ -156,6 +156,7 @@ public class AssetsController : Controller
 
 
     [HttpGet]
+    [SessionAuthorize]
     public JsonResult CheckReferences(int assetID)
     {
         var checkedOutAsset = _context.CheckedOutAssets.Include(c => c.User).FirstOrDefault(c => c.AssetID == assetID);
@@ -180,6 +181,7 @@ public class AssetsController : Controller
     }
 
     [HttpDelete]
+    [SessionAuthorize]
     public IActionResult DeleteAsset(int assetID)
     {
         var checkedOutAssets = _context.CheckedOutAssets.Where(c => c.AssetID == assetID).ToList();

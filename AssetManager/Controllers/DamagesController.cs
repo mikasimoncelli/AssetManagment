@@ -3,6 +3,7 @@ using AssetManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.ContentModel;
+using YourProjectNamespace.Helpers;
 
 namespace AssetManager.Controllers
 {
@@ -33,6 +34,7 @@ namespace AssetManager.Controllers
 
         // asset damage form focus on asset
         [HttpGet]
+        [SessionAuthorize]
         public IActionResult AssetDamagesForm(int assetID)
         {
             var asset = _context.Assets
@@ -47,6 +49,7 @@ namespace AssetManager.Controllers
 
         // post for asset damage form focus on asset
         [HttpPost]
+        [SessionAuthorize]
         public IActionResult AssetDamagesForm(AssetDamage model)
         {
             var assetDamage = new AssetDamage
@@ -76,6 +79,7 @@ namespace AssetManager.Controllers
 
 
         // edit
+        [SessionAuthorize]
         public IActionResult EditAssetDamage(int id)
         {
             var assetDamage = _context.AssetDamages.Include(a => a.Asset).Include(a => a.Asset.Office).FirstOrDefault(a => a.AssetDamageID == id);
@@ -92,6 +96,7 @@ namespace AssetManager.Controllers
 
         // add new damage report
         [HttpGet]
+        [SessionAuthorize]
         public IActionResult ReportNewDamage()
         {
             var assets = _context.Assets.Include(a => a.Office).ToList();
@@ -107,6 +112,7 @@ namespace AssetManager.Controllers
 
         // edit
         [HttpPost]
+        [SessionAuthorize]
         public IActionResult EditAssetDamage(AssetDamage model)
         {
             var assetDamage = _context.AssetDamages.Find(model.AssetDamageID);
@@ -137,6 +143,7 @@ namespace AssetManager.Controllers
 
 
         [HttpPost]
+        [SessionAuthorize]
         public IActionResult BulkUpdate([FromBody] BulkUpdateModel model)
         {
             if (model == null || model.Ids == null || !model.Ids.Any())
@@ -186,6 +193,7 @@ namespace AssetManager.Controllers
 
 
         [HttpPost("Damages/DeleteDamage/{assetDamageID}")]
+        [SessionAuthorize]
         public IActionResult DeleteDamage(int assetDamageID)
         {
             var damage = _context.AssetDamages.Find(assetDamageID);

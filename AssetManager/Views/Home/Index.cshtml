@@ -133,19 +133,24 @@
                         </div>
                     </div>
                 </div>
-                <!-- New Card Underneath Loan Notifications -->
                 <div id="newCard" class="card">
                     <div class="card-body" style="height: 550px; overflow-y: auto;">
                         <h5 class="text-center">System Activity</h5>
                         <ul class="list-group">
                             @if (ViewBag.RecentActivities != null && ViewBag.RecentActivities.Count > 0)
                             {
+                                var activityTypeFriendlyNames = ViewBag.ActivityTypeFriendlyNames as Dictionary<string, string>;
+
                                 foreach (var activity in ViewBag.RecentActivities)
                                 {
+                                    string friendlyName = activityTypeFriendlyNames.ContainsKey(activity.ActivityType) 
+                                        ? activityTypeFriendlyNames[activity.ActivityType] 
+                                        : activity.ActivityType;
+
                                     <li class="list-group-item">
-                                        <strong>@activity.ActivityType:</strong> @activity.Description
+                                        <strong>@friendlyName:</strong> @activity.Description
                                         <br />
-                                        <small>By: @activity.User.Email on @activity.CreatedAt.ToString("g")</small>
+                                        <small>By: @activity.User.FirstName @activity.User.LastName on @activity.CreatedAt.ToString("g")</small>
                                     </li>
                                 }
                             }
@@ -156,6 +161,7 @@
                         </ul>
                     </div>
                 </div>
+
 
 
 
@@ -236,56 +242,63 @@
         plugins: [ChartDataLabels]
     });
 
-    // Pie Chart: Phone Availability
-    const ctxPhone = document.getElementById('phoneChart').getContext('2d');
-    const phoneChart = new Chart(ctxPhone, {
-        type: 'pie',
-        data: {
-            labels: ['Available', 'Checked Out'],
-            datasets: [{
-                data: [@phoneAvailability, 100 - @phoneAvailability],
-                backgroundColor: ['#1b5daa', '#ddd'],
-                borderColor: ['#1b5daa', '#ddd']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: true },
-                datalabels: {
-                    color: '#333',
-                    font: { size: 14 },
-                    formatter: (value) => value + '%'
-                }
-            },
-            onClick: (event, elements) => {
-                if (elements.length > 0) {
-                    const index = elements[0].index; // Get the index of the clicked segment
-                    const label = phoneChart.data.labels[index]; // Get the label of the clicked segment
 
-                    if (label === 'Available') {
-                        // Navigate to ViewAvailableAssets and pass a query parameter
-                        window.location.href = `CheckedOutAssets/ViewAvailableAssets?assetType=Phone`;
-                    }
-                    else if (label === 'Checked Out') {
-                        window.location.href = `CheckedOutAssets/?assetType=Phone`;
 
-                    }
+
+const ctxPhone = document.getElementById('phoneChart').getContext('2d');
+const phoneChart = new Chart(ctxPhone, {
+    type: 'pie',
+    data: {
+        labels: ['Available', 'Checked Out'],
+        datasets: [{
+            data: [@ViewBag.availablePhones, @ViewBag.checkedOutPhones],
+            backgroundColor: ['#1b5daa', '#ddd'],
+            borderColor: ['#1b5daa', '#ddd']
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: true },
+            datalabels: {
+                color: '#333',
+                font: { size: 14 },
+                formatter: (value, context) => {
+                    return value;
+                },
+                color: (context) => {
+                    const label = context.chart.data.labels[context.dataIndex];
+                    return label === 'Available' ? 'white' : '#333'; // White for "Available"
                 }
             }
         },
-        plugins: [ChartDataLabels]
-    });
+        onClick: (event, elements) => {
+            if (elements.length > 0) {
+                const index = elements[0].index;
+                const label = phoneChart.data.labels[index];
+
+                if (label === 'Available') {
+                    window.location.href = `CheckedOutAssets/ViewAvailableAssets?assetType=Phone`;
+                } else if (label === 'Checked Out') {
+                    window.location.href = `CheckedOutAssets?assetType=Phone`;
+                }
+            }
+        }
+    },
+    plugins: [ChartDataLabels]
+});
 
 
-// Pie Chart: Laptop Availability
+
+
+
 const ctxLaptop = document.getElementById('laptopChart').getContext('2d');
 const laptopChart = new Chart(ctxLaptop, {
     type: 'pie',
     data: {
         labels: ['Available', 'Checked Out'],
         datasets: [{
-            data: [@laptopAvailability, 100 - @laptopAvailability],
+            data: [@ViewBag.availableLaptops, @ViewBag.checkedOutLaptops],
             backgroundColor: ['#023e83', '#ddd'],
             borderColor: ['#023e83', '#ddd']
         }]
@@ -297,13 +310,19 @@ const laptopChart = new Chart(ctxLaptop, {
             datalabels: {
                 color: '#333',
                 font: { size: 14 },
-                formatter: (value) => value + '%'
+                formatter: (value, context) => {
+                    return value;
+                },
+                color: (context) => {
+                    const label = context.chart.data.labels[context.dataIndex];
+                    return label === 'Available' ? 'white' : '#333'; // White for "Available"
+                }
             }
         },
         onClick: (event, elements) => {
             if (elements.length > 0) {
-                const index = elements[0].index; // Get the index of the clicked segment
-                const label = laptopChart.data.labels[index]; // Get the label of the clicked segment
+                const index = elements[0].index;
+                const label = laptopChart.data.labels[index];
 
                 if (label === 'Available') {
                     window.location.href = `CheckedOutAssets/ViewAvailableAssets?assetType=Laptop`;
@@ -315,6 +334,8 @@ const laptopChart = new Chart(ctxLaptop, {
     },
     plugins: [ChartDataLabels]
 });
+
+
 
 
 

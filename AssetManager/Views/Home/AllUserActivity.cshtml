@@ -1,12 +1,19 @@
-﻿<div class="container-wrapper" style="padding: 20px; border-radius: 8px;">
-    <div class="form-container-small text-center">
-        <h3>Activity Log</h3>
-        <br />
+﻿@model IEnumerable<AssetManager.Models.ActivityLog>
+
+@{
+    ViewData["Title"] = "All User Activities";
+}
+
+<div class="container-wrapper">
+    <div class="form-container-small">
+        <h3 class="text-center">All Activity for @Model.First().User.FirstName @Model.First().User.LastName</h3>
+
         <!-- Timezone and Date Range Selection -->
         <div class="filter-section">
             <div class="filter-left">
                 <label for="timezone-select">Time:</label>
                 <select id="timezone-select" name="timezone" onchange="filterActivities()" class="custom-select">
+                    <option value="all">All Time</option>
                     <option value="last7days">Last 7 Days</option>
                     <option value="last30days">Last 30 Days</option>
                     <option value="last3months">Last 3 Months</option>
@@ -22,12 +29,12 @@
                 <button onclick="filterActivities()" class="apply-btn">Apply</button>
             </div>
         </div>
-        <table class="table">
+
+        <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>Activity Type</th>
                     <th>Description</th>
-                    <th>User</th>
                     <th>Date</th>
                 </tr>
             </thead>
@@ -62,7 +69,7 @@
                         }
                     }
 
-                    <tr onclick="location.href='@url'">
+                    <tr onclick="location.href='@url'" class="clickable-row">
                         <td>
                             @{
                                 var activityTypeDisplay = log.ActivityType switch
@@ -82,22 +89,74 @@
                             @activityTypeDisplay
                         </td>
                         <td>@log.Description</td>
-                        <td>@log.User.FirstName @log.User.LastName</td>
                         <td>@log.CreatedAt.ToString("yyyy-MM-dd")</td>
                     </tr>
                 }
             </tbody>
         </table>
+
+        <button type="button" class="btn btn-secondary" style="width: 150px;" onclick="window.location.href='@Url.Action("Account", "Home")'">
+            Back
+        </button>
     </div>
 </div>
 
-
-
 <style>
-    .table tbody tr:hover {
-        background-color: #f2f2f2;
-        cursor: pointer;
+    .container-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px;
     }
+
+    .form-container-small {
+        margin-top: 20px;
+        padding: 30px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h3 {
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: 600;
+        }
+
+    .table-striped tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .table-bordered {
+        border: 1px solid #ddd;
+    }
+
+    .clickable-row {
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .clickable-row:hover {
+            background-color: #f1f1f1;
+        }
 
     .filter-section {
         display: flex;
@@ -166,24 +225,38 @@
 
         var startDate = new Date(startDateInput);
         var endDate = new Date(endDateInput);
+        var today = new Date();
+        var filterStartDate;
+        var filterEndDate = today;
+
+        switch (selectedRange) {
+            case 'last7days':
+                filterStartDate = new Date(today.setDate(today.getDate() - 7));
+                break;
+            case 'last30days':
+                filterStartDate = new Date(today.setDate(today.getDate() - 30));
+                break;
+            case 'last3months':
+                filterStartDate = new Date(today.setMonth(today.getMonth() - 3));
+                break;
+            case 'custom':
+                filterStartDate = startDate;
+                filterEndDate = endDate;
+                break;
+            default:
+                filterStartDate = new Date(0); // Show all activities for "All Time"
+                break;
+        }
 
         var rows = document.querySelectorAll('#activity-log-body tr');
         rows.forEach(row => {
-            var dateCell = row.cells[3];
+            var dateCell = row.cells[2];
             var rowDate = new Date(dateCell.innerText);
 
-            if (selectedRange === 'custom') {
-                if (startDateInput && endDateInput) {
-                    if (rowDate >= startDate && rowDate <= endDate) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                } else {
-                    row.style.display = '';
-                }
+            if (rowDate >= filterStartDate && rowDate <= filterEndDate) {
+                row.style.display = '';
             } else {
-                row.style.display = ''; // Implement other range filtering logic if needed
+                row.style.display = 'none';
             }
         });
     }

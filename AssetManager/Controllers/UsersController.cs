@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using YourProjectNamespace.Helpers;
 
 namespace AssetManager.Controllers
 {
@@ -44,6 +45,7 @@ namespace AssetManager.Controllers
         }
 
 
+        [SessionAuthorize]
         public IActionResult EditUser(int id)
         {
             var user = _context.Users.Find(id);
@@ -55,7 +57,9 @@ namespace AssetManager.Controllers
         }
 
 
+
         [HttpPost]
+        [SessionAuthorize]
         public IActionResult UpdateUser(User user)
         {
             var existingUser = _context.Users.Find(user.UserID);
@@ -74,6 +78,7 @@ namespace AssetManager.Controllers
 
 
         [HttpPost]
+        [SessionAuthorize]
         public IActionResult DeleteUser(int userID)
         {
             var user = _context.Users.Find(userID);

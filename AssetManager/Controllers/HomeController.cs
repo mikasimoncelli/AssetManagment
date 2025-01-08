@@ -11,6 +11,7 @@ using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf.Canvas.Draw;
 using Org.BouncyCastle.Crypto.Generators;
+using YourProjectNamespace.Helpers;
 
 namespace AssetManager.Controllers
 {
@@ -80,6 +81,21 @@ namespace AssetManager.Controllers
                 .Take(5) 
                 .ToList();
 
+            var activityTypeFriendlyNames = new Dictionary<string, string>
+            {
+                { "CreateAsset", "Created New Asset" },
+                { "EditAsset", "Edited Asset" },
+                { "CreateLoan", "Created New Loan" },
+                { "EditLoan", "Edited Loan" },
+                { "LoanReturned", "Loan Returned" },
+                { "CreateDamage", "Reported New Damage" },
+                { "EditDamage", "Edited Damage Report" },
+                {"CreateDisposal", "Reported New Disposal" },
+                {"EditDisposal", "Edited Disposal Form" }
+            };
+
+            ViewBag.ActivityTypeFriendlyNames = activityTypeFriendlyNames;
+
             ViewBag.RecentActivities = recentActivities;
 
             ViewBag.OverdueReturns = overdueReturns;
@@ -87,8 +103,22 @@ namespace AssetManager.Controllers
 
             ViewBag.totalAssets = assetCount.Sum(a => a.AssetsCount);
             ViewBag.assetCount = assetCount;
-            ViewBag.phoneAvailability = CalculateAvailabilityPercentage("Phone", currentlyCheckedOutAssetIds);
-            ViewBag.laptopAvailability = CalculateAvailabilityPercentage("Laptop", currentlyCheckedOutAssetIds);
+
+            // Total counts of assets for each type
+            var totalPhoneAssets = _context.Assets.Count(a => a.EquipmentType == "Phone");
+            var totalLaptopAssets = _context.Assets.Count(a => a.EquipmentType == "Laptop");
+
+            // Currently checked out counts
+            var checkedOutPhones = currentlyCheckedOutAssetIds.Count(id => _context.Assets.Any(a => a.AssetID == id && a.EquipmentType == "Phone"));
+            var checkedOutLaptops = currentlyCheckedOutAssetIds.Count(id => _context.Assets.Any(a => a.AssetID == id && a.EquipmentType == "Laptop"));
+
+            // Available counts
+            ViewBag.availablePhones = totalPhoneAssets - checkedOutPhones;
+            ViewBag.availableLaptops = totalLaptopAssets - checkedOutLaptops;
+
+            // Checked out counts
+            ViewBag.checkedOutPhones = checkedOutPhones;
+            ViewBag.checkedOutLaptops = checkedOutLaptops;
 
             return View();
         }
@@ -118,10 +148,31 @@ namespace AssetManager.Controllers
             return View();
         }
 
+
+        [SessionAuthorize]
         public IActionResult Account()
         {
-            return View();
+            var userId = HttpContext.Session.GetInt32("UserId");
+            Console.WriteLine(userId);
+            Console.WriteLine(userId);
+
+
+            var user = _context.Users
+                               .Include(u => u.ActivityLogs)
+                               .FirstOrDefault(u => u.UserID == userId);
+
+            if (user != null)
+            {
+                user.ActivityLogs = user.ActivityLogs
+                                        .OrderByDescending(log => log.CreatedAt)
+                                        .Take(10)
+                                        .ToList(); // Limit to top 10
+            }
+
+            return View(user);
         }
+
+
 
         public IActionResult Login()
         {
@@ -145,8 +196,6 @@ namespace AssetManager.Controllers
             // Verify the password
             bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
 
-            Console.WriteLine(user.Password);
-
             if (!isPasswordValid)
             {
                 // If password is invalid, return an error
@@ -156,10 +205,17 @@ namespace AssetManager.Controllers
 
             // If successful, redirect to a secure area or dashboard
             // Example: store user information in session
+            // If successful, store user information in session
             HttpContext.Session.SetString("UserEmail", user.Email);
+            HttpContext.Session.SetString("IsLoggedIn", "true"); // Optional: Add a logged-in flag
+            HttpContext.Session.SetInt32("UserId", user.UserID); // Optional: Store the user ID
+
+            Console.WriteLine(user.UserID);
+
             return RedirectToAction("Account");
         }
 
+        [SessionAuthorize]
         public IActionResult Logout()
         {
             // Clear the session
@@ -170,8 +226,44 @@ namespace AssetManager.Controllers
         }
 
 
+        [SessionAuthorize]
+        public IActionResult AllUserActivity()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to login if session is null
+            }
+
+            var user = _context.Users
+                               .Include(u => u.ActivityLogs)
+                               .FirstOrDefault(u => u.UserID == userId);
+
+            if (user == null)
+            {
+                return NotFound(); // Handle the case where the user is not found
+            }
+
+            // Fetch all activities without limiting
+            var allActivities = user.ActivityLogs
+                                    .OrderByDescending(log => log.CreatedAt)
+                                    .ToList();
+
+            return View(allActivities);
+        }
+
+
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+
         //Download Assets Report
         [HttpGet]
+        [SessionAuthorize]
         public IActionResult AssetsReport()
         {
             using (var stream = new MemoryStream())
@@ -274,6 +366,7 @@ namespace AssetManager.Controllers
 
 
         [HttpGet]
+        [SessionAuthorize]
         public IActionResult LoanedAssetsReport()
         {
             using (var stream = new MemoryStream())
@@ -360,6 +453,7 @@ namespace AssetManager.Controllers
         }
 
         [HttpGet]
+        [SessionAuthorize]
         public IActionResult UsersReport()
         {
             using (var stream = new MemoryStream())
@@ -426,6 +520,8 @@ namespace AssetManager.Controllers
             }
         }
 
+        [HttpGet]
+        [SessionAuthorize]
         public IActionResult DamagesReport()
         {
             using (var stream = new MemoryStream())
@@ -496,7 +592,8 @@ namespace AssetManager.Controllers
             }
         }
 
-
+        [HttpGet]
+        [SessionAuthorize]
         public IActionResult DisposalsReport()
         {
             using (var stream = new MemoryStream())
@@ -568,7 +665,8 @@ namespace AssetManager.Controllers
         }
 
 
-
+        [HttpGet]
+        [SessionAuthorize]
         public IActionResult GetAllData()
         {
             // Materialize Assets with navigation properties in memory

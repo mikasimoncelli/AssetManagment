@@ -299,7 +299,7 @@
 
                 // Add click event for Asset rows
                 row.addEventListener('click', () => {
-                    window.location.href = `/Assets/EditAsset/${item.assetID}`;
+                    window.location.href = `/Assets/ViewAsset/${item.assetID}`;
                 });
             } else if (item.type === 'Office') {
                 row.className = 'type-office';
@@ -312,7 +312,7 @@
 
                 // Add click event for Office rows
                 row.addEventListener('click', () => {
-                    window.location.href = `/Offices/EditOffice/${item.officeID}`;
+                    window.location.href = `/Assets/Office/${item.officeID}`;
                 });
             } else if (item.type === 'User') {
                 row.className = 'type-user';
@@ -325,7 +325,7 @@
 
                 // Add click event for User rows
                 row.addEventListener('click', () => {
-                    window.location.href = `/Users/EditUser/${item.userID}`;
+                    window.location.href = `/Users/ViewUser/${item.userID}`;
                 });
             }
 

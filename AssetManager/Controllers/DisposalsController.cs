@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using NuGet.ContentModel;
+using YourProjectNamespace.Helpers;
 
 namespace AssetManager.Controllers
 {
@@ -23,6 +24,7 @@ namespace AssetManager.Controllers
             return View(disposals);
         }
 
+        [SessionAuthorize]
         public IActionResult ReportNewDisposal()
         {
             var assets = _context.Assets
@@ -40,6 +42,7 @@ namespace AssetManager.Controllers
 
 
         [HttpGet]
+        [SessionAuthorize]
         public IActionResult AssetDisposalsForm(int assetID)
         {
             var asset = _context.Assets
@@ -52,6 +55,7 @@ namespace AssetManager.Controllers
 
 
         [HttpPost]
+        [SessionAuthorize]
         public IActionResult AssetDisposalForm(AssetDisposal model)
         {
            
@@ -85,7 +89,8 @@ namespace AssetManager.Controllers
         }
 
 
-        // GET Edit Disposal
+        [HttpGet]        
+        [SessionAuthorize]
         public IActionResult EditDisposal(int id)
         {
             var assetDisposal = _context.AssetDisposals
@@ -102,6 +107,7 @@ namespace AssetManager.Controllers
         }
 
         [HttpPost]
+        [SessionAuthorize]
         public IActionResult EditDisposal(AssetDisposal model)
         {
             var assetDisposal = _context.AssetDisposals.Find(model.AssetDisposalID);
@@ -138,7 +144,7 @@ namespace AssetManager.Controllers
             _activityLoggerService.LogActivity(
                 userId: GetCurrentUserId(),
                 activityType: ActivityType.EditDisposal,
-                description: $"Disposal report updated for AssetID: {model.AssetID} DamageID: {model.AssetDisposalID}",
+                description: $"Disposal report updated for AssetID: {model.AssetID} DisposalID: {model.AssetDisposalID}",
                 createdAt: System.DateTime.Now
 
             );
@@ -154,6 +160,7 @@ namespace AssetManager.Controllers
 
 
         [HttpPost]
+        [SessionAuthorize]
         public IActionResult BulkUpdate([FromBody] BulkUpdateRequest model)
         {
             if (model == null || model.Ids == null || model.Ids.Count == 0)
@@ -203,6 +210,7 @@ namespace AssetManager.Controllers
 
 
         [HttpPost("Disposals/DeleteDisposal/{assetDisposalID}")]
+        [SessionAuthorize]
         public IActionResult DeleteDisposal(int assetDisposalID)
         {
             var disposal = _context.AssetDisposals.Find(assetDisposalID);
