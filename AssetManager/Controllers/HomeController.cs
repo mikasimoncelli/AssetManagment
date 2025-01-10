@@ -215,6 +215,54 @@ namespace AssetManager.Controllers
             return RedirectToAction("Account");
         }
 
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult StaffRegister(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Hash the password using BCrypt
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+
+                // Map ViewModel to your User entity
+                var user = new User
+                {
+                    Email = model.Email,
+                    Password = hashedPassword, 
+                    FirstName = model.FirstName,
+                    LastName = model.LastName
+                    // Save the hashed password
+                                               // Other properties if needed
+                };
+
+                try
+                {
+                    // Save the user to the database
+                    _context.Add(user);
+                    _context.SaveChanges();
+
+                    // Redirect to Login page with a success message
+                    return RedirectToAction("Login", new { message = "Registration successful!" });
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception and add a model error
+                    ModelState.AddModelError("", "An error occurred while registering. Please try again.");
+                }
+            }
+
+            // If validation fails, return the same view with the model to show errors
+            return View(model);
+        }
+
+
+
         [SessionAuthorize]
         public IActionResult Logout()
         {
@@ -249,6 +297,7 @@ namespace AssetManager.Controllers
             var allActivities = user.ActivityLogs
                                     .OrderByDescending(log => log.CreatedAt)
                                     .ToList();
+
 
             return View(allActivities);
         }
@@ -724,6 +773,9 @@ namespace AssetManager.Controllers
                         .Include(l => l.User) // Include User data for each log
                         .OrderByDescending(l => l.CreatedAt)
                         .ToList();
+
+            ViewBag.Users = _context.Users.Where(x=>x.UserType=="User").ToList();
+
             return View(logs);
         }
 

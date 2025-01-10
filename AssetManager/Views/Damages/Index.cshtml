@@ -237,7 +237,7 @@
         const selectedType = document.getElementById("assetTypeDropdown").value.toLowerCase();
         ['pending-table', 'in-progress-table', 'resolved-table'].forEach(tableId => {
             document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => {
-                const assetType = row.cells[2].textContent.toLowerCase();
+                const assetType = row.cells[3].textContent.toLowerCase();
                 row.style.display = selectedType && assetType !== selectedType ? "none" : "";
             });
         });

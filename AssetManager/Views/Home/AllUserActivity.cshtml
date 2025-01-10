@@ -13,7 +13,6 @@
             <div class="filter-left">
                 <label for="timezone-select">Time:</label>
                 <select id="timezone-select" name="timezone" onchange="filterActivities()" class="custom-select">
-                    <option value="all">All Time</option>
                     <option value="last7days">Last 7 Days</option>
                     <option value="last30days">Last 30 Days</option>
                     <option value="last3months">Last 3 Months</option>
@@ -225,38 +224,24 @@
 
         var startDate = new Date(startDateInput);
         var endDate = new Date(endDateInput);
-        var today = new Date();
-        var filterStartDate;
-        var filterEndDate = today;
-
-        switch (selectedRange) {
-            case 'last7days':
-                filterStartDate = new Date(today.setDate(today.getDate() - 7));
-                break;
-            case 'last30days':
-                filterStartDate = new Date(today.setDate(today.getDate() - 30));
-                break;
-            case 'last3months':
-                filterStartDate = new Date(today.setMonth(today.getMonth() - 3));
-                break;
-            case 'custom':
-                filterStartDate = startDate;
-                filterEndDate = endDate;
-                break;
-            default:
-                filterStartDate = new Date(0); // Show all activities for "All Time"
-                break;
-        }
 
         var rows = document.querySelectorAll('#activity-log-body tr');
         rows.forEach(row => {
-            var dateCell = row.cells[2];
+            var dateCell = row.cells[2]; // Adjusted for correct date column index
             var rowDate = new Date(dateCell.innerText);
 
-            if (rowDate >= filterStartDate && rowDate <= filterEndDate) {
-                row.style.display = '';
+            if (selectedRange === 'custom') {
+                if (startDateInput && endDateInput) {
+                    if (rowDate >= startDate && rowDate <= endDate) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } else {
+                    row.style.display = '';
+                }
             } else {
-                row.style.display = 'none';
+                row.style.display = ''; // Implement other range filtering logic if needed
             }
         });
     }

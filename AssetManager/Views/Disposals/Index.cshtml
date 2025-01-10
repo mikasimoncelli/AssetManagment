@@ -181,7 +181,7 @@ const saveButton = document.querySelector('.button-group .btn-primary');
         const selectedType = document.getElementById("assetTypeDropdown").value.toLowerCase();
         ['pending-table', 'disposed-table'].forEach(tableId => {
             document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => {
-                const assetType = row.cells[1].textContent.toLowerCase();
+                const assetType = row.cells[2].textContent.toLowerCase(); // Assuming 'Asset Type' is the third column
                 row.style.display = selectedType && assetType !== selectedType ? "none" : "";
             });
         });
